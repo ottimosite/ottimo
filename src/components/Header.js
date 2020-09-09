@@ -1,9 +1,12 @@
 import React from "react"
 
+const header = "bg-fixed sm:bg-local md:bg-scroll lg:bg-local xl:bg-fixed text-gray-700 body-font"
+const container = "container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center"
+
 const Header = ({ children }) => {
   return (
-    <header class="bg-fixed sm:bg-local md:bg-scroll lg:bg-local xl:bg-fixed bg-green-100 text-gray-700 body-font">
-      <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+    <header class={header}>
+      <div class={container}>
         {children}
       </div>
     </header>
