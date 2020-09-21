@@ -6,13 +6,19 @@ export default function InfoStats() {
       <div class="container px-5 py-24 mx-auto">
         <div class="flex flex-col text-center w-full mb-20">
           <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
-            Master Cleanse Reliac Heirloom
+            A few key facts
           </h1>
           <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
-            Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical
-            gentrify, subway tile poke farm-to-table. Franzen you probably
-            haven't heard of them man bun deep jianbing selfies heirloom prism
-            food truck ugh squid celiac humblebrag.
+            Slow page times and poor availability have an immediate impact on
+            customer experience , leading to dcreased engagement, conversion,
+            drops in repeat business and order values, they may also adversely
+            impact brand image and reputation. 
+          <p/>
+          <p class="lg:w-2/3 mx-auto leading-relaxed text-base">           
+            Customers expect a page to load on average in less 2 seconds, both on desktop and mobile, especially
+            for key pages. The benchmark is set high, and while internet speeds
+            are getting faster, web pages are getting bigger and more
+            complicated than ever before.
           </p>
         </div>
         <div class="flex flex-wrap -m-4 text-center">
