@@ -10,9 +10,9 @@ import Insights from "../components/Insights"
 import ContactForm from "../components/ContactForm" */
 
 const IndexPage = () => (
-  <Layout>
+  <Layout className='styles-center justify-center'>
     <SEO title="Home" />
-    <h1>
+    <h1 className='text-xxl '>
       Web Performance Optimisation
     </h1>
 {/*     <LandingHero />
