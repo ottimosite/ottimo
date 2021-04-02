@@ -2,7 +2,7 @@
   "name": "ottimo",
   "private": true,
   "description": "Landing page for WPO services",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Adrian Badiu",
   "dependencies": {
     "dotenv": "^8.2.0",
