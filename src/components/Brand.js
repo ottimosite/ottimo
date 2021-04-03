@@ -1,12 +1,12 @@
-import React from "react"
-import Link from "gatsby-link"
-import { useStaticQuery, graphql } from "gatsby"
+import React from 'react'
+import { useStaticQuery, graphql } from 'gatsby'
 
+import Anchor from './Anchor'
 import Logo from './../assets/Logo'
 import Title from './Title'
 
-const container = "flex title-font font-medium items-center text-green-100"
-const text = "ml-3 text-xl uppercase"
+const container = 'flex title-font font-medium items-center text-green-100'
+const text = 'ml-3 text-xl uppercase'
 
 const Brand = () => { 
   const data = useStaticQuery(graphql`
@@ -20,13 +20,13 @@ const Brand = () => {
   `)
 
   return (
-    <Link
-      to="/."
-      class={container}
+    <Anchor
+      to='/.'
+      className={container}
     >
     <Logo isDark />
     <Title className={ text } title={data.site.siteMetadata.title}></Title>
-    </Link>
+    </Anchor>
   )
 }
 

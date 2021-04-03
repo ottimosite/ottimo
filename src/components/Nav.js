@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react'
 
 import Menu from '../components/Menu'
 
@@ -8,7 +8,7 @@ Nav
 
 // Style
 
-const nav = "md:ml-auto flex flex-wrap styles-center text-base justify-center"
+const nav = 'md:ml-auto flex flex-wrap styles-center text-base justify-center'
 
 // Component
 

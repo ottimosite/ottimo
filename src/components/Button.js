@@ -1,4 +1,4 @@
-import React from "react"
+import React from 'react'
 // import PropTypes from 'prop-types'
 
 const Button = ({
@@ -14,7 +14,7 @@ const Button = ({
   return (
     <button
       type={type}
-      className={["text-white", "bg-grey-100", "rounde-lg", "p-3"]}
+      className='text-white bg-grey-100 rounde-lg p-3'
     >
       {props.label}
     </button>

@@ -1,5 +1,6 @@
 import React from 'react'
-import Link from "gatsby-link"
+
+import Anchor from './Anchor'
 
 /*
     Menu
@@ -14,8 +15,8 @@ const menuItem = 'mr-5 hover:text-green-100 hover:underline py-3'
 const Menu = () => {
     return (
     <>
-        <Link to='./' className={menuItem}>Home</Link>
-        <Link to='./test'className={menuItem}>Test</Link>
+        <Anchor url='./' className={menuItem} label='Home' />
+        <Anchor to='./test'className={menuItem} label='Test' />
     </>
     )
 }
