@@ -18,7 +18,7 @@ const action = 'inline-flex items-center bg-green-600 border-0 py-1 px-3 focus:o
 const Action = ( lable, icon ) => {
     return (
         <button className={ action }>
-            <Link to='./get-started'>Get started</Link>
+            <Link to='/get-started'>Get started</Link>
             <ActionIcon />
         </button>
     )
