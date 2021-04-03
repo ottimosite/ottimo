@@ -12,7 +12,7 @@ import ContactForm from "../components/ContactForm" */
 const IndexPage = () => (
   <Layout className='styles-center justify-center'>
     <SEO title="Home" />
-    <h1 className='text-xxl '>
+    <h1 className='text-xxl sm:text-xl'>
       Web Performance Optimisation
     </h1>
 {/*     <LandingHero />

@@ -1,7 +1,7 @@
 import React from "react"
 
 import Brand from "./Brand"
-import logo from "../assets/logo-ottimo-inverse.svg"
+
 
 // Footer styles
 const section = "bg-gray-900 text-green-100 body-font"
@@ -18,7 +18,7 @@ const Footer = ({ siteTitle }) => {
     <footer className={section}>
       <div className={container}>
         <div className={siteInfo}>
-          <Brand logo={logo} title={siteTitle} className={brandLogo} />
+          <Brand className={brandLogo} />
           <p class="mt-2 text-sm text-green-100">
             Air plant banjo lyft occupy retro adaptogen indego
           </p>

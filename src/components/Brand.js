@@ -3,8 +3,9 @@ import Link from "gatsby-link"
 import { useStaticQuery, graphql } from "gatsby"
 
 import Logo from './../assets/Logo'
+import Title from './Title'
 
-const container = "flex title-font font-medium items-center text-green-100 mb-4 md:mb-0"
+const container = "flex title-font font-medium items-center text-green-100"
 const text = "ml-3 text-xl uppercase"
 
 const Brand = () => { 
@@ -24,7 +25,7 @@ const Brand = () => {
       class={container}
     >
     <Logo />
-    <p class={ text }>{data.site.siteMetadata.title}</p>
+    <Title className={ text } title={data.site.siteMetadata.title}></Title>
     </Link>
   )
 }

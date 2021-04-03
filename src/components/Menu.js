@@ -1,23 +1,23 @@
 import React from 'react'
-import Link from 'gatsby-link'
+import Link from "gatsby-link"
+
+/*
+    Menu
+*/
+
+// Style
+
+const menuItem = 'mr-5 hover:text-green-100 hover:underline py-3'
+
+// Component
 
 const Menu = () => {
     return (
-      <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
-        <Link to="/." class="mr-5 hover:text-green-100">
-          Home
-        </Link>
-        <Link to="/#services" class="mr-5 hover:text-green-100">
-          Services
-        </Link>
-        <Link to="/#insights" class="mr-5 hover:text-green-100">
-          Insights
-        </Link>
-        <Link to="/#contact" class="mr-5 hover:text-green-100">
-          Contact
-        </Link>
-      </nav>
+    <>
+        <Link to='./' className={menuItem}>Home</Link>
+        <Link to='./test'className={menuItem}>Test</Link>
+    </>
     )
-  }
+}
 
 export default Menu

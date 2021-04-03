@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from './logo-ottimo.svg'
+import logo from './logo-ottimo-inverse.svg'
 // Logo
 const brand = "w-10 h-10 rounded-full"
 
