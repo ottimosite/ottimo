@@ -24,7 +24,7 @@ const Brand = () => {
       to="/."
       class={container}
     >
-    <Logo />
+    <Logo isDark />
     <Title className={ text } title={data.site.siteMetadata.title}></Title>
     </Link>
   )
