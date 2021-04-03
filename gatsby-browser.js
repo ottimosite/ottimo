@@ -5,3 +5,10 @@
  */
 
 // You can delete this file if you're not using it
+import './src/assets/global.css'
+require(`autoprefixer`)
+require(`typeface-source-code-pro`)
+require(`typeface-source-sans-pro`)
+require(`typeface-source-serif-pro`)
+require(`typeface-bungee`)
+require(`typeface-ranchers`)

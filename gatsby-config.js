@@ -6,7 +6,7 @@ module.exports = {
     author: `@abadiu`,
   },
   plugins: [
-    `gatsby-theme-aperitivo-base`,
+    `gatsby-plugin-postcss`,
     `gatsby-plugin-react-helmet`,
     {
       resolve: `gatsby-source-filesystem`,
