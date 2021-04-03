@@ -4,7 +4,6 @@ module.exports = {
         purgeLayersByDefault: true,
     },
     purge: ['./src/**/*.js'],
-    target: 'relaxed',
     prefix: '',
     important: false,
     separator: ':',
