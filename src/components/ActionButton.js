@@ -16,7 +16,7 @@ const action =
 
 // Component
 
-const Action = (lable, icon) => {
+const Action = (label, icon, target) => {
   return (
     <button className={action}>
       <Link to='/get-started'>Get started</Link>
