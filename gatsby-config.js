@@ -27,7 +27,7 @@ module.exports = {
         background_color: `#ffffff`,
         theme_color: `#12b886`,
         display: `standalone`,
-        icon: `src/assets/logo-ottimo.svg`, // This path is relative to the root of the site.
+        icon: `src/assets/Logo/logo-ottimo.svg`, // This path is relative to the root of the site.
       },
     },
     `gatsby-plugin-offline`,

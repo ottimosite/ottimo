@@ -1,9 +1,9 @@
 import React from 'react'
 
 import Brand from './Brand'
-import Nav from './Nav'
+import Nav from '../Primitives/Nav'
 
-import Action from './ActionButton'
+import Action from '../Primitives/ActionButton'
 
 /*
     Header

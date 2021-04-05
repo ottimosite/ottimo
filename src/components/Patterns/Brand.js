@@ -1,9 +1,9 @@
 import React from 'react'
 import { useStaticQuery, graphql } from 'gatsby'
 
-import Anchor from './Anchor'
-import Logo from './../assets/Logo'
-import Title from './Title'
+import Anchor from '../Primitives/Anchor'
+import Logo from '../../assets/Logo/Logo'
+import Title from '../Primitives/Title'
 
 const container =
   'flex title-font font-bold uppercase items-center text-green-100'

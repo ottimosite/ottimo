@@ -6,8 +6,8 @@ function FastLoading(props) {
       data-name='Layer 1'
       xmlns='http://www.w3.org/2000/svg'
       xmlnsXlink='http://www.w3.org/1999/xlink'
-      width={600}
-      height={500}
+      width={props.width}
+      height={props.height}
       viewBox='0 0 942 745.6'
       {...props}
     >

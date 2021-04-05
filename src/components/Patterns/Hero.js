@@ -1,6 +1,6 @@
 import React from 'react'
 
-import FastLoading from '../assets/FastLoading'
+import FastLoading from '../../assets/Illustrations/FastLoading'
 
 const Section = props => {
   const section = 'text-gray-600 body-font'
@@ -15,12 +15,12 @@ const Section = props => {
 }
 
 const Headline = () => {
-  const headline = 'title-font text-xxl mb-2 font-bold text-gray-900'
+  const headline = 'animate__animated animate__headShake title-font text-xxl mb-2 font-black text-gray-900'
   return <h1 class={headline}>Ottimo</h1>
 }
 
 const Lead = () => {
-  const lead = 'mb-8 text-4xl leading-relaxed'
+  const lead = 'animate__animated animate__headShake mb-8 text-4xl leading-relaxed'
   return (
     <p class={lead}>
       Your website done right! Start transforming your online presence into a
@@ -31,14 +31,14 @@ const Lead = () => {
 
 const ButtonPrimary = props => {
   const button =
-    'inline-flex text-white bg-green-500 border-0 py-2 px-6 focus:outline-none hover:bg-green-600 rounded text-lg'
+    'inline-flex text-white bg-green-500 border-0 py-4 px-6 focus:outline-none hover:bg-green-600 rounded text-lg'
 
   return <button class={button}>{props.label}</button>
 }
 
 const ButtonSecondary = props => {
   const style =
-    'ml-4 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg'
+    'ml-4 inline-flex text-gray-700 bg-gray-100 border-0 py-4 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg'
   return <button class={style}>{props.label}</button>
 }
 
@@ -69,7 +69,7 @@ const CardLeading = () => {
 }
 
 const CardGraphic = () => {
-  const container = 'transition-colors w-1/2 sm:w-1'
+  const container = 'w-1/2'
   const graphic = 'object-fit'
   return (
     <div className={container}>

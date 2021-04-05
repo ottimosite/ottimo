@@ -7,7 +7,7 @@ import Link from 'gatsby-link'
 
 // Assets
 
-import ActionIcon from './../assets/Icon'
+import ActionIcon from '../../assets/Icons/Icon'
 
 // Style
 

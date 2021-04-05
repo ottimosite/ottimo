@@ -5,7 +5,8 @@
  */
 
 // You can delete this file if you're not using it
-import "./src/assets/global.css"
+import "./src/styles/global.css"
+import "animate.css"
 require(`autoprefixer`)
 require(`typeface-source-code-pro`)
 require(`typeface-source-sans-pro`)

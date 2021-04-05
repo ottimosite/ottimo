@@ -2,7 +2,7 @@ const config = {
   siteTitle: "ottimo",
   siteTitleShort: "ottimo",
   siteTitleAlt: "ottimo.site WPO",
-  siteLogo: "../src/assets/logo-ottimo.svg",
+  siteLogo: "../src/assets/Logo/logo-ottimo.svg",
   siteUrl: "https://ottimo.site",
   pathPrefix: "/",
   siteDescription:
