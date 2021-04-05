@@ -11,4 +11,3 @@ const Anchor = props => {
 }
 
 export default Anchor
-s
