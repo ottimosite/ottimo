@@ -69,8 +69,8 @@ const CardLeading = () => {
 }
 
 const CardGraphic = () => {
-  const container = 'max-w lg:max-w-lg lg:w-full md:w-1/2 w-5/6'
-  const graphic = 'transition-colors object-fit object-center rounded'
+  const container = 'transition-colors w-1/2 sm:w-1'
+  const graphic = 'object-fit'
   return (
     <div className={container}>
       <FastLoading className={graphic} alt='hero' />

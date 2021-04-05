@@ -2,7 +2,7 @@
   "name": "ottimo",
   "private": true,
   "description": "Ottimo is your solution for most common performance and usability pproblems. Making the web a better place for ytour business and your customers. ",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "author": "Adrian Badiu",
   "dependencies": {
     "autoprefixer": "^10.2.5",
