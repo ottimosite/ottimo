@@ -13,12 +13,16 @@ const menuItem = 'mr-5 hover:text-green-100 hover:underline py-3'
 // Component
 
 const Menu = () => {
-    return (
+  return (
     <>
-        <Anchor url='/.' className={menuItem}>Home</Anchor>
-        <Anchor to='/test'className={menuItem}>Test</Anchor>
+      <Anchor url='/.' className={menuItem}>
+        Home
+      </Anchor>
+      <Anchor url='/test' className={menuItem}>
+        Test
+      </Anchor>
     </>
-    )
+  )
 }
 
 export default Menu

@@ -2,3 +2,7 @@
 package.json
 package-lock.json
 public
+src/.refs
+src/assets/global.css
+tw.css
+tailwind.config.js

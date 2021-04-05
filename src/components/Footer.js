@@ -19,13 +19,14 @@ const Footer = () => {
         <div className={branding}>
           <Brand className={logo} />
           <p class='mt-2 text-sm text-green-100 align-left'>
-            On demand, tailored Web performance Optimisation services for React, WordPress and, Gatsby.js sites. 
+            On demand, tailored Web performance Optimisation services for React,
+            WordPress and, Gatsby.js sites.
           </p>
         </div>
-{/*         <div className={siteLinks}></div> */}
+        {/*         <div className={siteLinks}></div> */}
       </div>
       <div className={attribution}>
-      <div class='container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row'>
+        <div class='container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row'>
           <p class='text-gray-100 text-sm text-center sm:text-left'>
             © {new Date().getFullYear()} ottimo.site —
             <a

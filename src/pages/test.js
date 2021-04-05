@@ -1,5 +1,5 @@
 import React from 'react'
-import { StaticImage } from "gatsby-plugin-image"
+// import { StaticImage } from 'gatsby-plugin-image'
 
 /*
     # 'Test.js'
@@ -8,19 +8,21 @@ import { StaticImage } from "gatsby-plugin-image"
 
 //Components
 import Header from '../components/Header'
-
+import Hero from '../components/Hero'
+import Features from '../components/Features'
+import FeaturesVariant from '../components/FeaturesVariant'
+import Footer from '../components/Footer'
 
 const Test = () => {
-    return (
-        <>
-        <Header />
-        <section className='flex flex-col md:flex-row items-center'>
-            <div className='w-full'>
-                <StaticImage src='https://placekitten.com/800/600' alt='hero-image' placeholder='blurred' width={200} height={200} className='bg-contain'/>
-            </div>
-        </section>
-        </>
-    )
+  return (
+    <>
+      <Header />
+      <Hero />
+      <Features />
+      <FeaturesVariant />
+      <Footer />
+    </>
+  )
 }
 
 export default Test

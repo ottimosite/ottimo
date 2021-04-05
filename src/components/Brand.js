@@ -5,10 +5,11 @@ import Anchor from './Anchor'
 import Logo from './../assets/Logo'
 import Title from './Title'
 
-const container = 'flex title-font font-medium items-center text-green-100'
-const text = 'ml-3 text-xl uppercase'
+const container =
+  'flex title-font font-bold uppercase items-center text-green-100'
+const text = 'ml-3 text-xl font-bold uppercase'
 
-const Brand = () => { 
+const Brand = () => {
   const data = useStaticQuery(graphql`
     query SiteTitleQuery {
       site {
@@ -20,12 +21,9 @@ const Brand = () => {
   `)
 
   return (
-    <Anchor
-      to='/.'
-      className={container}
-    >
-    <Logo isDark />
-    <Title className={ text } title={data.site.siteMetadata.title}></Title>
+    <Anchor url='/.' className={container}>
+      <Logo isDark />
+      <Title className={text} title={data.site.siteMetadata.title}></Title>
     </Anchor>
   )
 }
