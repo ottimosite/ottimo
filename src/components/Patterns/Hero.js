@@ -5,7 +5,7 @@ import FastLoading from '../../assets/Illustrations/FastLoading'
 const Section = props => {
   const section = 'text-gray-600 body-font'
   const container =
-    'container mx-auto flex px-5 py-24 md:flex-row flex-col items-center'
+    'container h-screen mx-auto flex px-5 py-24 md:flex-row flex-col items-center'
 
   return (
     <section className={section}>
@@ -15,7 +15,7 @@ const Section = props => {
 }
 
 const Headline = () => {
-  const headline = 'animate__animated animate__headShake title-font text-xxl mb-2 font-black text-gray-900'
+  const headline = 'animate__animated animate__headShake title-font text-xxl mb-2 font-black text-gray-900 leading-tight'
   return <h1 class={headline}>Ottimo</h1>
 }
 
@@ -70,11 +70,11 @@ const CardLeading = () => {
 
 const CardGraphic = () => {
   const container = 'w-1/2'
-  const graphic = 'object-fit'
+  const graphic = 'animate__animated animate__bounceInRight animate__delay-1s object-fit'
   return (
-    <div className={container}>
+    <Card className={container}>
       <FastLoading className={graphic} alt='hero' />
-    </div>
+    </Card>
   )
 }
 
