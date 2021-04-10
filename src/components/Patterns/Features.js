@@ -23,9 +23,9 @@ const Feature = () => {
               <svg
                 fill='none'
                 stroke='currentColor'
-                stroke-linecap='round'
-                stroke-linejoin='round'
-                stroke-width='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth='2'
                 className='w-10 h-10'
                 viewBox='0 0 24 24'
               >
@@ -41,14 +41,14 @@ const Feature = () => {
                 taxidermy. Gastropub indxgo juice poutine, ramps microdosing
                 banh mi pug VHS try-hard.
               </p>
-              <a className='mt-3 text-green-400 inline-flex items-center'>
+              <a href='/somewhere' className='mt-3 text-green-400 inline-flex items-center'>
                 Learn More
                 <svg
                   fill='none'
                   stroke='currentColor'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-width='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
                   className='w-4 h-4 ml-2'
                   viewBox='0 0 24 24'
                 >
@@ -62,9 +62,9 @@ const Feature = () => {
               <svg
                 fill='none'
                 stroke='currentColor'
-                stroke-linecap='round'
-                stroke-linejoin='round'
-                stroke-width='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth='2'
                 className='w-10 h-10'
                 viewBox='0 0 24 24'
               >
@@ -82,14 +82,14 @@ const Feature = () => {
                 taxidermy. Gastropub indxgo juice poutine, ramps microdosing
                 banh mi pug VHS try-hard.
               </p>
-              <a className='mt-3 text-green-400 inline-flex items-center'>
+              <a href='/somewhere' className='mt-3 text-green-400 inline-flex items-center'>
                 Learn More
                 <svg
                   fill='none'
                   stroke='currentColor'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-width='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
                   className='w-4 h-4 ml-2'
                   viewBox='0 0 24 24'
                 >
@@ -103,9 +103,9 @@ const Feature = () => {
               <svg
                 fill='none'
                 stroke='currentColor'
-                stroke-linecap='round'
-                stroke-linejoin='round'
-                stroke-width='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth='2'
                 className='w-10 h-10'
                 viewBox='0 0 24 24'
               >
@@ -122,14 +122,14 @@ const Feature = () => {
                 taxidermy. Gastropub indxgo juice poutine, ramps microdosing
                 banh mi pug VHS try-hard.
               </p>
-              <a className='mt-3 text-green-400 inline-flex items-center'>
+              <a href='/somewhere' className='mt-3 text-green-400 inline-flex items-center'>
                 Learn More
                 <svg
                   fill='none'
                   stroke='currentColor'
-                  stroke-linecap='round'
-                  stroke-linejoin='round'
-                  stroke-width='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth='2'
                   className='w-4 h-4 ml-2'
                   viewBox='0 0 24 24'
                 >

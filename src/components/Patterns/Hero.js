@@ -16,13 +16,13 @@ const Section = props => {
 
 const Headline = () => {
   const headline = 'animate__animated animate__headShake title-font text-xxl mb-2 font-black text-gray-900 leading-tight'
-  return <h1 class={headline}>Ottimo</h1>
+  return <h1 className={headline}>Ottimo</h1>
 }
 
 const Lead = () => {
   const lead = 'animate__animated animate__headShake mb-8 text-4xl leading-relaxed'
   return (
-    <p class={lead}>
+    <p className={lead}>
       Your website done right! Start transforming your online presence into a
       valuable asset for your business.
     </p>
@@ -33,18 +33,18 @@ const ButtonPrimary = props => {
   const button =
     'inline-flex text-white bg-green-500 border-0 py-4 px-6 focus:outline-none hover:bg-green-600 rounded text-lg'
 
-  return <button class={button}>{props.label}</button>
+  return <button className={button}>{props.label}</button>
 }
 
 const ButtonSecondary = props => {
   const style =
     'ml-4 inline-flex text-gray-700 bg-gray-100 border-0 py-4 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg'
-  return <button class={style}>{props.label}</button>
+  return <button className={style}>{props.label}</button>
 }
 
 const ButtonGroup = () => {
   return (
-    <div class='flex justify-center'>
+    <div className='flex justify-center'>
       <ButtonPrimary label='Get started' />
       <ButtonSecondary label='Learn more' />
     </div>
@@ -59,8 +59,9 @@ const Card = props => {
 }
 
 const CardLeading = () => {
+  const container = 'w-1/2'
   return (
-    <Card>
+    <Card className={container}>
       <Headline />
       <Lead />
       <ButtonGroup />

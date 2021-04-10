@@ -2,7 +2,6 @@ import React from 'react'
 
 const container =
 'lg:flex-grow \
-md:w-1/2 \
 lg:pr-24 \
 md:pr-16 \
 flex \

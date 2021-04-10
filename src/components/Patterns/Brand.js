@@ -21,7 +21,7 @@ const Brand = () => {
   `)
 
   return (
-    <Anchor url='/.' className={container}>
+    <Anchor url='/' className={container}>
       <Logo isDark />
       <Title className={text} title={data.site.siteMetadata.title} />
     </Anchor>

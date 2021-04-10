@@ -7,13 +7,6 @@ const config = {
   pathPrefix: "/",
   siteDescription:
     "Your one stop solution for web performance optimisation services, let's make your site or app work better for your customers and yor business.",
-  /*
-    siteRss: "/rss.xml", // Path to the RSS file.
-  siteRssTitle: "Gatsby Advanced Starter RSS feed", // Title of the RSS feed
-  siteFBAppID: "1825356251115265", // FB Application ID for using app insights
-  googleAnalyticsID: "UA-47311644-5", // GA tracking ID.
-  disqusShortname: "https-vagr9k-github-io-gatsby-advanced-starter", // Disqus shortname.
-  */
   dateFromFormat: "DD-MM-YYYY", // Date format used in the frontmatter.
   dateFormat: "DD/MM/YYYY", // Date format for display.
   postsPerPage: 4, // Amount of posts displayed per listing page.

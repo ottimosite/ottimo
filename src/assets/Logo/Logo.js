@@ -10,7 +10,7 @@ const Logo = props => {
   const isDark = props.isDark
   if (isDark) {
     return (
-      <img alt='ottimo-logo-inverse-colours' class={brand} src={logoIsDark} />
+      <img alt='ottimo-logo-inverse-colours' className={brand} src={logoIsDark} />
     )
   }
   return <img alt='ottimo-logo-light-colours' class={brand} src={logoIsLight} />

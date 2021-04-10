@@ -18,7 +18,7 @@ const Footer = () => {
       <div className={container}>
         <div className={branding}>
           <Brand className={logo} />
-          <p class='mt-2 text-sm text-green-100 align-left'>
+          <p className='mt-2 text-sm text-green-100 align-left'>
             On demand, tailored Web performance Optimisation services for React,
             WordPress and, Gatsby.js sites.
           </p>
@@ -26,13 +26,13 @@ const Footer = () => {
         {/*         <div className={siteLinks}></div> */}
       </div>
       <div className={attribution}>
-        <div class='container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row'>
-          <p class='text-gray-100 text-sm text-center sm:text-left'>
+        <div className='container mx-auto py-4 px-5 flex flex-wrap flex-col sm:flex-row'>
+          <p className='text-gray-100 text-sm text-center sm:text-left'>
             © {new Date().getFullYear()} ottimo.site —
             <a
               href='https://github.com/abadiu'
               rel='noopener noreferrer'
-              class='text-green-100 ml-1'
+              className='text-green-100 ml-1'
               target='_blank'
             >
               @abadiu
