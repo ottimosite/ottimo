@@ -3,6 +3,6 @@ package.json
 package-lock.json
 public
 src/.refs
-src/assets/global.css
+src/styles/global.css
 tw.css
 tailwind.config.js

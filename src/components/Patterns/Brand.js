@@ -6,26 +6,25 @@ import Title from '../Primitives/Title'
 import Logo from '../../assets/Logo/Logo'
 
 const container =
-  'flex title-font font-bold uppercase items-center text-green-100'
-const text = 'ml-3 text-xl font-bold uppercase'
+	'flex title-font md:styles-center md:items-center text-green-100'
 
 const Brand = () => {
-  const data = useStaticQuery(graphql`
-    query SiteTitleQuery {
-      site {
-        siteMetadata {
-          title
-        }
-      }
-    }
-  `)
+	const data = useStaticQuery(graphql`
+		query SiteTitleQuery {
+			site {
+				siteMetadata {
+					title
+				}
+			}
+		}
+	`)
 
-  return (
-    <Anchor url='/' className={container}>
-      <Logo isDark />
-      <Title className={text} title={data.site.siteMetadata.title} />
-    </Anchor>
-  )
+	return (
+		<Anchor url="/" className={container}>
+			<Logo isDark />
+			<Title title={data.site.siteMetadata.title} />
+		</Anchor>
+	)
 }
 
 export default Brand

@@ -7,22 +7,22 @@ import Link from 'gatsby-link'
 
 // Assets
 
-import ActionIcon from '../../assets/Icons/Icon'
+import ActionIcon from '../../assets/Icons/ForwardArrow'
 
 // Style
 
 const action =
-  'inline-flex items-center bg-green-600 border-0 py-1 px-3 focus:outline-none hover:bg-gray-900 rounded-none text-base'
+	'inline-flex items-center bg-green-600 border-0 py-1 px-3 focus:outline-none hover:bg-gray-900 rounded-none text-base'
 
 // Component
 
 const Action = (label, icon, target) => {
-  return (
-    <button className={action}>
-      <Link to='/get-started'>Get started</Link>
-      <ActionIcon />
-    </button>
-  )
+	return (
+		<button className={action}>
+			<Link to="/get-started">Get started</Link>
+			<ActionIcon />
+		</button>
+	)
 }
 
 export default Action

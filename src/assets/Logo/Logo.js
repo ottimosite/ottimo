@@ -6,14 +6,18 @@ import logoIsDark from './logo-ottimo-inverse.svg'
 // Logo
 const brand = 'w-10 h-10 rounded-full'
 
-const Logo = props => {
-  const isDark = props.isDark
-  if (isDark) {
-    return (
-      <img alt='ottimo-logo-inverse-colours' className={brand} src={logoIsDark} />
-    )
-  }
-  return <img alt='ottimo-logo-light-colours' class={brand} src={logoIsLight} />
+const Logo = (props) => {
+	const isDark = props.isDark
+	if (isDark) {
+		return (
+			<img
+				alt="ottimo-logo-inverse-colours"
+				className={brand}
+				src={logoIsDark}
+			/>
+		)
+	}
+	return <img alt="ottimo-logo-light-colours" class={brand} src={logoIsLight} />
 }
 
 export default Logo

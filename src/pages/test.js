@@ -12,26 +12,25 @@ import Hero from '../components/Patterns/Hero'
 import Features from '../components/Patterns/Features'
 import FeaturesVariant from '../components/Patterns/FeaturesVariant'
 import Statistics from '../components/Patterns/Statistics'
-import Steps from  '../components/Patterns/Steps'
+import Steps from '../components/Patterns/Steps'
 import Testimonials from '../components/Patterns/Testimonials'
 import Contact from '../components/Patterns/Contact'
 import Footer from '../components/Patterns/Footer'
 
-
 const Test = () => {
-  return (
-    <>
-      <Header />
-      <Hero />
-      <Features />
-      <FeaturesVariant />
-      <Statistics />
-      <Steps />
-      <Testimonials />
-      <Contact />
-      <Footer />
-    </>
-  )
+	return (
+		<>
+			<Header />
+			<Hero />
+			<Features />
+			<FeaturesVariant />
+			<Statistics />
+			<Steps />
+			<Testimonials />
+			<Contact />
+			<Footer />
+		</>
+	)
 }
 
 export default Test
