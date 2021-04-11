@@ -1,7 +1,7 @@
 import React from 'react'
 
 import Brand from './Brand'
-import Nav from '../Primitives/Nav'
+import Menu from './Menu'
 
 import Action from '../Primitives/ActionButton'
 
@@ -22,7 +22,7 @@ const Header = () => {
 		<header className={header}>
 			<div className={container}>
 				<Brand />
-				<Nav />
+				<Menu />
 				<Action />
 			</div>
 		</header>
