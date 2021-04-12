@@ -71,5 +71,4 @@ yarn-error.log
 
 /.vscode
 
-/src/.refs
-/src/animations
+/src/styles/global.css
