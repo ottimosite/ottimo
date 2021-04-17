@@ -6,7 +6,7 @@ import Title from '../Primitives/Title'
 import Logo from '../../assets/Logo/Logo'
 
 const container =
-	'flex title-font md:styles-center md:items-center text-green-100'
+	'flex title-font styles-center items-center md:styles-center md:items-center text-green-100'
 
 const Brand = () => {
 	const data = useStaticQuery(graphql`
@@ -20,7 +20,7 @@ const Brand = () => {
 	`)
 
 	return (
-		<Anchor url="/" className={container}>
+		<Anchor to="/" className={container}>
 			<Logo isDark />
 			<Title title={data.site.siteMetadata.title} />
 		</Anchor>

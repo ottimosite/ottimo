@@ -1,12 +1,21 @@
 import React from 'react'
 import Link from 'gatsby-link'
 
-const Anchor = (props) => {
+const Anchor = ( props ) => {
+	const internal = /^\/(?!\/)/.test(props.to)
+	if (internal) {
+		return (
+			<Link className={props.className} to={props.to}>
+				{props.label}
+				{props.children}
+			</Link>
+		)
+	}
 	return (
-		<Link className={props.className} to={props.url}>
+		<a className={props.className} href={props.to} >
 			{props.label}
 			{props.children}
-		</Link>
+		</a>
 	)
 }
 

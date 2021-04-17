@@ -1,18 +1,23 @@
 import React from 'react'
 
+const contact = 'text-gray-600 body-font relative'
+const bg = 'absolute inset-0 bg-gray-300'
+const formCard = 'container px-5 py-24 mx-auto flex'
+const container = 'lg:w-1/3 md:w-1/2 bg-white rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0 relative z-10 shadow-md'
+
 const Contact = () => {
 	return (
-		<section className="text-gray-600 body-font relative">
-			<div className="absolute inset-0 bg-gray-300">
-				<iframe
+		<div id='contact-section' className={contact}>
+			<div id='contact-bg' className={bg}>
+				{/* <iframe
 					title="map"
 					src="https://maps.google.com/maps?hl=en&amp;q=Southampton+(My%20Business%20Name)&amp;ie=UTF8&amp;t=&amp;z=14&amp;iwloc=B&amp;output=embed"
-				></iframe>
+				></iframe> */}
 			</div>
-			<div className="container px-5 py-24 mx-auto flex">
-				<div className="lg:w-1/3 md:w-1/2 bg-white rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0 relative z-10 shadow-md">
+			<div id='contact-form-card' className={formCard}>
+				<div className={container}>
 					<h2 className="text-gray-900 text-lg mb-1 font-medium title-font">
-						Feedback
+						Get in touch
 					</h2>
 					<p className="leading-relaxed mb-5 text-gray-600">
 						Post-ironic portland shabby chic echo park, banjo fashion axe
@@ -50,7 +55,7 @@ const Contact = () => {
 					</p>
 				</div>
 			</div>
-		</section>
+		</div>
 	)
 }
 

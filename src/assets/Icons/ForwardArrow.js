@@ -6,7 +6,7 @@ import React from 'react'
 
 // ActionIcon
 
-const ActionIcon = () => {
+const ForwardArrow = () => {
 	return (
 		<svg
 			fill="none"
@@ -22,4 +22,4 @@ const ActionIcon = () => {
 	)
 }
 
-export default ActionIcon
+export default ForwardArrow

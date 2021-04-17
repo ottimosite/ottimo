@@ -6,7 +6,7 @@ import { ButtonGroup } from './Button'
 import FastLoading from '../../assets/Illustrations/FastLoading'
 
 const Leading = () => {
-	const container = 'lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-12 md:mb-0 items-center text-center'
+	const container = 'lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center'
 	return (
 		<div className={container}>
 			<Headline />
@@ -37,7 +37,7 @@ const SplashCard = (props) => {
 }
 
 const container =
-	'container mx-auto flex px-5 py-6 md:flex-row flex-col items-center'
+	'container mx-auto flex px-6 py-24 md:flex-row flex-col items-center'
 
 const Card = (props) => {
 	return <div className={container}>{props.children}</div>

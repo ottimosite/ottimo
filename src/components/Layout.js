@@ -8,8 +8,8 @@ const Layout = ({ children }) => {
 	return (
 		<>
 			<Header />
-			<main className="container px-5 py-24 mx-auto">
-				<div classsName="flex flex-col text-center w-full mb-20">
+			<main>
+				<div>
 					{children}
 				</div>
 			</main>

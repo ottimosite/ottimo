@@ -7,7 +7,8 @@ import React from 'react'
 */
 
 //Components
-import Header from '../components/Patterns/Header'
+import Layout from '../components/Layout'
+// import Header from '../components/Patterns/Header'
 import Hero from '../components/Patterns/Hero'
 import Features from '../components/Patterns/Features'
 import FeaturesVariant from '../components/Patterns/FeaturesVariant'
@@ -15,12 +16,11 @@ import Statistics from '../components/Patterns/Statistics'
 import Steps from '../components/Patterns/Steps'
 import Testimonials from '../components/Patterns/Testimonials'
 import Contact from '../components/Patterns/Contact'
-import Footer from '../components/Patterns/Footer'
+// import Footer from '../components/Patterns/Footer'
 
 const Test = () => {
 	return (
-		<>
-			<Header />
+		<Layout>
 			<Hero />
 			<Features />
 			<FeaturesVariant />
@@ -28,8 +28,7 @@ const Test = () => {
 			<Steps />
 			<Testimonials />
 			<Contact />
-			<Footer />
-		</>
+		</Layout>
 	)
 }
 
