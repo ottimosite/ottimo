@@ -1,13 +1,13 @@
 import React from 'react'
 
 import Layout from '../components/Layout'
-// import Seo from '../components/Seo'
-import Hero from '../components/Patterns/Hero'
+import Hero from '../components/Hero'
+import Features from '../components/Features'
 
 const IndexPage = () => (
 	<Layout className="styles-center justify-center">
-		{/* <Seo title="Home" /> */}
 		<Hero />
+		<Features />
 	</Layout>
 )
 

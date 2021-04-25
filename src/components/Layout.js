@@ -1,20 +1,32 @@
-import React from 'react'
+import React, { StrictMode } from 'react'
+import {
+	ChakraProvider,
+	Box,
+	Grid,
+	theme,
+	ColorModeScript,
+} from '@chakra-ui/react'
 import PropTypes from 'prop-types'
 
-import Header from './Patterns/Header'
-import Footer from './Patterns/Footer'
+import Navbar from './Navbar'
+import Footer from './Footer'
 
 const Layout = ({ children }) => {
 	return (
-		<>
-			<Header />
-			<main>
-				<div>
-					{children}
-				</div>
-			</main>
-			<Footer />
-		</>
+		<StrictMode>
+			<ChakraProvider theme={theme}>
+				<Box textAlign="center" fontSize="xl">
+					<Grid>
+						<ColorModeScript />
+						<Navbar />
+						<main>
+							<div>{children}</div>
+						</main>
+						<Footer />
+					</Grid>
+				</Box>s
+			</ChakraProvider>
+		</StrictMode>
 	)
 }
 

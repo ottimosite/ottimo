@@ -72,3 +72,5 @@ yarn-error.log
 /.vscode
 
 /src/styles/global.css
+/src/components/.old
+
