@@ -1,0 +1,442 @@
+{
+  "rootFolder": "c:\\Users\\abadiu\\Downloads\\Ottimo-v1.0.0",
+  "analyzedAt": "2026-09-06T20:30:14.230Z",
+  "rootStructure": [
+    {
+      "name": "dist",
+      "type": "dir"
+    },
+    {
+      "name": "eslint.config.js",
+      "type": "file",
+      "size": 1304,
+      "lines": 16
+    },
+    {
+      "name": "index.html",
+      "type": "file",
+      "size": 543,
+      "lines": 2
+    },
+    {
+      "name": "node_modules",
+      "type": "dir"
+    },
+    {
+      "name": "package-lock.json",
+      "type": "file",
+      "size": 106093,
+      "lines": 4066
+    },
+    {
+      "name": "package.json",
+      "type": "file",
+      "size": 948,
+      "lines": 37
+    },
+    {
+      "name": "public",
+      "type": "dir"
+    },
+    {
+      "name": "README.md",
+      "type": "file",
+      "size": 2986,
+      "lines": 79
+    },
+    {
+      "name": "src",
+      "type": "dir"
+    },
+    {
+      "name": "tsconfig.app.json",
+      "type": "file",
+      "size": 468,
+      "lines": 2
+    },
+    {
+      "name": "tsconfig.json",
+      "type": "file",
+      "size": 91,
+      "lines": 2
+    },
+    {
+      "name": "tsconfig.node.json",
+      "type": "file",
+      "size": 354,
+      "lines": 2
+    },
+    {
+      "name": "vite.config.ts",
+      "type": "file",
+      "size": 129,
+      "lines": 4
+    },
+    {
+      "name": "vitest.config.ts",
+      "type": "file",
+      "size": 199,
+      "lines": 3
+    }
+  ],
+  "rootFileSnippets": {
+    "eslint.config.js": [
+      "import js from '@eslint/js'",
+      "import tsParser from '@typescript-eslint/parser'",
+      "import tsPlugin from '@typescript-eslint/eslint-plugin'",
+      "import reactHooks from 'eslint-plugin-react-hooks'",
+      "import reactRefresh from 'eslint-plugin-react-refresh'",
+      "import { defineConfig } from 'eslint/config'",
+      "const browserGlobals={window:'readonly',document:'readonly',localStorage:'readonly',URL:'readonly',setTimeout:'readonly',console:'readonly',navigator:'readonly',location:'readonly'}",
+      "const workerGlobals={self:'readonly',caches:'readonly',fetch:'readonly'}",
+      "const testGlobals={describe:'readonly',it:'readonly',expect:'readonly',beforeEach:'readonly',afterEach:'readonly',vi:'readonly'}",
+      "export default defineConfig(["
+    ],
+    "index.html": [
+      "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/><meta name=\"theme-color\" content=\"#0b0f14\"/><meta name=\"description\" content=\"Ottimo makes websites faster, more accessible, visible and effective.\"/><link rel=\"manifest\" href=\"/manifest.webmanifest\"/><title>Ottimo — Fast. Accessible. Clear. Useful.</title></head><body><a class=\"skip-link\" href=\"#main\">Skip to content</a><div id=\"root\"></div><script type=\"module\" src=\"/src/main.tsx\"></script></body></html>",
+      ""
+    ],
+    "package-lock.json": [
+      "{",
+      "\"name\": \"ottimo\",",
+      "\"version\": \"1.0.0\",",
+      "\"lockfileVersion\": 3,",
+      "\"requires\": true,",
+      "\"packages\": {",
+      "\"\": {",
+      "\"name\": \"ottimo\",",
+      "\"version\": \"1.0.0\",",
+      "\"dependencies\": {"
+    ],
+    "package.json": [
+      "{",
+      "\"name\": \"ottimo\",",
+      "\"private\": true,",
+      "\"version\": \"1.0.0\",",
+      "\"type\": \"module\",",
+      "\"scripts\": {",
+      "\"dev\": \"vite\",",
+      "\"build\": \"tsc -b && vite build\",",
+      "\"preview\": \"vite preview\",",
+      "\"test\": \"vitest run\","
+    ],
+    "README.md": [
+      "# Ottimo",
+      "",
+      "Ottimo is a performance-first React SaaS-style demo platform for web performance, technical SEO, accessibility, usability and AI-readiness.",
+      "",
+      "## Run locally",
+      "",
+      "```bash",
+      "npm install",
+      "npm run dev",
+      "```"
+    ],
+    "tsconfig.app.json": [
+      "{\"compilerOptions\":{\"tsBuildInfoFile\":\"./node_modules/.tmp/tsconfig.app.tsbuildinfo\",\"target\":\"ES2022\",\"useDefineForClassFields\":true,\"lib\":[\"ES2022\",\"DOM\",\"DOM.Iterable\"],\"allowJs\":false,\"skipLibCheck\":true,\"esModuleInterop\":true,\"allowSyntheticDefaultImports\":true,\"strict\":true,\"forceConsistentCasingInFileNames\":true,\"module\":\"ESNext\",\"moduleResolution\":\"Bundler\",\"resolveJsonModule\":true,\"isolatedModules\":true,\"noEmit\":true,\"jsx\":\"react-jsx\"},\"include\":[\"src\"]}",
+      ""
+    ],
+    "tsconfig.json": [
+      "{\"files\":[],\"references\":[{\"path\":\"./tsconfig.app.json\"},{\"path\":\"./tsconfig.node.json\"}]}",
+      ""
+    ],
+    "tsconfig.node.json": [
+      "{\"compilerOptions\":{\"tsBuildInfoFile\":\"./node_modules/.tmp/tsconfig.node.tsbuildinfo\",\"target\":\"ES2023\",\"lib\":[\"ES2023\"],\"module\":\"ESNext\",\"skipLibCheck\":true,\"moduleResolution\":\"Bundler\",\"allowImportingTsExtensions\":true,\"verbatimModuleSyntax\":true,\"moduleDetection\":\"force\",\"noEmit\":true,\"strict\":true},\"include\":[\"vite.config.ts\",\"eslint.config.js\"]}",
+      ""
+    ],
+    "vite.config.ts": [
+      "import { defineConfig } from 'vite'",
+      "import react from '@vitejs/plugin-react'",
+      "export default defineConfig({ plugins: [react()] })",
+      ""
+    ],
+    "vitest.config.ts": [
+      "import { defineConfig } from 'vitest/config'; import react from '@vitejs/plugin-react'",
+      "export default defineConfig({plugins:[react()],test:{environment:'jsdom',setupFiles:['./src/tests/setup.ts']}})",
+      ""
+    ]
+  },
+  "importantFolders": [
+    {
+      "path": "public",
+      "category": "assets",
+      "fileCount": 2,
+      "primaryLanguage": "JavaScript"
+    },
+    {
+      "path": "src\\components",
+      "category": "frontend",
+      "fileCount": 2,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "src\\features\\websites",
+      "category": "frontend",
+      "fileCount": 1,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "src\\lib",
+      "category": "core",
+      "fileCount": 2,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "src\\services",
+      "category": "backend",
+      "fileCount": 4,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "path": "src\\tests",
+      "category": "tests",
+      "fileCount": 3,
+      "primaryLanguage": "TypeScript"
+    }
+  ],
+  "readmeParagraphs": {
+    "root": "# Ottimo"
+  },
+  "totals": {
+    "numFiles": 47,
+    "numDirs": 19,
+    "totalSizeBytes": 226427,
+    "totalLinesOfCode": 572
+  },
+  "fileCategories": {
+    "other": 12,
+    "source": 29,
+    "config": 5,
+    "documentation": 1
+  },
+  "linesOfCodePerLanguage": {
+    "JavaScript": 20,
+    "TypeScript": 552
+  },
+  "filesPerLanguage": {
+    "JavaScript": 2,
+    "TypeScript": 27
+  },
+  "projectTypes": [
+    "JavaScript/Node.js"
+  ],
+  "frameworks": [
+    "React",
+    "Vite"
+  ],
+  "entryPoints": [],
+  "ciCdTools": [],
+  "packageManagers": [
+    "npm/yarn"
+  ],
+  "topLevelDirectories": [
+    {
+      "name": "src",
+      "numFiles": 34,
+      "totalLoc": 545,
+      "dominantLanguage": "TypeScript"
+    },
+    {
+      "name": "public",
+      "numFiles": 2,
+      "totalLoc": 4,
+      "dominantLanguage": "JavaScript"
+    }
+  ],
+  "detailedDirectories": [
+    {
+      "path": "src",
+      "name": "src",
+      "level": 1,
+      "numFiles": 34,
+      "totalLoc": 545,
+      "dominantLanguage": "TypeScript",
+      "category": "General",
+      "description": "General module with 34 files (TypeScript)",
+      "subdirectories": [
+        {
+          "path": "src\\features",
+          "name": "features",
+          "level": 2,
+          "numFiles": 6,
+          "totalLoc": 124,
+          "dominantLanguage": "TypeScript",
+          "category": "General",
+          "description": "General module with 6 files (TypeScript)",
+          "subdirectories": [
+            {
+              "path": "src\\features\\platform",
+              "name": "platform",
+              "level": 3,
+              "numFiles": 1,
+              "totalLoc": 50,
+              "dominantLanguage": "TypeScript",
+              "category": "General",
+              "description": "General module with 1 files (TypeScript)",
+              "subdirectories": []
+            },
+            {
+              "path": "src\\features\\audits",
+              "name": "audits",
+              "level": 3,
+              "numFiles": 2,
+              "totalLoc": 42,
+              "dominantLanguage": "TypeScript",
+              "category": "General",
+              "description": "General module with 2 files (TypeScript)",
+              "subdirectories": []
+            },
+            {
+              "path": "src\\features\\recommendations",
+              "name": "recommendations",
+              "level": 3,
+              "numFiles": 1,
+              "totalLoc": 26,
+              "dominantLanguage": "TypeScript",
+              "category": "General",
+              "description": "General module with 1 files (TypeScript)",
+              "subdirectories": []
+            },
+            {
+              "path": "src\\features\\dashboard",
+              "name": "dashboard",
+              "level": 3,
+              "numFiles": 1,
+              "totalLoc": 3,
+              "dominantLanguage": "TypeScript",
+              "category": "General",
+              "description": "General module with 1 files (TypeScript)",
+              "subdirectories": []
+            },
+            {
+              "path": "src\\features\\websites",
+              "name": "websites",
+              "level": 3,
+              "numFiles": 1,
+              "totalLoc": 3,
+              "dominantLanguage": "TypeScript",
+              "category": "Web/UI",
+              "description": "Web/UI module with 1 files (TypeScript)",
+              "subdirectories": []
+            }
+          ]
+        },
+        {
+          "path": "src\\pages",
+          "name": "pages",
+          "level": 2,
+          "numFiles": 2,
+          "totalLoc": 85,
+          "dominantLanguage": "TypeScript",
+          "category": "General",
+          "description": "General module with 2 files (TypeScript)",
+          "subdirectories": []
+        },
+        {
+          "path": "src\\data",
+          "name": "data",
+          "level": 2,
+          "numFiles": 2,
+          "totalLoc": 77,
+          "dominantLanguage": "TypeScript",
+          "category": "Data",
+          "description": "Data module with 2 files (TypeScript)",
+          "subdirectories": [
+            {
+              "path": "src\\data\\fixtures",
+              "name": "fixtures",
+              "level": 3,
+              "numFiles": 1,
+              "totalLoc": 50,
+              "dominantLanguage": "TypeScript",
+              "category": "General",
+              "description": "General module with 1 files (TypeScript)",
+              "subdirectories": []
+            }
+          ]
+        },
+        {
+          "path": "src\\components",
+          "name": "components",
+          "level": 2,
+          "numFiles": 2,
+          "totalLoc": 34,
+          "dominantLanguage": "TypeScript",
+          "category": "General",
+          "description": "General module with 2 files (TypeScript)",
+          "subdirectories": []
+        },
+        {
+          "path": "src\\lib",
+          "name": "lib",
+          "level": 2,
+          "numFiles": 2,
+          "totalLoc": 7,
+          "dominantLanguage": "TypeScript",
+          "category": "Library",
+          "description": "Library module with 2 files (TypeScript)",
+          "subdirectories": []
+        }
+      ]
+    },
+    {
+      "path": "public",
+      "name": "public",
+      "level": 1,
+      "numFiles": 2,
+      "totalLoc": 4,
+      "dominantLanguage": "JavaScript",
+      "category": "General",
+      "description": "General module with 2 files (JavaScript)",
+      "subdirectories": []
+    }
+  ],
+  "architecturalInsights": {
+    "coreApplications": [],
+    "entryPointDetails": [],
+    "serviceArchitecture": {
+      "microservices": [],
+      "monoliths": [],
+      "libraries": []
+    },
+    "layeredArchitecture": {
+      "presentation": [],
+      "business": [],
+      "data": [],
+      "infrastructure": []
+    }
+  },
+  "largeFiles": [],
+  "dependencies": {
+    "production": [
+      "react",
+      "react-dom",
+      "react-router-dom"
+    ],
+    "development": [
+      "@eslint/js",
+      "@testing-library/jest-dom",
+      "@testing-library/react",
+      "@testing-library/user-event",
+      "@types/react",
+      "@types/react-dom",
+      "@typescript-eslint/eslint-plugin",
+      "@typescript-eslint/parser",
+      "@vitejs/plugin-react",
+      "eslint",
+      "eslint-plugin-react-hooks",
+      "eslint-plugin-react-refresh",
+      "jsdom",
+      "typescript",
+      "vite",
+      "vitest"
+    ],
+    "total": 19
+  },
+  "complexity": {
+    "averageFileSize": 12.170212765957446,
+    "maxFileSize": 0,
+    "nestedDepth": 0,
+    "estimatedComplexity": "low"
+  }
+}

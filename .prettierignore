@@ -1,8 +1,0 @@
-.cache
-package.json
-package-lock.json
-public
-src/.refs
-src/styles/global.css
-tw.css
-tailwind.config.js
