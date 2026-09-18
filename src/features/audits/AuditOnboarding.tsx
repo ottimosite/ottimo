@@ -13,13 +13,11 @@ const goalOptions: { id: Goal; label: string; description: string }[] = [
   { id: 'technical', label: 'Technical health', description: 'Links, resources, redirects and site integrity.' },
   { id: 'everything', label: 'Everything', description: 'Run the broadest audit across every available domain.' },
 ]
-
 export function AuditOnboarding() {
   const location = useLocation(), navigate = useNavigate()
   const queryUrl = new URLSearchParams(location.search).get('url') ?? ''
   const [step, setStep] = useState<1 | 2>(1), [url, setUrl] = useState(queryUrl), [goals, setGoals] = useState<Goal[]>(['everything']), [error, setError] = useState('')
   const selectedCategories = useMemo<Category[] | undefined>(() => goals.includes('everything') ? undefined : goals as Category[], [goals])
-
   const toggleGoal = (goal: Goal) => {
     if (goal === 'everything') return setGoals(['everything'])
     setGoals(current => {
@@ -28,21 +26,16 @@ export function AuditOnboarding() {
       return next.length ? next : ['everything']
     })
   }
-
   const continueToGoals = () => {
     const normalised = normaliseUrl(url)
     if (!isValidUrl(normalised)) return setError('Enter a valid website address, such as https://example.com.')
-    setError('')
-    setUrl(normalised)
-    setStep(2)
+    setError(''); setUrl(normalised); setStep(2)
   }
-
   const startAudit = () => {
     const params = new URLSearchParams({ url })
     if (selectedCategories) params.set('categories', selectedCategories.join(','))
     navigate(`/app/audits/new/run?${params.toString()}`)
   }
-
   return <div className="onboarding">
     <div className="onboarding-intro"><span className="eyebrow">New audit</span><p className="onboarding-step">Step {step} of 2</p>
       <h1>{step === 1 ? 'Start with your website.' : 'What are you trying to improve?'}</h1>

@@ -49,3 +49,25 @@
     padding-inline: max(4vw, calc((100vw - 1560px) / 2));
   }
 }
+
+
+/* The public landing page is a full-width canvas. Sections own their backgrounds;
+   inner layouts provide the readable content width. */
+.public-home.lead-home {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.public-home.lead-home > section {
+  box-sizing: border-box;
+}
+
+@media (min-width: 1440px) {
+  .public-home.lead-home {
+    max-width: none;
+    padding-inline: 0;
+  }
+}

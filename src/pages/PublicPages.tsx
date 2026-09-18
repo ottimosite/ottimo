@@ -28,7 +28,6 @@ const coverage = [
 function LeadCapture() {
   const navigate = useNavigate()
   const [url, setUrl] = useState('')
-  const [email, setEmail] = useState('')
   const [error, setError] = useState('')
 
   const submit = (event: FormEvent) => {
@@ -37,8 +36,7 @@ function LeadCapture() {
       const normalised = url.startsWith('http') ? url : `https://${url}`
       const parsed = new URL(normalised)
       if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('Enter a valid website address.')
-      if (!email.includes('@')) throw new Error('Add a work email so we know where to send your first action plan.')
-      navigate(`/app/audits/new?url=${encodeURIComponent(normalised)}&email=${encodeURIComponent(email)}`)
+      navigate(`/app/audits/new?url=${encodeURIComponent(normalised)}`)
     } catch (submissionError) {
       setError(submissionError instanceof Error ? submissionError.message : 'Enter a valid website address.')
     }
@@ -48,39 +46,45 @@ function LeadCapture() {
     <div className="lead-form-heading">
       <span className="eyebrow">Start with your website</span>
       <h2>Get your first useful answer in minutes.</h2>
-      <p>No sales call. No API key. Just a focused starting point for your next improvement.</p>
+      <p>No sales call. No account required to start. Put in your URL and see what Ottimo can actually find.</p>
     </div>
     <div className="lead-fields">
       <label>Website URL<input required value={url} onChange={event => setUrl(event.target.value)} placeholder="yourbusiness.co.uk" /></label>
-      <label>Work email<input required type="email" value={email} onChange={event => setEmail(event.target.value)} placeholder="you@yourbusiness.co.uk" /></label>
-      <button className="btn btn-primary" type="submit">Start my free audit <span aria-hidden="true">↗</span></button>
+      <button className="btn btn-primary" type="submit">Analyse my website <span aria-hidden="true">↗</span></button>
     </div>
     {error && <p className="error" role="alert">{error}</p>}
-    <small>We use your details only to set up this local demo journey.</small>
+    <small>Start with a URL. You can choose what matters after Ottimo has discovered the site.</small>
   </form>
 }
 
 export function Home() {
   return <div className="public-home lead-home">
     <section className="hero lead-hero">
-      <div className="hero-kicker">A clearer read on what your website is doing for the business.</div>
+      <div className="hero-kicker">Website performance, visibility and accessibility — understood as one experience.</div>
       <div className="lead-hero-grid">
         <div>
-          <h1>Your website is already part of your sales team.</h1>
-          <p className="hero-copy">Ottimo shows you where it is helping customers, where it is losing them and what to fix first. Faster pages, clearer journeys and more trust, explained without the technical fog.</p>
+          <h1>Know what your website is doing. Know what to fix first.</h1>
+          <p className="hero-copy">Ottimo turns a website into a clear, evidence-led improvement plan. Discover the issues affecting speed, accessibility, search and usability — then understand why they matter and what to do next.</p>
           <div className="hero-actions">
-            <Link className="btn btn-primary" to="#start">Start a free audit <span aria-hidden="true">↗</span></Link>
-            <Link className="text-link" to="#coverage">See what we measure ↓</Link>
+            <Link className="btn btn-primary" to="/app/audits/new">Analyse my website <span aria-hidden="true">↗</span></Link>
+            <a className="text-link" href="#coverage">See what we measure ↓</a>
           </div>
-          <div className="ethos"><strong>More found.</strong><strong>More understood.</strong><strong>More acted on.</strong></div>
+          <div className="ethos"><strong>Discover.</strong><strong>Understand.</strong><strong>Improve.</strong></div>
         </div>
         <div className="audit-preview" aria-label="Example audit summary">
           <div className="audit-preview-top"><span className="eyebrow">Ottimo audit / example</span><span className="preview-status">Ready to act</span></div>
-          <div className="preview-score"><strong>78</strong><span>overall site health</span></div>
+          <div className="preview-score"><strong>78</strong><span>example audit score</span></div>
           <div className="preview-lines"><div><span>Performance</span><b>76</b></div><div><span>Accessibility</span><b>78</b></div><div><span>Technical SEO</span><b>82</b></div></div>
-          <p className="preview-note">Six signals, one prioritised starting point.</p>
+          <p className="preview-note">Example data only — real audits use evidence from the site being analysed.</p>
         </div>
       </div>
+    </section>
+
+    <section className="proof-strip" aria-label="What Ottimo helps teams understand">
+      <div><strong>Performance</strong><span>Where time and weight go</span></div>
+      <div><strong>Visibility</strong><span>How search systems find you</span></div>
+      <div><strong>Accessibility</strong><span>Who can use the experience</span></div>
+      <div><strong>Usability</strong><span>Where journeys create friction</span></div>
     </section>
 
     <section className="education-strip" id="learn">
@@ -92,14 +96,33 @@ export function Home() {
       </div>
     </section>
 
+    <section className="method-section">
+      <div className="method-lead"><span className="eyebrow">How Ottimo works</span><h2>Measure first. Explain clearly. Improve progressively.</h2><p>Ottimo is built around evidence rather than theatre. It discovers the site, records what it can actually observe, then turns those observations into useful decisions.</p></div>
+      <ol className="method-steps">
+        <li><span>01</span><div><h3>Discover</h3><p>Map the site, its pages, technical signals and public structure before drawing conclusions.</p></div></li>
+        <li><span>02</span><div><h3>Understand</h3><p>Connect evidence to impact so a business owner and a developer can see the same problem from different angles.</p></div></li>
+        <li><span>03</span><div><h3>Act</h3><p>Prioritise the work, explain the fix and make the next improvement obvious.</p></div></li>
+      </ol>
+    </section>
+
     <section className="coverage-section" id="coverage">
-      <div className="section-intro"><span className="eyebrow">One platform, six useful lenses</span><h2>Enough technical depth to act. Enough clarity to know why.</h2><p>Ottimo turns a website review into a practical queue of improvements for owners, marketers and developers.</p></div>
+      <div className="section-intro"><span className="eyebrow">What Ottimo looks at</span><h2>Six lenses. One view of the digital experience.</h2><p>Go beyond a single performance score. Ottimo connects technical evidence with the customer journey, so teams can decide what deserves attention first.</p></div>
       <div className="coverage-grid">{coverage.map(([title, body], index) => <article className="coverage-item" key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{body}</p></article>)}</div>
     </section>
 
     <section className="case-study-lead">
       <div><span className="eyebrow">Demo evidence / Kingdom Coffee</span><h2>A score is only useful when it points to the next decision.</h2><p>Our saved example looks at a coffee supplier through the same customer and technical lens: delivery promises, category paths, accessibility, page weight and structured business facts.</p><Link className="text-link" to="/app/audits/audit-kingdom-coffee">Explore the example audit →</Link></div>
       <div className="case-score"><span>Overall health</span><strong>{kingdomCoffeeAudit.score}</strong><small>six categories reviewed</small><div className="case-bars">{kingdomCoffeeAudit.scores.slice(0, 4).map(score => <div key={score.category}><span>{score.category}</span><i style={{ width: `${score.score}%` }} /></div>)}</div></div>
+    </section>
+
+    <section className="principles-section">
+      <div><span className="eyebrow">The Ottimo standard</span><h2>We would rather tell you “unknown” than give you a made-up number.</h2></div>
+      <div className="principles-grid">
+        <article><strong>Fast</strong><p>The product itself should respect your time, with focused interfaces and lightweight delivery.</p></article>
+        <article><strong>Accessible</strong><p>Accessibility is part of the engineering, not a final checkbox after the design is finished.</p></article>
+        <article><strong>Clear</strong><p>Every finding should explain what happened, why it matters and what can be done about it.</p></article>
+        <article><strong>Useful</strong><p>Audit output should lead to action, not another dashboard nobody knows how to use.</p></article>
+      </div>
     </section>
 
     <section className="lead-start"><LeadCapture /></section>
