@@ -5,7 +5,7 @@ import { isValidUrl, normaliseUrl } from '../../lib/validation'
 import type { Category } from '../../types/domain'
 
 type Goal = Exclude<Category, 'ai'> | 'everything'
-const goals: { id: Goal; label: string; description: string }[] = [
+const goalOptions: { id: Goal; label: string; description: string }[] = [
   { id: 'performance', label: 'Website speed', description: 'Loading, responsiveness and Core Web Vitals.' },
   { id: 'seo', label: 'Search visibility', description: 'Crawlability, metadata, structure and indexability.' },
   { id: 'accessibility', label: 'Accessibility', description: 'Inclusive structure, navigation and content.' },
@@ -48,11 +48,11 @@ export function AuditOnboarding() {
       <div className="onboarding-actions"><Button onClick={continueToGoals}>Continue</Button></div>
     </Card> : <Card className="onboarding-card">
       <div className="onboarding-site"><span className="onboarding-site-mark" aria-hidden="true">↗</span><div><small>Website</small><strong>{url}</strong></div><button type="button" className="btn btn-ghost" onClick={() => setStep(1)}>Change</button></div>
-      <fieldset className="goal-grid"><legend className="sr-only">Audit priorities</legend>{goals.map(goal => {
+      <fieldset className="goal-grid"><legend className="sr-only">Audit priorities</legend>{goalOptions.map(goal => {
         const selected = goals.includes(goal.id)
         return <button type="button" key={goal.id} className={selected ? 'goal-card selected' : 'goal-card'} aria-pressed={selected} onClick={() => toggleGoal(goal.id)}><span className="goal-check" aria-hidden="true">{selected ? '✓' : ''}</span><strong>{goal.label}</strong><span>{goal.description}</span></button>
       })}</fieldset>
-      <div className="onboarding-summary" aria-live="polite"><strong>{goals.includes('everything') ? 'Broad audit selected' : \`\${goals.length} audit \${goals.length === 1 ? 'area' : 'areas'} selected\`}</strong><span>{goals.includes('everything') ? 'Performance, accessibility, SEO, usability and technical health.' : goals.map(id => goals.find(goal => goal.id === id)?.label).filter(Boolean).join(' · ')}</span></div>
+      <div className="onboarding-summary" aria-live="polite"><strong>{goals.includes('everything') ? 'Broad audit selected' : \`\${goals.length} audit \${goals.length === 1 ? 'area' : 'areas'} selected\`}</strong><span>{goals.includes('everything') ? 'Performance, accessibility, SEO, usability and technical health.' : goals.map(id => goalOptions.find(goal => goal.id === id)?.label).filter(Boolean).join(' · ')}</span></div>
       <div className="onboarding-actions"><Button variant="secondary" onClick={() => setStep(1)}>Back</Button><Button onClick={startAudit}>Start discovery</Button></div>
     </Card>}
   </div>
