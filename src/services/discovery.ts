@@ -70,8 +70,8 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
     if (robotsFound) {
       try {
         const robotsText = await (await fetch(robotsUrl, { signal: context.signal })).text()
-        for (const line of robotsText.split(/\\r?\\n/)) {
-          const match = line.match(/^sitemap:\\s*(\\S+)/i)
+        for (const line of robotsText.split(/\r?\n/)) {
+          const match = line.match(/^sitemap:\s*(\S+)/i)
           if (match) sitemapCandidates.push(match[1])
         }
       } catch { /* robots was already discovered; sitemap hints are optional */ }
@@ -87,7 +87,7 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
         sitemapStatus = sitemap.status
         if (!sitemap.ok) continue
         const text = await sitemap.text()
-        const urls = [...text.matchAll(/<loc>\\s*([^<]+)\\s*<\\/loc>/gi)].map(match => match[1].trim())
+        const urls = [...text.matchAll(/<loc>\s*([^<]+)\s*<\/loc>/gi)].map(match => match[1].trim())
         sitemapFound = true; sitemapUrl = candidate; pageCount = urls.length
         report({ step: 'sitemap', label: 'Sitemap discovered', status: 'complete', detail: pageCount ? `${pageCount} URLs listed` : 'Sitemap available' })
         break
