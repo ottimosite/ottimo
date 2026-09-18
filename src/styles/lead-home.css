@@ -43,7 +43,7 @@
 .lead-form-heading{max-width:620px}
 .lead-form-heading h2{font:normal clamp(2.3rem,4vw,4rem)/.98 Georgia,serif;letter-spacing:-.05em;color:var(--forest);margin:16px 0}
 .lead-form-heading p{max-width:520px;color:var(--ink-soft);font-size:1.05rem}
-.lead-fields{display:grid;grid-template-columns:1fr 1fr auto;align-items:end;gap:16px;margin-top:34px}
+.lead-fields{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:16px;margin-top:34px;max-width:780px}
 .lead-fields label{display:grid;gap:7px;color:var(--forest);font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em}
 .lead-fields input{width:100%;border:1px solid rgba(18,61,46,.3);border-radius:9px;padding:14px 15px;background:#fff;color:var(--ink);outline:none;text-transform:none;letter-spacing:0}
 .lead-fields input:focus{border-color:var(--forest);box-shadow:0 0 0 3px rgba(18,61,46,.15)}
@@ -56,8 +56,8 @@
   .education-strip{grid-template-columns:1fr;gap:35px}
   .coverage-grid{grid-template-columns:repeat(2,1fr)}
   .case-score{max-width:520px;width:100%;margin:0 auto}
-  .lead-fields{grid-template-columns:1fr 1fr}
-  .lead-fields .btn{grid-column:1 / -1;justify-self:start}
+  .lead-fields{grid-template-columns:1fr auto}
+  .lead-fields .btn{grid-column:auto;justify-self:stretch}
 }
 @media(max-width:600px){
   .lead-hero{padding-bottom:70px}
