@@ -56,11 +56,13 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
     const robotsUrl = new URL('/robots.txt', finalUrl).href
     let robotsFound = false
     let robotsStatus: number | undefined
+    let robotsText = ''
     report({ step: 'robots', label: 'Looking for robots.txt', status: 'running' })
     try {
       const robots = await fetch(robotsUrl, { signal: context.signal })
       robotsStatus = robots.status
       robotsFound = robots.ok
+      if (robotsFound) robotsText = await robots.text()
       report({ step: 'robots', label: robotsFound ? 'robots.txt discovered' : 'robots.txt not found', status: robotsFound ? 'complete' : 'unavailable', detail: `HTTP ${robots.status}` })
     } catch {
       report({ step: 'robots', label: 'robots.txt unavailable', status: 'unavailable', detail: 'Browser access was blocked or unavailable.' })
@@ -68,18 +70,17 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
 
     const sitemapCandidates = [new URL('/sitemap.xml', finalUrl).href]
     if (robotsFound) {
-      try {
-        const robotsText = await (await fetch(robotsUrl, { signal: context.signal })).text()
-        for (const line of robotsText.split(/\r?\n/)) {
+      for (const line of robotsText.split(/\r?\n/)) {
           const match = line.match(/^sitemap:\s*(\S+)/i)
           if (match) sitemapCandidates.push(match[1])
         }
-      } catch { /* robots was already discovered; sitemap hints are optional */ }
+      }
     }
     let sitemapFound = false
     let sitemapStatus: number | undefined
     let sitemapUrl: string | undefined
     let pageCount: number | undefined
+    let sitemapPages: string[] = []
     report({ step: 'sitemap', label: 'Looking for sitemap', status: 'running' })
     for (const candidate of [...new Set(sitemapCandidates)]) {
       try {
@@ -87,9 +88,11 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
         sitemapStatus = sitemap.status
         if (!sitemap.ok) continue
         const text = await sitemap.text()
-        const urls = [...text.matchAll(/<loc(?:\s[^>]*)?>([\s\S]*?)<\/loc>/gi)].map(match => match[1].trim())
+        const urls = [...text.matchAll(/<loc(?:\s[^>]*)?>([\s\S]*?)<\/loc>/gi)].map(match => match[1].trim()).filter(Boolean)
+        if (!urls.length) continue
+        sitemapPages = urls
         sitemapFound = true; sitemapUrl = candidate; pageCount = urls.length
-        report({ step: 'sitemap', label: 'Sitemap discovered', status: 'complete', detail: pageCount ? `${pageCount} URLs listed` : 'Sitemap available' })
+        report({ step: 'sitemap', label: 'Sitemap discovered', status: 'complete', detail: `${pageCount} URLs listed` })
         break
       } catch { /* try the next candidate */ }
     }
@@ -98,7 +101,9 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
     const links = [...document.querySelectorAll<HTMLAnchorElement>('a[href]')]
       .map(link => { try { return new URL(link.href, finalUrl).href } catch { return '' } })
       .filter(href => href && sameOrigin(href, finalUrl))
-    const pages = [...new Set([finalUrl, ...links])].slice(0, 50)
+    const pages = [...new Set([finalUrl, ...sitemapPages, ...links])]
+      .filter(href => sameOrigin(href, finalUrl))
+      .slice(0, 50)
     report({ step: 'pages', label: 'Pages discovered', status: 'complete', detail: `${pages.length} same-origin URLs from the homepage` })
 
     const technology = extractTechnology(document, html)
