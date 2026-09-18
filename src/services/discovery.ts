@@ -56,11 +56,13 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
     const robotsUrl = new URL('/robots.txt', finalUrl).href
     let robotsFound = false
     let robotsStatus: number | undefined
+    let robotsText = ''
     report({ step: 'robots', label: 'Looking for robots.txt', status: 'running' })
     try {
       const robots = await fetch(robotsUrl, { signal: context.signal })
       robotsStatus = robots.status
       robotsFound = robots.ok
+      if (robotsFound) robotsText = await robots.text()
       report({ step: 'robots', label: robotsFound ? 'robots.txt discovered' : 'robots.txt not found', status: robotsFound ? 'complete' : 'unavailable', detail: `HTTP ${robots.status}` })
     } catch {
       report({ step: 'robots', label: 'robots.txt unavailable', status: 'unavailable', detail: 'Browser access was blocked or unavailable.' })
@@ -68,13 +70,11 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
 
     const sitemapCandidates = [new URL('/sitemap.xml', finalUrl).href]
     if (robotsFound) {
-      try {
-        const robotsText = await (await fetch(robotsUrl, { signal: context.signal })).text()
-        for (const line of robotsText.split(/\r?\n/)) {
+      for (const line of robotsText.split(/\r?\n/)) {
           const match = line.match(/^sitemap:\s*(\S+)/i)
           if (match) sitemapCandidates.push(match[1])
         }
-      } catch { /* robots was already discovered; sitemap hints are optional */ }
+      }
     }
     let sitemapFound = false
     let sitemapStatus: number | undefined
@@ -87,9 +87,10 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
         sitemapStatus = sitemap.status
         if (!sitemap.ok) continue
         const text = await sitemap.text()
-        const urls = [...text.matchAll(/<loc(?:\s[^>]*)?>([\s\S]*?)<\/loc>/gi)].map(match => match[1].trim())
+        const urls = [...text.matchAll(/<loc(?:\s[^>]*)?>([\s\S]*?)<\/loc>/gi)].map(match => match[1].trim()).filter(Boolean)
+        if (!urls.length) continue
         sitemapFound = true; sitemapUrl = candidate; pageCount = urls.length
-        report({ step: 'sitemap', label: 'Sitemap discovered', status: 'complete', detail: pageCount ? `${pageCount} URLs listed` : 'Sitemap available' })
+        report({ step: 'sitemap', label: 'Sitemap discovered', status: 'complete', detail: `${pageCount} URLs listed` })
         break
       } catch { /* try the next candidate */ }
     }
