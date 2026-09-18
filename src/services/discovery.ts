@@ -87,7 +87,7 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
         sitemapStatus = sitemap.status
         if (!sitemap.ok) continue
         const text = await sitemap.text()
-        const urls = [...text.matchAll(/<loc>\s*([^<]+)\s*<\/loc>/gi)].map(match => match[1].trim())
+        const urls = [...text.matchAll(/<loc>([^<]+)<\/loc>/gi)].map(match => match[1].trim())
         sitemapFound = true; sitemapUrl = candidate; pageCount = urls.length
         report({ step: 'sitemap', label: 'Sitemap discovered', status: 'complete', detail: pageCount ? `${pageCount} URLs listed` : 'Sitemap available' })
         break
