@@ -1,0 +1,8 @@
+:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+@media (forced-colors: active){
+  :focus-visible{outline:2px solid CanvasText;outline-offset:3px}
+}
