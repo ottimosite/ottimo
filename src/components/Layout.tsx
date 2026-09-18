@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
+import type { RefObject } from 'react'
 import { Link, NavLink, Outlet } from 'react-router-dom'
 
 const publicLinks = [['/services', 'Services'], ['/performance', 'Performance'], ['/seo', 'SEO'], ['/accessibility', 'Accessibility'], ['/ai', 'AI'], ['/methodology', 'Methodology'], ['/pricing', 'Pricing'], ['/concepts', 'Concept lab']]
 const appLinks = [['/app/dashboard', 'Overview'], ['/app/websites', 'Websites'], ['/app/audits', 'Audits'], ['/app/performance', 'Performance'], ['/app/accessibility', 'Accessibility'], ['/app/seo', 'SEO'], ['/app/usability', 'Usability'], ['/app/technical', 'Technical'], ['/app/ai', 'AI readiness'], ['/app/recommendations', 'Recommendations'], ['/app/reports', 'Reports'], ['/app/history', 'History'], ['/app/settings', 'Settings']]
 
-function MenuToggle({ open, controls, onClick, buttonRef }: { open: boolean; controls: string; onClick: () => void; buttonRef?: React.RefObject<HTMLButtonElement | null> }) {
+function MenuToggle({ open, controls, onClick, buttonRef }: { open: boolean; controls: string; onClick: () => void; buttonRef?: RefObject<HTMLButtonElement | null> }) {
   return <button ref={buttonRef} className="menu-toggle" type="button" aria-expanded={open} aria-controls={controls} aria-label={open ? 'Close navigation' : 'Open navigation'} onClick={onClick}>
     <span aria-hidden="true" /><span aria-hidden="true" /><span aria-hidden="true" />
   </button>
