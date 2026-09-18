@@ -8,6 +8,7 @@ import { AuditOverview } from './features/audits/AuditOverview'
 import { Recommendations } from './features/recommendations/Recommendations'
 import { CategoryPage, HistoryPage, ReportsPage, SettingsPage, WebsiteDetail } from './features/platform/PlatformPages'
 import { ConceptPage, ConceptsIndex } from './pages/ConceptPages'
+import { AuditOnboarding } from './features/audits/AuditOnboarding'
 export default function App() {
 	return <Routes>
 		<Route element={<PublicLayout />}>
@@ -35,7 +36,8 @@ export default function App() {
 			<Route path="websites" element={<Websites />} />
 			<Route path="websites/:id" element={<WebsiteDetail />} />
 			<Route path="audits" element={<AuditList />} />
-			<Route path="audits/new" element={<NewAudit />} />
+			<Route path="audits/new" element={<AuditOnboarding />} />
+			<Route path="audits/new/run" element={<NewAudit />} />
 			<Route path="audits/:id" element={<AuditOverview />} />
 			<Route path="performance" element={<CategoryPage category="performance" />} />
 			<Route path="accessibility" element={<CategoryPage category="accessibility" />} />
