@@ -16,7 +16,7 @@ const hasAccessibleName = (element: Element) => {
 }
 
 export function checkDocumentAccessibility(root: Document | Element): AccessibilityCheck[] {
-  const documentRoot = root instanceof Document ? root : root.ownerDocument
+  const documentRoot = root.nodeType === 9 ? root as Document : root.ownerDocument
   const checks: AccessibilityCheck[] = []
   const html = documentRoot?.documentElement
 
