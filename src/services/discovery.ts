@@ -80,6 +80,7 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
     let sitemapStatus: number | undefined
     let sitemapUrl: string | undefined
     let pageCount: number | undefined
+    let sitemapPages: string[] = []
     report({ step: 'sitemap', label: 'Looking for sitemap', status: 'running' })
     for (const candidate of [...new Set(sitemapCandidates)]) {
       try {
@@ -89,6 +90,7 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
         const text = await sitemap.text()
         const urls = [...text.matchAll(/<loc(?:\s[^>]*)?>([\s\S]*?)<\/loc>/gi)].map(match => match[1].trim()).filter(Boolean)
         if (!urls.length) continue
+        sitemapPages = urls
         sitemapFound = true; sitemapUrl = candidate; pageCount = urls.length
         report({ step: 'sitemap', label: 'Sitemap discovered', status: 'complete', detail: `${pageCount} URLs listed` })
         break
@@ -99,7 +101,9 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
     const links = [...document.querySelectorAll<HTMLAnchorElement>('a[href]')]
       .map(link => { try { return new URL(link.href, finalUrl).href } catch { return '' } })
       .filter(href => href && sameOrigin(href, finalUrl))
-    const pages = [...new Set([finalUrl, ...links])].slice(0, 50)
+    const pages = [...new Set([finalUrl, ...sitemapPages, ...links])]
+      .filter(href => sameOrigin(href, finalUrl))
+      .slice(0, 50)
     report({ step: 'pages', label: 'Pages discovered', status: 'complete', detail: `${pages.length} same-origin URLs from the homepage` })
 
     const technology = extractTechnology(document, html)
