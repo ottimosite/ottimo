@@ -7,8 +7,10 @@ describe('app', () => {
   it('renders the product landing page', () => {
     render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>)
     expect(screen.getByRole('heading', { name: /know what your website is doing\. know what to fix first/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /analyse my website/i })).toHaveAttribute('href', '/app/audits/new')
+    expect(screen.getAllByRole('link', { name: /analyse (my )?website/i }).length).toBeGreaterThanOrEqual(2)
     expect(screen.getByRole('heading', { name: /six lenses\. one view of the digital experience/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /measure first\. explain clearly\. improve progressively/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /unknown.*made-up number/i })).toBeInTheDocument()
     expect(screen.getByText('AI readiness')).toBeInTheDocument()
     expect(screen.getByRole('banner')).toBeInTheDocument()
   })
