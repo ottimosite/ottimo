@@ -23,12 +23,17 @@ const sameOrigin = (candidate: string, origin: string) => {
 
 const extractTechnology = (document: Document, html: string): string[] => {
   const found = new Set<string>()
-  if (document.querySelector('meta[name="generator"]')) found.add('Generator metadata')
+  const generator = document.querySelector('meta[name="generator"]')?.getAttribute('content')?.trim() ?? ''
+
+  if (generator) {
+    found.add('Generator metadata')
+    if (/wordpress/i.test(generator)) found.add('WordPress')
+    if (/drupal/i.test(generator)) found.add('Drupal')
+  }
   if (document.querySelector('[data-reactroot], #__next, script[src*="_next/"]')) found.add('React / Next.js')
   if (document.querySelector('#___gatsby, [data-gatsby-image-wrapper], script[src*="gatsby"]')) found.add('Gatsby')
-  if (document.querySelector('[id^="wp-"], link[href*="wp-content"], script[src*="wp-includes"]')) found.add('WordPress')
+  if (document.querySelector('[id^="wp-"], link[href*="wp-content"], script[src*="wp-includes"]') || /wp-content|wp-includes/i.test(html)) found.add('WordPress')
   if (/Shopify\.theme|cdn\.shopify\.com/i.test(html)) found.add('Shopify')
-  if (document.querySelector('meta[name="generator"][content*="Drupal" i]')) found.add('Drupal')
   return [...found]
 }
 
