@@ -71,8 +71,13 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
     const sitemapCandidates = [new URL('/sitemap.xml', finalUrl).href]
     if (robotsFound) {
       for (const line of robotsText.split(/\r?\n/)) {
-          const match = line.match(/^sitemap:\s*(\S+)/i)
-          if (match) sitemapCandidates.push(match[1])
+        const match = line.match(/^\s*sitemap:\s*(\S+)\s*$/i)
+        if (match) {
+          try {
+            sitemapCandidates.push(new URL(match[1], finalUrl).href)
+          } catch {
+            // Ignore malformed sitemap declarations and continue discovery.
+          }
         }
       }
     }
@@ -88,9 +93,19 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
         sitemapStatus = sitemap.status
         if (!sitemap.ok) continue
         const text = await sitemap.text()
-        const urls = [...text.matchAll(/<loc(?:\s[^>]*)?>([\s\S]*?)<\/loc>/gi)].map(match => match[1].trim()).filter(Boolean)
+        const urls = [...text.matchAll(/<loc(?:\s[^>]*)?>([\s\S]*?)<\/loc>/gi)]
+          .map(match => match[1].trim())
+          .filter(Boolean)
         if (!urls.length) continue
         sitemapPages = urls
+          .map(candidateUrl => {
+            try {
+              return new URL(candidateUrl).href
+            } catch {
+              return ''
+            }
+          })
+          .filter(Boolean)
         sitemapFound = true; sitemapUrl = candidate; pageCount = urls.length
         report({ step: 'sitemap', label: 'Sitemap discovered', status: 'complete', detail: `${pageCount} URLs listed` })
         break
