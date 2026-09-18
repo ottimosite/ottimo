@@ -6,9 +6,9 @@ import App from '../App'
 describe('app', () => {
   it('renders the product landing page', () => {
     render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>)
-    expect(screen.getByRole('heading', { name: /your website is already part of your sales team/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /start a free audit/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /enough technical depth to act/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /know what your website is doing\. know what to fix first/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /analyse my website/i })).toHaveAttribute('href', '/app/audits/new')
+    expect(screen.getByRole('heading', { name: /six lenses\. one view of the digital experience/i })).toBeInTheDocument()
     expect(screen.getByText('AI readiness')).toBeInTheDocument()
     expect(screen.getByRole('banner')).toBeInTheDocument()
   })
@@ -16,8 +16,7 @@ describe('app', () => {
   it('shows a useful error when the audit form has an invalid URL', () => {
     render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>)
     fireEvent.change(screen.getByPlaceholderText('yourbusiness.co.uk'), { target: { value: '%%%' } })
-    fireEvent.change(screen.getByPlaceholderText('you@yourbusiness.co.uk'), { target: { value: 'team@example.com' } })
-    fireEvent.click(screen.getByRole('button', { name: /start my free audit/i }))
+    fireEvent.click(screen.getByRole('button', { name: /analyse my website/i }))
     expect(screen.getByRole('alert')).toHaveTextContent(/invalid url/i)
   })
 
