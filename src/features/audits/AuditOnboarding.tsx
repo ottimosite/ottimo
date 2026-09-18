@@ -34,7 +34,7 @@ export function AuditOnboarding() {
   const startAudit = () => {
     const params = new URLSearchParams({ url })
     if (selectedCategories) params.set('categories', selectedCategories.join(','))
-    navigate(\`/app/audits/new/run?\${params.toString()}\`)
+    navigate(`/app/audits/new/run?${params.toString()}`)
   }
   return <div className="onboarding">
     <div className="onboarding-intro"><span className="eyebrow">New audit</span><p className="onboarding-step">Step {step} of 2</p>
