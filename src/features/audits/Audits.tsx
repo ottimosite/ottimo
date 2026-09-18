@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { categoryLabels, seedAudits, seedWebsites } from '../../data/mock'
-import { BrowserAuditProvider, MockAuditProvider } from '../../services/audit'
+import { BrowserAuditProvider } from '../../services/audit'
 import { storage } from '../../services/storage'
 import type { Audit, Category, Severity, Status } from '../../types/domain'
 import { Badge, Button, Card, Progress } from '../../components/ui'
@@ -10,7 +10,75 @@ import { isValidUrl, normaliseUrl } from '../../lib/validation'
 
 export function AuditList() { const [audits] = useState(() => storage.audits().length ? storage.audits() : seedAudits); return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Audits</span><h1>Turn a URL into a clear action plan.</h1><p>Run deterministic demo audits now; swap in real audit providers later.</p></div><Link className="btn btn-primary" to="/app/audits/new">New audit</Link></div><Card><div className="audit-list">{audits.map(audit => <Link className="audit-item" key={audit.id} to={`/app/audits/${audit.id}`}><span className="audit-score">{audit.score}</span><span><strong>{seedWebsites.find(website => website.id === audit.websiteId)?.name ?? audit.url}</strong><small>{formatDate(audit.createdAt)} · {audit.issues.filter(issue => issue.status !== 'resolved').length} open issues</small></span><span>→</span></Link>)}</div></Card></div> }
 
-export function NewAudit() { const location = useLocation(); const initialUrl = new URLSearchParams(location.search).get('url') ?? 'https://example.com'; const [url, setUrl] = useState(initialUrl); const [running, setRunning] = useState(false); const [phase, setPhase] = useState(0); const [notice, setNotice] = useState(''); const navigate = useNavigate(); const run = async () => { const normalised = normaliseUrl(url); if (!isValidUrl(normalised)) { setPhase(-1); return } setRunning(true); setNotice(''); setPhase(1); setTimeout(() => setPhase(2), 250); setTimeout(() => setPhase(3), 500); let result; try { result = await new BrowserAuditProvider().runAudit(normalised) } catch { result = await new MockAuditProvider().runAudit(normalised); setNotice('The website did not allow a browser preview, so Ottimo used its local audit model to keep your onboarding moving.') } const website: typeof seedWebsites[number] = { id: `site-${Date.now()}`, name: new URL(normalised).hostname, url: normalised, createdAt: new Date().toISOString() }; const audit: Audit = { id: `audit-${Date.now()}`, websiteId: website.id, url: normalised, createdAt: new Date().toISOString(), ...result }; storage.saveWebsites([...seedWebsites, website]); storage.saveAudits([...seedAudits, audit]); setRunning(false); navigate(`/app/audits/${audit.id}`) }; return <div className="narrow stack"><div className="page-heading"><div><span className="eyebrow">New audit</span><h1>See what your website can do better.</h1><p>Ottimo fetches the public HTML where the browser is allowed to inspect it, then checks practical signals across SEO, accessibility, usability and technical quality.</p></div></div><Card><label>Website URL<input disabled={running} value={url} onChange={event => setUrl(event.target.value)} aria-describedby="url-help" /></label><p id="url-help" className="muted">Example: https://example.com</p>{phase === -1 && <p className="error" role="alert">Enter a valid HTTP or HTTPS URL.</p>}{notice && <p className="muted" role="status">{notice}</p>}<Button disabled={running} onClick={run}>{running ? 'Auditing...' : 'Run audit'}</Button>{running && <div className="audit-progress" aria-live="polite"><div className={phase >= 1 ? 'done' : ''}>01 · Fetching page</div><div className={phase >= 2 ? 'done' : ''}>02 · Checking signals</div><div className={phase >= 3 ? 'done' : ''}>03 · Building recommendations</div></div>}</Card></div> }
+export function NewAudit() {
+  const location = useLocation()
+  const initialUrl = new URLSearchParams(location.search).get('url') ?? 'https://example.com'
+  const categories = new URLSearchParams(location.search).get('categories')?.split(',').filter(Boolean) ?? []
+  const [url] = useState(normaliseUrl(initialUrl))
+  const [running, setRunning] = useState(false)
+  const [error, setError] = useState('')
+  const [progress, setProgress] = useState<import('../../services/discovery').DiscoveryProgress[]>([])
+  const navigate = useNavigate()
+
+  const run = async () => {
+    if (!isValidUrl(url)) { setError('Enter a valid HTTP or HTTPS URL.'); return }
+    setRunning(true); setError(''); setProgress([])
+    const discoveryStarted = performance.now()
+    try {
+      const discovery = await new (await import('../../services/discovery')).BrowserDiscoveryProvider().discover(url, {
+        onProgress: item => setProgress(current => [...current.filter(existing => existing.step !== item.step), item]),
+      })
+      const result = await new BrowserAuditProvider().runAudit(discovery.finalUrl)
+      const website: typeof seedWebsites[number] = {
+        id: `site-${Date.now()}`,
+        name: new URL(discovery.finalUrl).hostname,
+        url: discovery.finalUrl,
+        createdAt: new Date().toISOString(),
+      }
+      const audit: Audit = {
+        id: `audit-${Date.now()}`,
+        websiteId: website.id,
+        url: discovery.finalUrl,
+        createdAt: new Date().toISOString(),
+        ...result,
+        stats: {
+          ...result.stats,
+          discovery: {
+            finalUrl: discovery.finalUrl,
+            https: discovery.https,
+            robotsFound: discovery.robots.found,
+            sitemapFound: discovery.sitemap.found,
+            sitemapPageCount: discovery.sitemap.pageCount,
+            discoveredPageCount: discovery.pages.length,
+            technologies: discovery.technology,
+          },
+          pageScope: 'single-page',
+          source: 'live',
+        },
+        durationMs: Math.round(performance.now() - discoveryStarted),
+      }
+      storage.saveWebsites([...seedWebsites, website])
+      storage.saveAudits([...seedAudits, audit])
+      void categories
+      navigate(`/app/audits/${audit.id}`)
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'Ottimo could not complete discovery.')
+    } finally {
+      setRunning(false)
+    }
+  }
+
+  return <div className="narrow stack">
+    <div className="page-heading"><div><span className="eyebrow">Website discovery</span><h1>Understand the site before auditing it.</h1><p>Ottimo first checks the public website, its crawl hints, linked pages and detectable technology. It then hands that evidence to the audit engine.</p></div></div>
+    <Card>
+      <label>Website URL<input disabled value={url} aria-describedby="url-help" /></label>
+      <p id="url-help" className="muted">Discovery starts from the URL you selected during onboarding.</p>
+      {error && <p className="error" role="alert">{error}</p>}
+      <Button disabled={running} onClick={run}>{running ? 'Discovering...' : 'Start discovery'}</Button>
+      {running && <div className="audit-progress" aria-live="polite">{progress.map(item => <div key={item.step} className={item.status === 'complete' ? 'done' : ''}>{item.status === 'running' ? '◌' : item.status === 'complete' ? '✓' : '–'} · {item.label}{item.detail ? ` — ${item.detail}` : ''}</div>)}</div>}
+    </Card>
+  </div>
+}
 
 export function AuditDetail() { const { id } = useParams(); const audit = [...seedAudits, ...storage.audits()].find(item => item.id === id); if (!audit) return <Card><h1>Audit not found</h1><Link to="/app/audits">Back to audits</Link></Card>; return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Audit result</span><h1>{audit.url}</h1><p>{formatDate(audit.createdAt)} · completed in {audit.durationMs}ms</p></div><div className="result-score"><strong>{audit.score}</strong><span>/ 100</span></div></div><div className="grid-3">{audit.scores.map(score => <Card key={score.category}><span className="muted">{categoryLabels[score.category]}</span><div className="mini-score"><strong>{score.score}</strong><Progress value={score.score} /></div></Card>)}</div><Card><div className="section-head"><div><span className="eyebrow">Findings</span><h2>What needs attention</h2></div><span className="muted">{audit.issues.length} findings</span></div><IssueTable issues={audit.issues} /></Card></div> }
 
