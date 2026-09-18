@@ -34,7 +34,7 @@ export function AuditOnboarding() {
   const startAudit = () => {
     const params = new URLSearchParams({ url })
     if (selectedCategories) params.set('categories', selectedCategories.join(','))
-    navigate(\`/app/audits/new/run?\${params.toString()}\`)
+    navigate(`/app/audits/new/run?${params.toString()}`)
   }
   return <div className="onboarding">
     <div className="onboarding-intro"><span className="eyebrow">New audit</span><p className="onboarding-step">Step {step} of 2</p>
@@ -52,7 +52,7 @@ export function AuditOnboarding() {
         const selected = goals.includes(goal.id)
         return <button type="button" key={goal.id} className={selected ? 'goal-card selected' : 'goal-card'} aria-pressed={selected} onClick={() => toggleGoal(goal.id)}><span className="goal-check" aria-hidden="true">{selected ? '✓' : ''}</span><strong>{goal.label}</strong><span>{goal.description}</span></button>
       })}</fieldset>
-      <div className="onboarding-summary" aria-live="polite"><strong>{goals.includes('everything') ? 'Broad audit selected' : \`\${goals.length} audit \${goals.length === 1 ? 'area' : 'areas'} selected\`}</strong><span>{goals.includes('everything') ? 'Performance, accessibility, SEO, usability and technical health.' : goals.map(id => goalOptions.find(goal => goal.id === id)?.label).filter(Boolean).join(' · ')}</span></div>
+      <div className="onboarding-summary" aria-live="polite"><strong>{goals.includes('everything') ? 'Broad audit selected' : `${goals.length} audit ${goals.length === 1 ? 'area' : 'areas'} selected`}</strong><span>{goals.includes('everything') ? 'Performance, accessibility, SEO, usability and technical health.' : goals.map(id => goalOptions.find(goal => goal.id === id)?.label).filter(Boolean).join(' · ')}</span></div>
       <div className="onboarding-actions"><Button variant="secondary" onClick={() => setStep(1)}>Back</Button><Button onClick={startAudit}>Start discovery</Button></div>
     </Card>}
   </div>
