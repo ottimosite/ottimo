@@ -114,3 +114,68 @@
   .principles-section{padding:72px 22px}
   .principles-grid{grid-template-columns:1fr}
 }
+
+
+/* Full-bleed section primitives: backgrounds span the viewport while content stays readable. */
+.lead-home > .lead-hero,
+.lead-home > .proof-strip,
+.lead-home > .education-strip,
+.lead-home > .method-section,
+.lead-home > .coverage-section,
+.lead-home > .case-study-lead,
+.lead-home > .principles-section,
+.lead-home > .lead-start {
+  width: 100vw;
+  max-width: none;
+  margin-left: calc(50% - 50vw);
+  margin-right: 0;
+  box-sizing: border-box;
+}
+
+.lead-home > .lead-hero {
+  display: block;
+  padding-left: max(30px, calc((100vw - 1220px) / 2));
+  padding-right: max(30px, calc((100vw - 1220px) / 2));
+}
+
+.lead-home > .lead-hero > .hero-kicker,
+.lead-home > .lead-hero > .lead-hero-grid {
+  width: 100%;
+  max-width: 1220px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lead-home > .lead-hero > .lead-hero-grid {
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
+}
+
+@media (min-width: 1440px) {
+  .lead-home > .lead-hero > .lead-hero-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(500px, .8fr);
+    gap: clamp(72px, 6vw, 120px);
+  }
+
+  .lead-home > .lead-hero h1 {
+    max-width: 860px;
+    font-size: clamp(4.8rem, 5.5vw, 6.8rem);
+  }
+}
+
+@media (max-width: 900px) {
+  .lead-home > .lead-hero {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .lead-home > .lead-hero {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  .lead-home > .lead-hero > .lead-hero-grid {
+    grid-template-columns: 1fr;
+  }
+}
