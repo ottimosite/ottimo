@@ -80,6 +80,13 @@ export function Home() {
       </div>
     </section>
 
+    <section className="proof-strip" aria-label="What Ottimo helps teams understand">
+      <div><strong>Performance</strong><span>Where time and weight go</span></div>
+      <div><strong>Visibility</strong><span>How search systems find you</span></div>
+      <div><strong>Accessibility</strong><span>Who can use the experience</span></div>
+      <div><strong>Usability</strong><span>Where journeys create friction</span></div>
+    </section>
+
     <section className="education-strip" id="learn">
       <div><span className="eyebrow">The simple model</span><h2>People need to find you, trust you and finish what they came to do.</h2></div>
       <div className="education-steps">
@@ -87,6 +94,15 @@ export function Home() {
         <article><b>02</b><h3>Trust</h3><p>Speed, accessibility and useful information make a good first impression believable.</p></article>
         <article><b>03</b><h3>Act</h3><p>Simple journeys, strong calls to action and working forms turn interest into progress.</p></article>
       </div>
+    </section>
+
+    <section className="method-section">
+      <div className="method-lead"><span className="eyebrow">How Ottimo works</span><h2>Measure first. Explain clearly. Improve progressively.</h2><p>Ottimo is built around evidence rather than theatre. It discovers the site, records what it can actually observe, then turns those observations into useful decisions.</p></div>
+      <ol className="method-steps">
+        <li><span>01</span><div><h3>Discover</h3><p>Map the site, its pages, technical signals and public structure before drawing conclusions.</p></div></li>
+        <li><span>02</span><div><h3>Understand</h3><p>Connect evidence to impact so a business owner and a developer can see the same problem from different angles.</p></div></li>
+        <li><span>03</span><div><h3>Act</h3><p>Prioritise the work, explain the fix and make the next improvement obvious.</p></div></li>
+      </ol>
     </section>
 
     <section className="coverage-section" id="coverage">
@@ -97,6 +113,16 @@ export function Home() {
     <section className="case-study-lead">
       <div><span className="eyebrow">Demo evidence / Kingdom Coffee</span><h2>A score is only useful when it points to the next decision.</h2><p>Our saved example looks at a coffee supplier through the same customer and technical lens: delivery promises, category paths, accessibility, page weight and structured business facts.</p><Link className="text-link" to="/app/audits/audit-kingdom-coffee">Explore the example audit →</Link></div>
       <div className="case-score"><span>Overall health</span><strong>{kingdomCoffeeAudit.score}</strong><small>six categories reviewed</small><div className="case-bars">{kingdomCoffeeAudit.scores.slice(0, 4).map(score => <div key={score.category}><span>{score.category}</span><i style={{ width: `${score.score}%` }} /></div>)}</div></div>
+    </section>
+
+    <section className="principles-section">
+      <div><span className="eyebrow">The Ottimo standard</span><h2>We would rather tell you “unknown” than give you a made-up number.</h2></div>
+      <div className="principles-grid">
+        <article><strong>Fast</strong><p>The product itself should respect your time, with focused interfaces and lightweight delivery.</p></article>
+        <article><strong>Accessible</strong><p>Accessibility is part of the engineering, not a final checkbox after the design is finished.</p></article>
+        <article><strong>Clear</strong><p>Every finding should explain what happened, why it matters and what can be done about it.</p></article>
+        <article><strong>Useful</strong><p>Audit output should lead to action, not another dashboard nobody knows how to use.</p></article>
+      </div>
     </section>
 
     <section className="lead-start"><LeadCapture /></section>
