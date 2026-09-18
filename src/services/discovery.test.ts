@@ -6,7 +6,7 @@ describe('BrowserDiscoveryProvider', () => {
     const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
       const url = String(input)
       if (url.endsWith('/robots.txt')) return new Response('User-agent: *\nSitemap: https://example.com/custom.xml', { status: 200 })
-      if (url.endsWith('/custom.xml')) return new Response('<urlset><url><loc>https://example.com/</loc></url><url><loc>https://example.com/about</loc></url></urlset>', { status: 200 })
+      if (url.endsWith('/custom.xml')) return new Response('<?xml version="1.0"?><urlset>\n  <url><loc>https://example.com/</loc></url>\n  <url><loc>https://example.com/about</loc></url>\n</urlset>', { status: 200, headers: { 'content-type': 'application/xml' } })
       return new Response('<html lang="en"><head><meta name="generator" content="WordPress"><title>Example</title></head><body><a href="/about">About</a><a href="https://other.test/out">External</a></body></html>', { status: 200, headers: { 'content-type': 'text/html' } })
     })
     vi.stubGlobal('fetch', fetchMock)
@@ -17,6 +17,7 @@ describe('BrowserDiscoveryProvider', () => {
     expect(result.robots.found).toBe(true)
     expect(result.sitemap.found).toBe(true)
     expect(result.sitemap.pageCount).toBe(2)
+    expect(result.sitemap.url).toBe('https://example.com/custom.xml')
     expect(result.pages).toContain('https://example.com/about')
     expect(result.pages).not.toContain('https://other.test/out')
     expect(result.technology).toContain('WordPress')
