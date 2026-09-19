@@ -3,7 +3,7 @@ import { calculateHealth } from '../audit-engine/scoring'
 import { aggregateFindings } from '../audit-engine/aggregation'
 import { buildOptimizationActions } from '../audit-engine/actions'
 import { buildWebsiteHealthModel } from '../audit-engine/health-model'
-import { summariseSearchVisibility, summariseSocial, summariseTechnology } from '../audit-engine/site-intelligence'
+import { buildSiteIntelligence, summariseSearchVisibility, summariseSocial, summariseTechnology } from '../audit-engine/site-intelligence'
 import type { AuditCategory, AuditReport } from '../audit-engine/types'
 
 interface ServerSiteAuditReport {
@@ -114,6 +114,7 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
     return { category, score: measured?.value, measurement: measured ? 'measured' as const : 'unavailable' as const }
   })
 
+  const siteIntelligence = buildSiteIntelligence({ pages: successfulPages.map(({ report }) => ({ url: report.page!.finalUrl, performance: statsForPage(report)?.performance, searchVisibility: report.page!.searchVisibility, technology: report.page!.technology, socialPresence: report.page!.socialPresence })) })
   const healthModel = buildWebsiteHealthModel({
     websiteUrl: site.finalUrl,
     pages: successfulPages.map(({ report }) => ({
@@ -125,6 +126,7 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
     issues,
     actions,
     generatedAt: site.run.completedAt,
+    siteIntelligence,
   })
   const firstStats = statsForPage(first)
 
