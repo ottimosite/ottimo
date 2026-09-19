@@ -6,6 +6,7 @@ export type AuditStandard = 'WCAG 2.2 AA' | 'Core Web Vitals' | 'Technical SEO'
 export type MeasurementStatus = 'measured' | 'inferred' | 'unavailable'
 
 export interface PerformanceMetrics {
+  collectionMs?: number
   fetchMs?: number
   htmlParseMs?: number
   firstResponseMs?: number
