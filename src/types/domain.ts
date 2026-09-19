@@ -37,8 +37,9 @@ export interface Website {
 
 export interface AuditScore {
   category: Category
-  score: number
+  score?: number
   previous?: number
+  measurement?: MeasurementStatus
 }
 
 export interface AuditEvidence {
@@ -72,7 +73,7 @@ export interface Audit {
   websiteId: string
   url: string
   createdAt: string
-  score: number
+  score?: number
   durationMs: number
   scores: AuditScore[]
   issues: AuditIssue[]
@@ -125,7 +126,7 @@ export interface User {
 }
 
 export interface AuditResult {
-  score: number
+  score?: number
   scores: AuditScore[]
   issues: AuditIssue[]
   durationMs: number
