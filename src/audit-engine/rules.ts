@@ -198,6 +198,48 @@ export function runAuditRules(
     }
   }
 
+  const expensiveResources = page.resources
+      .filter(resource => !resource.failed)
+      .map(resource => {
+        const size = resource.transferSize ?? resource.encodedBodySize
+        const type = resource.type.toLowerCase()
+        const duration = resource.durationMs
+        const threshold = type.includes('image') ? 300_000 : type.includes('script') ? 250_000 : 500_000
+        return { resource, size, duration, threshold }
+      })
+      .filter(item => (item.size !== undefined && item.size > item.threshold) || (item.duration !== undefined && item.duration > 1000))
+      .sort((a, b) => (b.size ?? 0) - (a.size ?? 0))
+      .slice(0, 20)
+
+    for (const item of expensiveResources) {
+      const resourceEvidence = evidence(context, {
+        category: 'performance',
+        kind: 'resource',
+        description: 'Expensive browser resource',
+        value: item.size ?? item.duration,
+        unit: item.size !== undefined ? 'bytes' : 'ms',
+        source: 'playwright',
+        url: item.resource.url,
+      })
+      const sizeText = item.size !== undefined ? `transfer size ${Math.round(item.size / 1024)} KB` : 'unknown transfer size'
+      const durationText = item.duration !== undefined ? `load duration ${Math.round(item.duration)} ms` : 'unknown load duration'
+      finding(context, {
+        category: 'performance',
+        severity: item.size !== undefined && item.size > item.threshold * 2 ? 'high' : 'medium',
+        title: 'Resource may be adding avoidable page weight',
+        summary: `${item.resource.type} resource at ${item.resource.url} has ${sizeText} and ${durationText}.`,
+        impact: 'Large or slow resources compete with the work required to render useful content and can make the experience slower on constrained connections.',
+        recommendation: item.resource.type.toLowerCase().includes('image')
+          ? 'Resize and compress the image, use an efficient format and lazy-load it when it is not required above the fold.'
+          : item.resource.type.toLowerCase().includes('script')
+            ? 'Reduce JavaScript payload, remove unnecessary dependencies and defer non-critical execution.'
+            : 'Reduce the resource payload, improve caching and avoid loading it before it is needed.',
+        scope: 'resource',
+        resourceUrl: item.resource.url,
+        evidenceIds: [resourceEvidence.id],
+      })
+    }
+
   if (categories.includes('seo')) {
     const titleEvidence = evidence(context, {
       category: 'seo',
