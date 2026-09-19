@@ -92,7 +92,7 @@ function journeyForPages(pages: PageHealth[], issues: AuditIssue[], actions: Opt
   return candidates.map(candidate => {
     const selected = pages.filter(page => candidate.types.has(page.archetype))
     const urls = new Set(selected.map(page => page.url))
-    const issueIds = input.issues.filter(issue => (issue.affectedPages ?? []).some(url => urls.has(url))).map(issue => issue.id)
+    const issueIds = issues.filter(issue => (issue.affectedPages ?? []).some(url => urls.has(url))).map(issue => issue.id)
     const actionIds = actions.filter(action => action.affectedPages.some(url => urls.has(url))).map(action => action.id)
     return {
       id: candidate.id,
