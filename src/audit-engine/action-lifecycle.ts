@@ -1,8 +1,6 @@
-import type { Audit, OptimizationAction } from '../types/domain'
+import type { Audit, OptimizationAction, ActionLifecycleStatus } from '../types/domain'
 import { compareAudits } from './audit-comparison'
 import { verifyActions } from './verification'
-
-export type ActionLifecycleStatus = 'planned' | 'in_progress' | 'verification' | 'resolved' | 'failed' | 'inconclusive'
 
 const lifecycleFromIssueStatus = (status: Audit['issues'][number]['status']): ActionLifecycleStatus =>
   status === 'resolved' ? 'resolved' : status === 'in_progress' ? 'in_progress' : 'planned'
@@ -10,7 +8,7 @@ const lifecycleFromIssueStatus = (status: Audit['issues'][number]['status']): Ac
 export const buildInitialActionLifecycle = (actions: OptimizationAction[]): OptimizationAction[] =>
   actions.map(action => ({
     ...action,
-    status: lifecycleFromIssueStatus(action.status),
+    lifecycleStatus: lifecycleFromIssueStatus(action.status),
   }))
 
 export function carryForwardActionLifecycle(
@@ -43,7 +41,7 @@ export function carryForwardActionLifecycle(
     if (verification) {
       return {
         ...action,
-        status: verification.status === 'verified'
+        lifecycleStatus: verification.status === 'verified'
           ? 'resolved'
           : verification.status === 'failed'
             ? 'failed'
@@ -52,13 +50,13 @@ export function carryForwardActionLifecycle(
     }
 
     if (previousAction) {
-      return { ...action, status: previousAction.status }
+      return { ...action, lifecycleStatus: previousAction.lifecycleStatus ?? lifecycleFromIssueStatus(previousAction.status) }
     }
 
     const change = comparison.changes.find(item => item.fingerprint === action.issueId || item.title === action.title)
     return {
       ...action,
-      status: change?.type === 'resolved' ? 'resolved' : 'planned',
+      lifecycleStatus: change?.type === 'resolved' ? 'resolved' : 'planned',
     }
   })
 }
