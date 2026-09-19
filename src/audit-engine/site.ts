@@ -107,6 +107,7 @@ export class SiteAuditEngine {
                 completedAt: new Date().toISOString(),
                 durationMs: 0,
               },
+              evidence: [],
               measurements: [],
               checks: [],
               findings: [],
