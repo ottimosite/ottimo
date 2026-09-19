@@ -10,6 +10,7 @@ const USER_AGENT = 'OttimoAuditEngine/0.1 (+https://ottimo-site.netlify.app/)'
 export interface PageCollector {
   collect(request: AuditRequest): Promise<PageSnapshot>
 }
+export type BrowserFactory = () => Promise<Browser>
 
 type BrowserMetrics = {
   lcpMs?: number
@@ -18,9 +19,11 @@ type BrowserMetrics = {
 }
 
 export class PlaywrightPageCollector implements PageCollector {
+  constructor(private readonly browserFactory: BrowserFactory = () => chromium.launch({ headless: true })) {}
+
   async collect(request: AuditRequest): Promise<PageSnapshot> {
     const target = await assertPublicTarget(request.url)
-    const browser: Browser = await chromium.launch({ headless: true })
+    const browser: Browser = await this.browserFactory()
     const page = await browser.newPage({
       viewport: request.viewport ?? { width: 1365, height: 900 },
       userAgent: USER_AGENT,
