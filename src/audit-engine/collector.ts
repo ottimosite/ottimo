@@ -89,10 +89,17 @@ export class PlaywrightPageCollector implements PageCollector {
     })
 
     try {
+      const timeoutMs = request.timeoutMs ?? 10_000
       const response = await page.goto(target.href, {
-        waitUntil: 'networkidle',
-        timeout: request.timeoutMs ?? 30_000,
+        waitUntil: 'domcontentloaded',
+        timeout: timeoutMs,
       })
+      // Do not make audit completion depend on an indefinitely quiet network. Modern
+      // sites can keep analytics, ads, or live connections open for the lifetime of
+      // the page. Give the page a short settling window, but keep the request bounded.
+      await page.waitForLoadState('networkidle', {
+        timeout: Math.min(2_000, Math.max(250, Math.floor(timeoutMs / 4))),
+      }).catch(() => undefined)
       if (!response) throw new Error('The browser did not receive a document response.')
 
       const html = await page.content()
