@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { seedAudits, categoryLabels } from '../../data/mock'
 import { storage } from '../../services/storage'
-import type { OptimizationAction, Status } from '../../types/domain'
+import type { Status } from '../../types/domain'
 import { buildOptimizationActions } from '../../audit-engine/actions'
 import { Badge, Card } from '../../components/ui'
 
