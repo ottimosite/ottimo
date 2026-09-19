@@ -158,6 +158,8 @@ export interface OptimizationAction {
 
 export interface Audit {
   health?: AuditHealthSummary
+  healthModel?: import('../audit-engine/health-model').WebsiteHealthModel
+  comparison?: AuditComparison
   id: string
   websiteId: string
   url: string
