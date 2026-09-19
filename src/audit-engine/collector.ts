@@ -135,6 +135,27 @@ export class PlaywrightPageCollector implements PageCollector {
         }
       })
 
+      const intelligence = await page.evaluate(() => {
+        const text = document.documentElement.innerHTML
+        const scripts = [...document.scripts].map(s => s.src).filter(Boolean)
+        const links = [...document.querySelectorAll('link')].map(l => ({ rel: l.rel, href: l.href, type: l.type })).filter(x => x.href)
+        const meta = (name: string) => document.querySelector('meta[name="' + name + '"]')?.getAttribute('content') ?? undefined
+        const property = (name: string) => document.querySelector('meta[property="' + name + '"]')?.getAttribute('content') ?? undefined
+        const technology: Array<{name:string;category:'cms'|'framework'|'analytics'|'hosting'|'cdn'|'library'|'commerce';confidence:'high'|'medium'|'low';evidence:string}> = []
+        const add = (name:string, category: typeof technology[number]['category'], evidence:string, confidence: typeof technology[number]['confidence'] = 'medium') => { if (!technology.some(t => t.name === name)) technology.push({name, category, confidence, evidence}) }
+        if (text.includes('wp-content/') || text.includes('wp-includes/')) add('WordPress','cms','wp-content/wp-includes paths detected','high')
+        if (scripts.some(s => /googletagmanager|google-analytics/i.test(s))) add('Google Analytics / Tag Manager','analytics','Google analytics/tag manager script URL detected','high')
+        if (scripts.some(s => /react/i.test(s)) || /data-reactroot|__NEXT_DATA__/.test(text)) add('React','framework','React markers detected in rendered document','medium')
+        if (scripts.some(s => /shopify/i.test(s)) || /cdn\.shopify\.com/i.test(text)) add('Shopify','commerce','Shopify CDN/script marker detected','high')
+        if (links.some(l => /cloudflare/i.test(l.href)) || scripts.some(s => /cloudflare/i.test(s))) add('Cloudflare','cdn','Cloudflare asset marker detected','medium')
+        const jsonLd = [...document.querySelectorAll('script[type="application/ld+json"]')].length
+        return {
+          technology,
+          searchVisibility: { titlePresent: !!document.title.trim(), titleLength: document.title.trim().length || undefined, metaDescriptionPresent: !!meta('description'), metaDescriptionLength: meta('description')?.length || undefined, canonicalPresent: !!document.querySelector('link[rel="canonical"]'), h1Count: document.querySelectorAll('h1').length, structuredDataCount: jsonLd, openGraphPresent: !!property('og:title'), twitterCardPresent: !!meta('twitter:card'), sitemapLinked: links.some(l => /sitemap/i.test(l.href)) },
+          socialPresence: { profiles: [...document.querySelectorAll('a[href]')].map(a => (a as HTMLAnchorElement).href).filter(h => /facebook\\.com|instagram\\.com|linkedin\\.com|x\\.com|twitter\\.com|youtube\\.com|tiktok\\.com/i.test(h)).slice(0,20), shareMetadata: ['og:title','og:description','og:image','twitter:card'].filter(p => p.startsWith('og:') ? !!property(p) : !!meta(p)), socialScripts: scripts.filter(s => /facebook|instagram|linkedin|twitter|tiktok|pinterest/i.test(s)).slice(0,20) }
+        }
+      })
+
       const axeResults = await page.evaluate(async () => {
         const win = window as Window & { axe?: { run: () => Promise<{ violations: Array<{ id: string; impact?: string; help: string; description: string; nodes: Array<{ target: string[]; html?: string; failureSummary?: string }> }> }> } }
         return win.axe ? await win.axe.run() : null
@@ -160,6 +181,9 @@ export class PlaywrightPageCollector implements PageCollector {
         resources: [...resources.values()],
         requestFailures: failures,
         accessibility,
+        technology: intelligence.technology,
+        searchVisibility: intelligence.searchVisibility,
+        socialPresence: intelligence.socialPresence,
       }
     } catch (error) {
       await browser.close()

@@ -41,6 +41,9 @@ export class AuditEngine {
         findings,
       }
     } catch (error) {
+      const diagnostics = error instanceof AuditSecurityError
+        ? { code: 'security_blocked' as const, stage: 'validation' as const, message: error.message, technicalDetails: error instanceof Error ? error.stack : undefined, targetUrl: request.url, retryable: false }
+        : { code: errorCode(error), stage: error instanceof Error && /timeout/i.test(error.message) ? 'navigation' as const : error instanceof Error && /dns|resolve/i.test(error.message) ? 'dns' as const : 'unknown' as const, message: error instanceof Error ? error.message : 'Audit failed.', technicalDetails: error instanceof Error ? error.stack : undefined, targetUrl: request.url, retryable: true }
       return {
         engineVersion: AUDIT_ENGINE_VERSION,
         run: { id: runId, status: 'failed', startedAt, completedAt: new Date().toISOString(), durationMs: Math.round(performance.now() - started) },
@@ -48,11 +51,8 @@ export class AuditEngine {
         measurements: [],
         checks: [],
         findings: [],
-        error: {
-          code: errorCode(error),
-          message: error instanceof Error ? error.message : 'Audit failed.',
-          recoverable: true,
-        },
+        error: { code: diagnostics.code, message: diagnostics.message, recoverable: diagnostics.retryable },
+        diagnostics,
       }
     }
   }
