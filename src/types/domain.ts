@@ -23,6 +23,30 @@ export interface TechnologySignal { name: string; category: 'cms' | 'framework' 
 export interface SearchVisibilityProfile { titlePresent: boolean; titleLength?: number; metaDescriptionPresent: boolean; metaDescriptionLength?: number; canonicalPresent: boolean; h1Count: number; structuredDataCount: number; openGraphPresent: boolean; twitterCardPresent: boolean; sitemapLinked: boolean }
 export interface SocialPresenceProfile { profiles: string[]; shareMetadata: string[]; socialScripts: string[] }
 
+export interface SearchVisibilitySummary {
+  pagesMeasured: number
+  titleCoverage: number
+  metaDescriptionCoverage: number
+  canonicalCoverage: number
+  openGraphCoverage: number
+  twitterCardCoverage: number
+  structuredDataPages: number
+  pagesWithMultipleH1: number
+  indexabilityObserved: 'indexable' | 'blocked' | 'mixed' | 'unavailable'
+}
+
+export interface TechnologySummary {
+  signals: TechnologySignal[]
+  categories: string[]
+}
+
+export interface SocialSummary {
+  profileCount: number
+  shareMetadataPages: number
+  socialScriptPages: number
+  profiles: string[]
+}
+
 export interface DiscoverySummary {
   finalUrl: string
   https: boolean
