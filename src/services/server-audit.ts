@@ -1,7 +1,9 @@
 import type { AuditResult, AuditIssue, Category, Severity } from '../types/domain'
 import { calculateHealth } from '../audit-engine/scoring'
 import { aggregateFindings } from '../audit-engine/aggregation'
-import { buildOptimizationActions } from '../audit-engine/actions'\nimport { buildWebsiteHealthModel } from '../audit-engine/health-model'\nimport { summariseSearchVisibility, summariseSocial, summariseTechnology } from '../audit-engine/site-intelligence'
+import { buildOptimizationActions } from '../audit-engine/actions'
+import { buildWebsiteHealthModel } from '../audit-engine/health-model'
+import { summariseSearchVisibility, summariseSocial, summariseTechnology } from '../audit-engine/site-intelligence'
 import type { AuditCategory, AuditReport } from '../audit-engine/types'
 
 interface ServerSiteAuditReport {
