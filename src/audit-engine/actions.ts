@@ -1,47 +1,8 @@
-import type { AuditIssue, Effort, Severity } from '../types/domain'
+import type { AuditIssue, Effort, Severity, OptimizationAction, ActionPriorityBreakdown, ActionDependency, VerificationCriterion } from '../types/domain'
 
 export type ActionImpact = 'critical' | 'high' | 'medium' | 'low'
 
-export interface ActionPriorityBreakdown {
-  impact: number
-  severity: number
-  confidence: number
-  effort: number
-  evidence: number
-  score: number
-}
-
-export interface ActionDependency {
-  id: string
-  description: string
-  blocking: boolean
-}
-
-export interface VerificationCriterion {
-  description: string
-  affectedPages: string[]
-}
-
-export interface OptimizationAction {
-  id: string
-  issueId: string
-  title: string
-  category: AuditIssue['category']
-  severity: Severity
-  impact: ActionImpact
-  confidence: NonNullable<AuditIssue['confidence']>
-  effort: Effort
-  priorityScore: number
-  status: AuditIssue['status']
-  affectedPages: string[]
-  affectedResources: string[]
-  evidenceCount: number
-  dependencies: ActionDependency[]
-  implementationSteps: string[]
-  verification: VerificationCriterion[]
-  expectedOutcome: string
-  priority: ActionPriorityBreakdown
-}
+export type { ActionPriorityBreakdown, ActionDependency, VerificationCriterion, OptimizationAction } from '../types/domain'
 
 const impactFor = (issue: AuditIssue): ActionImpact => {
   const occurrences = issue.occurrenceCount ?? issue.affectedPages?.length ?? 1
@@ -110,6 +71,8 @@ export function buildOptimizationActions(issues: AuditIssue[]): OptimizationActi
         effort,
         priorityScore,
         status: issue.status,
+        lifecycleStatus: issue.status === 'resolved' ? 'resolved' : issue.status === 'in_progress' ? 'in_progress' : 'planned',
+        fingerprint: issue.fingerprint ?? [issue.category, issue.title, issue.solution].map(value => value.trim().toLowerCase().replace(/\s+/g, ' ')).join('|'),
         affectedPages: issue.affectedPages ?? [],
         affectedResources: issue.affectedResources ?? [],
         evidenceCount,

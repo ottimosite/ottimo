@@ -1,6 +1,7 @@
 export type Category = 'performance' | 'accessibility' | 'seo' | 'usability' | 'technical' | 'ai'
 export type Severity = 'critical' | 'high' | 'medium' | 'low'
 export type Status = 'open' | 'in_progress' | 'resolved'
+export type ActionLifecycleStatus = 'planned' | 'in_progress' | 'verification' | 'resolved' | 'failed' | 'inconclusive'
 export type Effort = 'low' | 'medium' | 'high'
 export type AuditStandard = 'WCAG 2.2 AA' | 'Core Web Vitals' | 'Technical SEO'
 export type MeasurementStatus = 'measured' | 'inferred' | 'unavailable'
@@ -246,6 +247,7 @@ export interface ActionPriorityBreakdown {
 export interface OptimizationAction {
   id: string
   issueId: string
+  fingerprint: string
   title: string
   category: Category
   severity: Severity
@@ -254,6 +256,7 @@ export interface OptimizationAction {
   effort: Effort
   priorityScore: number
   status: Status
+  lifecycleStatus: ActionLifecycleStatus
   affectedPages: string[]
   affectedResources: string[]
   evidenceCount: number

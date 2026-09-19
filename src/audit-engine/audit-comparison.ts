@@ -28,7 +28,7 @@ export interface AuditComparison {
 
 const severityRank: Record<AuditIssue['severity'], number> = { low: 1, medium: 2, high: 3, critical: 4 }
 
-const fingerprintFor = (issue: AuditIssue) => issue.fingerprint ?? [
+export const fingerprintFor = (issue: AuditIssue) => issue.fingerprint ?? [
   issue.category,
   issue.title,
   issue.solution,
