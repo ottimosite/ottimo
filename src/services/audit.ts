@@ -1,6 +1,7 @@
 import type { AuditResult, AuditIssue, AuditStandard, Category } from '../types/domain'
 import { auditScores } from '../data/mock'
 import { harbourPineAudit } from '../data/fixtures/harbourPine'
+import { collectPage } from './collection'
 export interface AuditProvider { runAudit(url:string): Promise<AuditResult> }
 export const auditStandards: { name: AuditStandard; description: string }[] = [
   { name: 'WCAG 2.2 AA', description: 'Accessibility signals mapped to perceivable, operable, understandable and robust content.' },
