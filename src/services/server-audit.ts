@@ -1,5 +1,6 @@
 import type { AuditResult, AuditIssue, Category, Severity } from '../types/domain'
 import { calculateHealth } from '../audit-engine/scoring'
+import { aggregateFindings } from '../audit-engine/aggregation'
 import type { AuditCategory, AuditReport } from '../audit-engine/types'
 
 interface ServerSiteAuditReport {
@@ -24,9 +25,9 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
     throw new Error(site.error?.message ?? failedPages[0]?.report.error?.message ?? 'The audit engine could not complete the audit.')
   }
 
-  const issues: AuditIssue[] = successfulPages.flatMap(({ url, report }) =>
-    report.findings.map((finding, index) => ({
-      id: `${finding.id}-${encodeURIComponent(url)}-${index}`,
+  const aggregated = aggregateFindings(successfulPages)
+  const issues: AuditIssue[] = aggregated.map(({ finding, fingerprint, affectedPages, affectedResources, occurrenceCount, evidenceIds }) => ({
+      id: `${finding.id}-${encodeURIComponent(fingerprint)}`,
       category: finding.category,
       severity: severity(finding.severity),
       title: finding.title,
@@ -45,14 +46,19 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
           unit: source?.unit,
           source: source?.source,
           details: source
-            ? `${finding.summary} Affected page: ${url}${source.selector ? ` Affected element: ${source.selector}` : ''}`
-            : `The finding was recorded for ${url}, but its supporting evidence could not be resolved.`,
+            ? `${finding.summary} Affected pages: ${affectedPages.length}${source.selector ? ` Affected element: ${source.selector}` : ''}`
+            : `The finding was recorded on ${affectedPages.length} page${affectedPages.length === 1 ? '' : 's'}, but its supporting evidence could not be resolved.`,
         }
       })(),
       confidence: 'high',
+      affectedPages,
+      affectedResources,
+      occurrenceCount,
+      evidenceCount: evidenceIds.length,
+      fingerprint,
       standards: finding.category === 'accessibility' ? ['WCAG 2.2 AA'] : finding.category === 'performance' ? ['Core Web Vitals'] : finding.category === 'seo' ? ['Technical SEO'] : undefined,
     })),
-  )
+  })
 
   const health = calculateHealth(successfulPages.map(page => page.report))
   const first = successfulPages[0].report
