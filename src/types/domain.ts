@@ -36,7 +36,7 @@ export interface DiscoverySummary {
   socialPresence?: SocialPresenceProfile
 }
 
-export interface Website {
+export interface WebsiteHealthModel {\n  version: string\n  generatedAt: string\n  websiteUrl: string\n  pages: Array<{ url: string; archetype: string; title?: string; observations: Array<{ id: string; kind: string; value?: string | number | boolean; unit?: string; status: MeasurementStatus; pageUrl?: string; provenance: { source: string; observedAt: string; sourceId?: string; confidence?: 'high' | 'medium' | 'low'; description?: string } }>; issueIds: string[]; actionIds: string[] }>\n  journeys: Array<{ id: string; name: string; pageUrls: string[]; issueIds: string[]; actionIds: string[]; confidence: 'high' | 'medium' | 'low'; rationale: string }>\n  observations: Array<{ id: string; kind: string; value?: string | number | boolean; unit?: string; status: MeasurementStatus; pageUrl?: string; provenance: { source: string; observedAt: string; sourceId?: string; confidence?: 'high' | 'medium' | 'low'; description?: string } }>\n  issueCount: number\n  actionCount: number\n  categoryCoverage: Record<Category, 'measured' | 'partial' | 'unavailable'>\n}\n\nexport interface Website {
   id: string
   name: string
   url: string
