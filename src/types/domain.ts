@@ -37,6 +37,8 @@ export interface Website {
   lastAuditId?: string
 }
 
+export interface AuditHealthSummary { score?: number; status: 'good' | 'needs-improvement' | 'needs-attention' | 'not-measured'; measuredCategories: Category[]; excludedCategories: Category[]; checks: number; passed: number; failed: number; unavailable: number; methodology: string }
+
 export interface AuditScore {
   category: Category
   score?: number
@@ -71,6 +73,7 @@ export interface AuditIssue {
 }
 
 export interface Audit {
+  health?: AuditHealthSummary
   id: string
   websiteId: string
   url: string
@@ -128,6 +131,7 @@ export interface User {
 }
 
 export interface AuditResult {
+  health?: AuditHealthSummary
   score?: number
   scores: AuditScore[]
   issues: AuditIssue[]
