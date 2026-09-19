@@ -58,6 +58,9 @@ export interface DiscoverySummary {
   technologySignals?: TechnologySignal[]
   searchVisibility?: SearchVisibilityProfile
   socialPresence?: SocialPresenceProfile
+  searchSummary?: SearchVisibilitySummary
+  technologySummary?: TechnologySummary
+  socialSummary?: SocialSummary
 }
 
 export interface ActionVerification {
@@ -244,6 +247,9 @@ export interface Audit {
   scores: AuditScore[]
   issues: AuditIssue[]
   actions?: OptimizationAction[]
+  healthModel?: WebsiteHealthModel
+  comparison?: AuditComparison
+  verifications?: ActionVerification[]
   stats?: AuditStats
   standards?: AuditStandard[]
   diagnostics?: { code: string; stage: string; message: string; technicalDetails?: string; targetUrl?: string; pageUrl?: string; retryable: boolean }
@@ -302,6 +308,9 @@ export interface AuditResult {
   scores: AuditScore[]
   issues: AuditIssue[]
   actions?: OptimizationAction[]
+  healthModel?: WebsiteHealthModel
+  comparison?: AuditComparison
+  verifications?: ActionVerification[]
   durationMs: number
   stats?: AuditStats
   standards?: AuditStandard[]
