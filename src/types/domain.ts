@@ -234,6 +234,15 @@ export interface VerificationCriterion {
   affectedPages: string[]
 }
 
+export interface ActionPriorityBreakdown {
+  impact: number
+  severity: number
+  confidence: number
+  effort: number
+  evidence: number
+  score: number
+}
+
 export interface OptimizationAction {
   id: string
   issueId: string
@@ -252,6 +261,7 @@ export interface OptimizationAction {
   implementationSteps: string[]
   verification: VerificationCriterion[]
   expectedOutcome: string
+  priority: ActionPriorityBreakdown
 }
 
 export interface Audit {
