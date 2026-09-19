@@ -49,7 +49,7 @@ export class PlaywrightPageCollector implements PageCollector {
           const last = entries.at(-1)
           if (last) state.lcpMs = last.startTime
         }).observe({ type: 'largest-contentful-paint', buffered: true })
-      } catch {}
+      } catch { state.lcpMs = undefined }
       try {
         let cls = 0
         new PerformanceObserver(list => {
@@ -58,14 +58,14 @@ export class PlaywrightPageCollector implements PageCollector {
           }
           state.cls = cls
         }).observe({ type: 'layout-shift', buffered: true })
-      } catch {}
+      } catch { state.cls = 0 }
       try {
         new PerformanceObserver(list => {
           for (const entry of list.getEntries() as Array<PerformanceEntry & { duration?: number }>) {
             state.inpMs = Math.max(state.inpMs ?? 0, entry.duration ?? 0)
           }
         }).observe({ type: 'event', buffered: true, durationThreshold: 16 })
-      } catch {}
+      } catch { state.inpMs = undefined }
     })
 
     await page.addScriptTag({ content: axeSource })
