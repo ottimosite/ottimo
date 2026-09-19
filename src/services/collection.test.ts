@@ -27,7 +27,7 @@ describe('collectPage', () => {
       error: { code: 'HTTP_ERROR', message: 'The target returned HTTP 403.', status: 403 },
     }), { status: 200, headers: { 'content-type': 'application/json' } })))
 
-    await expect(collectPage('https://example.com')).rejects.toMatchObject<Partial<CollectionError>>({
+    await expect(collectPage('https://example.com')).rejects.toMatchObject({
       code: 'HTTP_ERROR',
       status: 403,
     })
