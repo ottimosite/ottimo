@@ -12,6 +12,7 @@ export interface PerformanceMetrics {
   firstResponseMs?: number
   fcpMs?: number
   lcpMs?: number
+  domContentLoadedMs?: number
   cls?: number
   inpMs?: number
   ttfbMs?: number
