@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { harbourPineAudit, harbourPineSnapshot } from '../data/fixtures/kingdomCoffee'
+import { harbourPineAudit, harbourPineSnapshot } from '../data/fixtures/harbourPine'
 import { isValidUrl, normaliseUrl } from '../lib/validation'
 import { MockAuditProvider, scoreCategory } from '../services/audit'
 
