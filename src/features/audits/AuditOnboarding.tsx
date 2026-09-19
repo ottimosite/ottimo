@@ -51,8 +51,8 @@ export function AuditOnboarding() {
 
     const params = new URLSearchParams({ url: normalised })
     if (selectedCategories) params.set('categories', selectedCategories.join(','))
-    // Reserved for the future account/reporting flow. Nothing is submitted remotely yet.
-    if (email.trim()) params.set('email', email.trim())
+    // Reserved for the future account/reporting flow. Keep it local until registration exists.
+    void email
 
     navigate(\`/app/audits/new/run?\${params.toString()}\`)
   }
