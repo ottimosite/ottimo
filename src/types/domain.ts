@@ -36,6 +36,16 @@ export interface DiscoverySummary {
   socialPresence?: SocialPresenceProfile
 }
 
+export interface ActionVerification {
+  actionId: string
+  status: 'verified' | 'failed' | 'inconclusive'
+  verifiedAt: string
+  previousAuditId: string
+  currentAuditId: string
+  evidence: string
+  affectedPages: string[]
+}
+
 export interface AuditComparison {
   previousAuditId: string
   previousCreatedAt: string
