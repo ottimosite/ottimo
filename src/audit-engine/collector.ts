@@ -29,6 +29,14 @@ export class PlaywrightPageCollector implements PageCollector {
     const failures: Array<{ url: string; errorText: string }> = []
     const redirects = [target.href]
 
+    await page.route('**/*', async route => {
+      const requestEvent = route.request()
+      if (requestEvent.isNavigationRequest() && requestEvent.resourceType() === 'document') {
+        await assertPublicTarget(requestEvent.url())
+      }
+      await route.continue()
+    })
+
     await page.addInitScript(() => {
       const state = { lcpMs: undefined as number | undefined, cls: 0, inpMs: undefined as number | undefined }
       ;(window as Window & { __ottimoMetrics?: typeof state }).__ottimoMetrics = state
@@ -56,6 +64,8 @@ export class PlaywrightPageCollector implements PageCollector {
         }).observe({ type: 'event', buffered: true, durationThreshold: 16 })
       } catch {}
     })
+
+    await page.addScriptTag({ content: axeSource })
 
     page.on('response', response => {
       if (resources.size >= MAX_RESOURCES) return
