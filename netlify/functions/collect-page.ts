@@ -60,7 +60,7 @@ const isBlockedAddress = (ip: string) => {
 }
 
 async function assertPublicHostname(hostname: string) {
-  let addresses
+  let addresses: Awaited<ReturnType<typeof lookup>>
   try { addresses = await lookup(hostname, { all: true, verbatim: true }) } catch {
     throw { code: 'DNS_FAILURE', message: 'Ottimo could not resolve the target hostname.' } satisfies CollectionError
   }
