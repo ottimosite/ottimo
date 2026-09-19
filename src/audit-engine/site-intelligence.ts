@@ -50,7 +50,7 @@ export function summariseSearchVisibility(profiles: Array<SearchVisibilityProfil
   }
 }
 
-export function summariseTechnology(signals: Array<TechnologySignal | undefined>): TechnologySummary {
+export function summariseTechnology(signals: Array<TechnologySignal[] | undefined>): TechnologySummary {
   const unique = new Map<string, TechnologySignal>()
   for (const pageSignals of signals) {
     if (!pageSignals) continue
