@@ -13,6 +13,22 @@ type CollectionErrorCode =
   | 'UNSUPPORTED_CONTENT_TYPE'
   | 'NETWORK_ERROR'
 
+const SAFE_ERROR_MESSAGES: Record<CollectionErrorCode, string> = {
+  INVALID_URL: 'Enter a valid HTTP or HTTPS URL.',
+  UNSUPPORTED_PROTOCOL: 'Only HTTP and HTTPS URLs can be collected.',
+  DNS_FAILURE: 'Ottimo could not resolve the target host.',
+  PRIVATE_ADDRESS: 'Ottimo cannot collect private or local network addresses.',
+  TIMEOUT: 'The target website took too long to respond.',
+  REDIRECT_LIMIT: 'The target exceeded Ottimo\'s redirect limit.',
+  HTTP_ERROR: 'The target returned an HTTP error.',
+  RESPONSE_TOO_LARGE: 'The target response is too large to collect.',
+  UNSUPPORTED_CONTENT_TYPE: 'The target response content type is not supported.',
+  NETWORK_ERROR: 'Ottimo could not collect the target website.',
+}
+
+const isCollectionErrorCode = (value: unknown): value is CollectionErrorCode =>
+  typeof value === 'string' && value in SAFE_ERROR_MESSAGES
+
 interface CollectionError {
   code: CollectionErrorCode
   message: string
@@ -143,9 +159,11 @@ export default async (request: Request) => {
     const result = await collect(parsed.href, typeof input.accept === 'string' ? input.accept : 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.1')
     return json(200, result)
   } catch (cause) {
-    const error = (cause && typeof cause === 'object' && 'code' in cause && 'message' in cause)
-      ? cause as CollectionError
-      : { code: 'NETWORK_ERROR', message: 'Ottimo could not collect the target website.' } satisfies CollectionError
+    const code: CollectionErrorCode =
+      (cause && typeof cause === 'object' && 'code' in cause && isCollectionErrorCode((cause as { code?: unknown }).code))
+        ? (cause as { code: CollectionErrorCode }).code
+        : 'NETWORK_ERROR'
+    const error: CollectionError = { code, message: SAFE_ERROR_MESSAGES[code] }
     return json(200, { ok: false, requestedUrl: parsed.href, redirectChain: [parsed.href], error })
   }
 }
