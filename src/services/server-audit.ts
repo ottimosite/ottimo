@@ -67,8 +67,8 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
     diagnostics: first.diagnostics,
     stats: {
       htmlBytes: firstPage ? new TextEncoder().encode(firstPage.html).length : undefined,
-      imageCount: firstPage ? (firstPage.html.match(/<img\\b/gi) ?? []).length : undefined,
-      linkCount: firstPage ? (firstPage.html.match(/<a\\b/gi) ?? []).length : undefined,
+      imageCount: firstPage ? (firstPage.html.match(/<img\b/gi) ?? []).length : undefined,
+      linkCount: firstPage ? (firstPage.html.match(/<a\b/gi) ?? []).length : undefined,
       title: firstPage?.title,
       language: firstPage?.language,
       performance: {
