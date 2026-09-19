@@ -35,7 +35,8 @@ export interface OptimizationAction {
 
 const impactFor = (issue: AuditIssue): ActionImpact => {
   const occurrences = issue.occurrenceCount ?? issue.affectedPages?.length ?? 1
-  if (issue.severity === 'critical' || (issue.severity === 'high' && occurrences >= 5)) return 'critical'
+  if (issue.severity === 'critical') return 'critical'
+  if (issue.severity === 'high' && occurrences >= 2) return 'critical'
   if (issue.severity === 'high' || (issue.severity === 'medium' && occurrences >= 5)) return 'high'
   if (issue.severity === 'medium') return 'medium'
   return 'low'
