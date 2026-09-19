@@ -130,7 +130,8 @@ export interface User {
   email: string
 }
 
-export interface AuditResult {\n  health?: AuditHealthSummary
+export interface AuditResult {
+  health?: AuditHealthSummary
   score?: number
   scores: AuditScore[]
   issues: AuditIssue[]
