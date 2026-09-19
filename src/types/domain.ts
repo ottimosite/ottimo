@@ -112,6 +112,9 @@ export interface AuditStats {
   performance?: PerformanceMetrics
   discovery?: DiscoverySummary
   source: 'live' | 'local'
+  technologySignals?: TechnologySignal[]
+  searchVisibility?: SearchVisibilityProfile
+  socialPresence?: SocialPresenceProfile
 }
 
 export interface Recommendation extends AuditIssue {
