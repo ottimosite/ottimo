@@ -14,7 +14,7 @@ export function Recommendations() {
   const all = audits.flatMap(audit => (audit.actions ?? buildOptimizationActions(audit.issues)).map(action => ({ ...action, auditId: audit.id })))
   const shown = useMemo(() => [...all]
     .filter(issue => (category === 'all' || issue.category === category) && (status === 'all' || issue.status === status) && `${issue.title} ${issue.expectedOutcome} ${issue.implementationSteps.join(' ')}`.toLowerCase().includes(query.toLowerCase()))
-    .sort((a, b) => sort === 'priority' ? b.priority - a.priority : a.title.localeCompare(b.title)), [all, category, query, sort, status])
+    .sort((a, b) => sort === 'priority' ? b.priorityScore - a.priorityScore : a.title.localeCompare(b.title)), [all, category, query, sort, status])
 
   const updateStatus = (auditId: string, issueId: string, nextStatus: Status) => {
     const next = audits.map(audit => audit.id === auditId ? { ...audit, issues: audit.issues.map(issue => issue.id === issueId ? { ...issue, status: nextStatus } : issue) } : audit)
