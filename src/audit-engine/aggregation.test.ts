@@ -56,7 +56,7 @@ describe('site finding aggregation', () => {
 
     const result = aggregateFindings([
       { url: 'https://example.com/', report: report([{ ...base, id: 'a', resourceUrl: 'https://example.com/a.js' }]) },
-      { url: 'https://example.com/about', report: [{ ...base, id: 'b', resourceUrl: 'https://example.com/b.js', evidenceIds: ['e2'] }] as unknown as AuditReport['findings'] },
+      { url: 'https://example.com/about', report: report([{ ...base, id: 'b', resourceUrl: 'https://example.com/b.js', evidenceIds: ['e2'] }]) },
     ])
 
     expect(result).toHaveLength(2)
