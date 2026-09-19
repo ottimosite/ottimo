@@ -1,7 +1,7 @@
 import { PlaywrightPageCollector, type PageCollector } from './collector'
 import { AuditSecurityError } from './security'
 import { runAuditRules } from './rules'
-import type { AuditErrorCode, AuditReport, AuditRequest } from './types'
+import type { AuditCheck, AuditErrorCode, AuditEvidence, AuditFinding, AuditMeasurement, AuditReport, AuditRequest } from './types'
 
 export const AUDIT_ENGINE_VERSION = '0.1.0'
 
@@ -23,10 +23,10 @@ export class AuditEngine {
 
     try {
       const page = await this.collector.collect(request)
-      const evidence = []
-      const measurements = []
-      const checks = []
-      const findings = []
+      const evidence: AuditEvidence[] = []
+      const measurements: AuditMeasurement[] = []
+      const checks: AuditCheck[] = []
+      const findings: AuditFinding[] = []
       runAuditRules(
         { page, evidence, measurements, checks, findings },
         request.categories ?? ['performance', 'accessibility', 'seo', 'technical'],
