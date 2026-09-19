@@ -59,8 +59,7 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
       evidenceCount: evidenceIds.length,
       fingerprint,
       standards: finding.category === 'accessibility' ? ['WCAG 2.2 AA'] : finding.category === 'performance' ? ['Core Web Vitals'] : finding.category === 'seo' ? ['Technical SEO'] : undefined,
-    })),
-  })
+    }))
 
   const health = calculateHealth(successfulPages.map(page => page.report))
   const first = successfulPages[0].report
