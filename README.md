@@ -52,9 +52,9 @@ src/
 
 The app starts with example websites and historical audits. New demo audits use the local provider and deterministic scores/issues, then persist the generated audit locally. Recommendation status changes are also stored locally. Reports can be printed from the browser, and history uses a lightweight CSS chart instead of a charting dependency.
 
-## Kingdom Coffee case study
+## Harbour & Pine demo case study
 
-The default demo now uses a saved snapshot of the public `https://kingdomcoffee.co.uk/` homepage captured on 6 September 2026. The fixture records visible business signals such as product categories, delivery promises, Fairtrade content, live chat and contact details, alongside a deterministic six-domain audit. It does not make runtime requests to the site. Refresh the fixture when the source page is deliberately re-audited, and keep findings evidence-based rather than treating the saved scores as a live Lighthouse result.
+The default demo uses a fictional saved snapshot for `https://harbourpine.example/`. Harbour & Pine is an illustrative independent home and lifestyle retailer created specifically for Ottimo demonstration data. It does not represent a real business or make runtime requests to a third-party site. Keep the example clearly labelled as illustrative and keep findings evidence-based rather than treating the saved scores as a live Lighthouse result.
 
 ## Future integrations
 
