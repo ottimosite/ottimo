@@ -71,6 +71,6 @@ Before a quality-focused change is considered complete, run:
 - keyboard traversal of the changed journey
 - browser zoom/reflow inspection
 - reduced-motion inspection where motion exists
-- screen-reader smoke test for changed interactive flows
+- screen-reader smoke test for changed interactive flows\n- production-route smoke test for deployment changes
 
 The goal is not merely to pass a checklist. The goal is for Ottimo to be a credible example of the standards it measures.
