@@ -39,7 +39,9 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
       status: 'open',
       criterion: finding.title,
       evidence: (() => {
-        const source = report.evidence.find(item => finding.evidenceIds.includes(item.id))
+        const source = successfulPages
+          .flatMap(page => page.report.evidence)
+          .find(item => finding.evidenceIds.includes(item.id))
         return {
           status: source ? 'measured' as const : 'unavailable' as const,
           value: source?.value,
