@@ -32,7 +32,8 @@ describe('action verification', () => {
       dependencies: [],
       implementationSteps: [],
       verification: [],
-      expectedOutcome: 'Better discoverability',
+      priority: { impact: 80, severity: 80, confidence: 1, effort: 1, evidence: 2, score: 80 },
+    expectedOutcome: 'Better discoverability',
     }
 
     const previous = base('old', [{
