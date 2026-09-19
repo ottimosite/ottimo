@@ -156,6 +156,7 @@ export interface Website {
   url: string
   createdAt: string
   lastAuditId?: string
+  healthModel?: WebsiteHealthModel
 }
 
 export interface AuditHealthSummary { score?: number; status: 'good' | 'needs-improvement' | 'needs-attention' | 'not-measured'; measuredCategories: Category[]; excludedCategories: Category[]; checks: number; passed: number; failed: number; unavailable: number; methodology: string }
