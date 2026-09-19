@@ -15,6 +15,8 @@ export interface DiscoveryResult {
 export interface DiscoveryContext { onProgress?: (progress: DiscoveryProgress) => void; signal?: AbortSignal }
 export interface DiscoveryProvider { discover(url: string, context?: DiscoveryContext): Promise<DiscoveryResult> }
 
+import { collectPage } from './collection'
+
 const progress = (context: DiscoveryContext | undefined, item: DiscoveryProgress) => context?.onProgress?.(item)
 
 const sameOrigin = (candidate: string, origin: string) => {
@@ -43,18 +45,14 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
     const report = (item: DiscoveryProgress) => { steps.push(item); progress(context, item) }
     const parsed = new URL(url)
     report({ step: 'reachable', label: 'Checking website reachability', status: 'running' })
-    const response = await fetch(parsed.href, { headers: { Accept: 'text/html' }, signal: context.signal, redirect: 'follow' })
-    const finalUrl = response.url || parsed.href
-    const contentType = response.headers.get('content-type') ?? ''
-    if (!response.ok) {
-      report({ step: 'reachable', label: 'Website reachability', status: 'failed', detail: `HTTP ${response.status}` })
-      throw new Error(`The website returned HTTP ${response.status}.`)
-    }
+    const response = await collectPage(parsed.href, 'text/html,application/xhtml+xml;q=0.9,*/*;q=0.1', context.signal)
+    const finalUrl = response.finalUrl
+    const contentType = response.contentType
     report({ step: 'reachable', label: 'Website reachable', status: 'complete', detail: `HTTP ${response.status}` })
     const https = new URL(finalUrl).protocol === 'https:'
     report({ step: 'https', label: 'HTTPS detected', status: https ? 'complete' : 'unavailable', detail: https ? 'Secure connection' : 'HTTP connection' })
 
-    const html = await response.text()
+    const html = response.body
     const document = new DOMParser().parseFromString(html, 'text/html')
     report({ step: 'homepage', label: 'Homepage analysed', status: 'complete', detail: `${new TextEncoder().encode(html).length.toLocaleString()} bytes` })
 
@@ -64,10 +62,10 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
     let robotsText = ''
     report({ step: 'robots', label: 'Looking for robots.txt', status: 'running' })
     try {
-      const robots = await fetch(robotsUrl, { signal: context.signal })
+      const robots = await collectPage(robotsUrl, 'text/plain,text/*;q=0.9,*/*;q=0.1', context.signal)
       robotsStatus = robots.status
-      robotsFound = robots.ok
-      if (robotsFound) robotsText = await robots.text()
+      robotsFound = robots.status >= 200 && robots.status < 300
+      if (robotsFound) robotsText = robots.body
       report({ step: 'robots', label: robotsFound ? 'robots.txt discovered' : 'robots.txt not found', status: robotsFound ? 'complete' : 'unavailable', detail: `HTTP ${robots.status}` })
     } catch {
       report({ step: 'robots', label: 'robots.txt unavailable', status: 'unavailable', detail: 'Browser access was blocked or unavailable.' })
@@ -94,10 +92,10 @@ export class BrowserDiscoveryProvider implements DiscoveryProvider {
     report({ step: 'sitemap', label: 'Looking for sitemap', status: 'running' })
     for (const candidate of [...new Set(sitemapCandidates)]) {
       try {
-        const sitemap = await fetch(candidate, { signal: context.signal })
+        const sitemap = await collectPage(candidate, 'application/xml,text/xml,text/plain;q=0.9,*/*;q=0.1', context.signal)
         sitemapStatus = sitemap.status
-        if (!sitemap.ok) continue
-        const text = await sitemap.text()
+        if (sitemap.status < 200 || sitemap.status >= 300) continue
+        const text = sitemap.body
         const urls = [...text.matchAll(/<loc(?:\s[^>]*)?>([\s\S]*?)<\/loc>/gi)]
           .map(match => match[1].trim())
           .filter(Boolean)
