@@ -5,6 +5,7 @@ import type { Audit, OptimizationAction } from '../types/domain'
 const action = (status: 'open' | 'in_progress' | 'resolved' = 'open'): OptimizationAction => ({
   id: 'action-1',
   issueId: 'issue-1',
+  fingerprint: 'performance|test issue|test solution',
   title: 'Test action',
   category: 'performance',
   severity: 'high',
