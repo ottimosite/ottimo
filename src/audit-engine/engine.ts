@@ -1,4 +1,3 @@
-import { randomUUID } from 'node:crypto'
 import { PlaywrightPageCollector, type PageCollector } from './collector'
 import { AuditSecurityError } from './security'
 import { runAuditRules } from './rules'
@@ -20,7 +19,7 @@ export class AuditEngine {
   async audit(request: AuditRequest): Promise<AuditReport> {
     const startedAt = new Date().toISOString()
     const started = performance.now()
-    const runId = randomUUID()
+    const runId = crypto.randomUUID()
 
     try {
       const page = await this.collector.collect(request)
