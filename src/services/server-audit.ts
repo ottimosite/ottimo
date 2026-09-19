@@ -1,5 +1,5 @@
 import type { AuditResult, AuditIssue, Category, Severity } from '../types/domain'
-import type { AuditCategory, AuditReport, SiteAuditReport } from '../audit-engine'
+import { calculateHealth, type AuditCategory, type AuditReport, type SiteAuditReport } from '../audit-engine'
 
 const categories: Category[] = ['performance', 'accessibility', 'seo', 'technical']
 
@@ -36,6 +36,7 @@ const toResult = (site: SiteAuditReport): AuditResult => {
     })),
   )
 
+  const health = calculateHealth(successfulPages.map(page => page.report))
   const first = successfulPages[0].report
   const firstPage = first.page
   const firstScores = categories.map(category => {
