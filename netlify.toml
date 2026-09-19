@@ -11,3 +11,13 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["playwright", "@sparticuz/chromium"]
+
+[functions."audit-site"]
+  timeout = 55
+  memory = 2048
