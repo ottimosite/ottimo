@@ -18,6 +18,7 @@ describe('action verification', () => {
     const action = {
       id: 'action-1',
       issueId: 'issue-1',
+      fingerprint: 'seo|missing title|x',
       title: 'Missing title',
       category: 'seo' as const,
       severity: 'high' as const,
@@ -26,6 +27,7 @@ describe('action verification', () => {
       effort: 'low' as const,
       priorityScore: 80,
       status: 'open' as const,
+      lifecycleStatus: 'planned' as const,
       affectedPages: ['https://example.com/'],
       affectedResources: [],
       evidenceCount: 1,
