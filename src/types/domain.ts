@@ -73,7 +73,7 @@ export interface Audit {
   websiteId: string
   url: string
   createdAt: string
-  score: number
+  score?: number
   durationMs: number
   scores: AuditScore[]
   issues: AuditIssue[]
