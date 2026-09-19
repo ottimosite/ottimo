@@ -36,6 +36,28 @@ export interface DiscoverySummary {
   socialPresence?: SocialPresenceProfile
 }
 
+export interface AuditComparison {
+  previousAuditId: string
+  previousCreatedAt: string
+  comparedAt: string
+  changes: Array<{
+    type: 'resolved' | 'new' | 'improved' | 'regressed' | 'unchanged'
+    fingerprint: string
+    title: string
+    category: Category
+    previousSeverity?: Severity
+    currentSeverity?: Severity
+    previousScore?: number
+    currentScore?: number
+    affectedPages: string[]
+  }>
+  resolved: number
+  newFindings: number
+  improved: number
+  regressed: number
+  unchanged: number
+}
+
 export interface WebsiteHealthModel {\n  version: string\n  generatedAt: string\n  websiteUrl: string\n  pages: Array<{ url: string; archetype: string; title?: string; observations: Array<{ id: string; kind: string; value?: string | number | boolean; unit?: string; status: MeasurementStatus; pageUrl?: string; provenance: { source: string; observedAt: string; sourceId?: string; confidence?: 'high' | 'medium' | 'low'; description?: string } }>; issueIds: string[]; actionIds: string[] }>\n  journeys: Array<{ id: string; name: string; pageUrls: string[]; issueIds: string[]; actionIds: string[]; confidence: 'high' | 'medium' | 'low'; rationale: string }>\n  observations: Array<{ id: string; kind: string; value?: string | number | boolean; unit?: string; status: MeasurementStatus; pageUrl?: string; provenance: { source: string; observedAt: string; sourceId?: string; confidence?: 'high' | 'medium' | 'low'; description?: string } }>\n  issueCount: number\n  actionCount: number\n  categoryCoverage: Record<Category, 'measured' | 'partial' | 'unavailable'>\n}\n\nexport interface Website {
   id: string
   name: string
