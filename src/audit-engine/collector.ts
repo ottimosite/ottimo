@@ -68,7 +68,7 @@ export class PlaywrightPageCollector implements PageCollector {
       } catch { state.inpMs = undefined }
     })
 
-    await page.addScriptTag({ content: axeSource })
+    await page.addInitScript({ content: axeSource })
 
     page.on('response', response => {
       if (resources.size >= MAX_RESOURCES) return
