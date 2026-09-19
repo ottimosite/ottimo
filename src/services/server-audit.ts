@@ -26,11 +26,18 @@ const toResult = (site: SiteAuditReport): AuditResult => {
       priority: finding.severity === 'critical' ? 100 : finding.severity === 'high' ? 85 : finding.severity === 'medium' ? 65 : 40,
       status: 'open',
       criterion: finding.title,
-      evidence: {
-        status: 'measured',
-        source: report.evidence.find(item => finding.evidenceIds.includes(item.id))?.source,
-        details: `${finding.summary} Affected page: ${url}`,
-      },
+      evidence: (() => {
+        const source = report.evidence.find(item => finding.evidenceIds.includes(item.id))
+        return {
+          status: source ? 'measured' as const : 'unavailable' as const,
+          value: source?.value,
+          unit: source?.unit,
+          source: source?.source,
+          details: source
+            ? `${finding.summary} Affected page: ${url}${source.selector ? ` Affected element: ${source.selector}` : ''}`
+            : `The finding was recorded for ${url}, but its supporting evidence could not be resolved.`,
+        }
+      })(),
       confidence: 'high',
       standards: finding.category === 'accessibility' ? ['WCAG 2.2 AA'] : finding.category === 'performance' ? ['Core Web Vitals'] : finding.category === 'seo' ? ['Technical SEO'] : undefined,
     })),
@@ -62,6 +69,7 @@ const toResult = (site: SiteAuditReport): AuditResult => {
         ttfbMs: firstPage?.timing.ttfbMs,
         fcpMs: firstPage?.timing.fcpMs,
         lcpMs: firstPage?.timing.lcpMs,
+        domContentLoadedMs: firstPage?.timing.domContentLoadedMs,
         cls: firstPage?.timing.cls,
         inpMs: firstPage?.timing.inpMs,
         mode: 'rendered-page',

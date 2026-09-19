@@ -80,4 +80,61 @@ export function NewAudit() {
 
 export function AuditDetail() { const { id } = useParams(); const audit = [...seedAudits, ...storage.audits()].find(item => item.id === id); if (!audit) return <Card><h1>Audit not found</h1><Link to="/app/audits">Back to audits</Link></Card>; return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Audit result</span><h1>{audit.url}</h1><p>{formatDate(audit.createdAt)} · completed in {audit.durationMs}ms</p></div><div className="result-score"><strong>{audit.score ?? "—"}</strong><span>{audit.score === undefined ? "not measured" : "/ 100"}</span></div></div><div className="grid-3">{audit.scores.map(score => <Card key={score.category}><span className="muted">{categoryLabels[score.category]}</span><div className="mini-score"><strong>{score.score ?? "—"}</strong>{score.score === undefined ? <small>Not measured</small> : <Progress value={score.score} />}</div></Card>)}</div><Card><div className="section-head"><div><span className="eyebrow">Findings</span><h2>What needs attention</h2></div><span className="muted">{audit.issues.length} findings</span></div><IssueTable issues={audit.issues} /></Card></div> }
 
-export function IssueTable({ issues }: { issues: Audit['issues'] }) { const [search, setSearch] = useState(''); const [severity, setSeverity] = useState('all'); const [status, setStatus] = useState('all'); const shown = useMemo(() => issues.filter(issue => (severity === 'all' || issue.severity === severity) && (status === 'all' || issue.status === status) && `${issue.title} ${issue.summary}`.toLowerCase().includes(search.toLowerCase())).sort((a, b) => b.priority - a.priority), [issues, search, severity, status]); return <><div className="filters"><input aria-label="Search issues" value={search} onChange={event => setSearch(event.target.value)} placeholder="Search issues..." /><select aria-label="Filter severity" value={severity} onChange={event => setSeverity(event.target.value as Severity | 'all')}><option value="all">All severity</option><option>critical</option><option>high</option><option>medium</option><option>low</option></select><select aria-label="Filter status" value={status} onChange={event => setStatus(event.target.value as Status | 'all')}><option value="all">All status</option><option value="open">open</option><option value="in_progress">in progress</option><option value="resolved">resolved</option></select></div><div className="issue-list">{shown.map(issue => <article className="issue" key={issue.id}><div className="issue-top"><div><Badge tone={issue.severity}>{issue.severity}</Badge> <span className="muted">{categoryLabels[issue.category as Category]}</span><h3>{issue.title}</h3></div><strong>#{issue.priority}</strong></div><p>{issue.summary}</p>{issue.criterion && <p className="criterion"><strong>Standard:</strong> {issue.criterion}</p>}<div className="impact-grid"><div><small>Business impact</small><p>{issue.impact}</p></div><div><small>Recommendation</small><p>{issue.solution}</p></div></div><div className="issue-foot"><span>{issue.effort} effort</span><Badge tone={issue.status}>{issue.status.replace('_', ' ')}</Badge>{issue.standards?.map(standard => <span className="standard-tag" key={standard}>{standard}</span>)}</div></article>)}</div></> }
+export function IssueTable({ issues }: { issues: Audit['issues'] }) {
+  const [search, setSearch] = useState('')
+  const [severity, setSeverity] = useState('all')
+  const [status, setStatus] = useState('all')
+  const shown = useMemo(
+    () => issues
+      .filter(issue => (severity === 'all' || issue.severity === severity) && (status === 'all' || issue.status === status) && `${issue.title} ${issue.summary}`.toLowerCase().includes(search.toLowerCase()))
+      .sort((a, b) => b.priority - a.priority),
+    [issues, search, severity, status],
+  )
+
+  return <>
+    <div className="filters">
+      <input aria-label="Search issues" value={search} onChange={event => setSearch(event.target.value)} placeholder="Search issues..." />
+      <select aria-label="Filter severity" value={severity} onChange={event => setSeverity(event.target.value as Severity | 'all')}><option value="all">All severity</option><option>critical</option><option>high</option><option>medium</option><option>low</option></select>
+      <select aria-label="Filter status" value={status} onChange={event => setStatus(event.target.value as Status | 'all')}><option value="all">All status</option><option value="open">open</option><option value="in_progress">in progress</option><option value="resolved">resolved</option></select>
+    </div>
+    <div className="issue-list">
+      {shown.map(issue => {
+        const evidence = issue.evidence
+        const severityMeaning = issue.severity === 'critical'
+          ? 'A failure with a potentially severe effect on access, functionality or discoverability.'
+          : issue.severity === 'high'
+            ? 'A significant issue that can materially affect users or website quality.'
+            : issue.severity === 'medium'
+              ? 'A meaningful issue worth addressing, but generally with less immediate impact.'
+              : 'A lower-impact issue or improvement opportunity.'
+        const confidenceMeaning = issue.confidence === 'high'
+          ? 'Strong evidence supports this finding.'
+          : issue.confidence === 'medium'
+            ? 'The evidence supports the finding, with some uncertainty.'
+            : issue.confidence === 'low'
+              ? 'Treat this as a signal that needs validation.'
+              : 'Confidence has not been assigned.'
+        return <article className="issue issue-explained" key={issue.id}>
+          <div className="issue-top">
+            <div><Badge tone={issue.severity}>{issue.severity}</Badge> <span className="muted">{categoryLabels[issue.category as Category]}</span><h3>{issue.title}</h3></div>
+            <div className="issue-priority"><strong>Priority {issue.priority}</strong><small>higher means more urgent to investigate</small></div>
+          </div>
+          <div className="issue-explanation">
+            <div><small>What we found</small><p>{issue.summary}</p></div>
+            <div><small>Why it matters</small><p>{issue.impact}</p></div>
+            <div><small>What to do</small><p>{issue.solution}</p></div>
+            <div><small>How serious is it?</small><p>{severityMeaning}</p></div>
+          </div>
+          {issue.criterion && <p className="criterion"><strong>Standard:</strong> {issue.criterion}</p>}
+          <div className="issue-evidence">
+            <div><small>Evidence</small><p>{evidence?.details ?? 'The audit recorded a finding, but no additional evidence detail is available.'}</p></div>
+            <div><small>Source</small><p>{evidence?.source ?? 'Not specified'} · {evidence?.status ?? 'unavailable'}</p></div>
+            <div><small>Confidence</small><p>{confidenceMeaning}</p></div>
+          </div>
+          <div className="issue-foot"><span>{issue.effort} effort</span><Badge tone={issue.status}>{issue.status.replace('_', ' ')}</Badge>{issue.standards?.map(standard => <span className="standard-tag" key={standard}>{standard}</span>)}</div>
+        </article>
+      })}
+      {!shown.length && <div className="empty-state"><strong>No findings match those filters.</strong><p>Try clearing the search or choosing a different severity or status.</p></div>}
+    </div>
+  </>
+}
