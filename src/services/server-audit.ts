@@ -1,7 +1,7 @@
 import type { AuditResult, AuditIssue, Category, Severity } from '../types/domain'
 import { calculateHealth } from '../audit-engine/scoring'
 import { aggregateFindings } from '../audit-engine/aggregation'
-import { buildOptimizationActions } from '../audit-engine/actions'\nimport { buildWebsiteHealthModel } from '../audit-engine/health-model'
+import { buildOptimizationActions } from '../audit-engine/actions'\nimport { buildWebsiteHealthModel } from '../audit-engine/health-model'\nimport { summariseSearchVisibility, summariseSocial, summariseTechnology } from '../audit-engine/site-intelligence'
 import type { AuditCategory, AuditReport } from '../audit-engine/types'
 
 interface ServerSiteAuditReport {
@@ -103,7 +103,13 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
         robotsFound: false,
         sitemapFound: false,
         discoveredPageCount: site.discoveredUrls.length,
-        technologies: [],
+        technologies: summariseTechnology(successfulPages.map(page => page.report.page?.technology)).signals.map(signal => signal.name),
+        technologySignals: summariseTechnology(successfulPages.map(page => page.report.page?.technology)).signals,
+        searchVisibility: firstPage?.searchVisibility,
+        socialPresence: firstPage?.socialPresence,
+        searchSummary: summariseSearchVisibility(successfulPages.map(page => page.report.page?.searchVisibility)),
+        technologySummary: summariseTechnology(successfulPages.map(page => page.report.page?.technology)),
+        socialSummary: summariseSocial(successfulPages.map(page => page.report.page?.socialPresence)),
       },
       pageScope: 'site-crawl',
       source: 'live',
