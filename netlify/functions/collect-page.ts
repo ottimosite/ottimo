@@ -60,7 +60,10 @@ const isBlockedAddress = (ip: string) => {
 }
 
 async function assertPublicHostname(hostname: string) {
-  const addresses = await lookup(hostname, { all: true, verbatim: true })
+  let addresses
+  try { addresses = await lookup(hostname, { all: true, verbatim: true }) } catch {
+    throw { code: 'DNS_FAILURE', message: 'Ottimo could not resolve the target hostname.' } satisfies CollectionError
+  }
   if (!addresses.length || addresses.some(address => isBlockedAddress(address.address))) {
     throw { code: 'PRIVATE_ADDRESS', message: 'The target resolves to a private or reserved network address.' } satisfies CollectionError
   }
@@ -114,7 +117,8 @@ async function collect(requestedUrl: string, accept: string): Promise<Collection
     const contentType = response.headers.get('content-type') ?? ''
     const { body, contentLength } = await readBody(response)
     const ok = response.status >= 200 && response.status < 300
-    return { ok, requestedUrl, finalUrl: current.href, status: response.status, contentType, contentLength, body, redirectChain }
+    if (!ok) return { ok: false, requestedUrl, finalUrl: current.href, status: response.status, contentType, contentLength, body, redirectChain, error: { code: 'HTTP_ERROR', message: `The target returned HTTP ${response.status}.`, status: response.status } }
+    return { ok: true, requestedUrl, finalUrl: current.href, status: response.status, contentType, contentLength, body, redirectChain }
   }
 
   throw { code: 'REDIRECT_LIMIT', message: 'The target exceeded Ottimo\'s redirect limit.' } satisfies CollectionError
