@@ -1,5 +1,6 @@
 import type { AuditResult, AuditIssue, Category, Severity } from '../types/domain'
-import { calculateHealth, type AuditCategory, type AuditReport, type SiteAuditReport } from '../audit-engine'
+import { calculateHealth } from '../audit-engine/scoring'
+import type { AuditCategory, AuditReport, SiteAuditReport } from '../audit-engine/types'
 
 const categories: Category[] = ['performance', 'accessibility', 'seo', 'technical']
 
