@@ -58,7 +58,12 @@ export function NewAudit() {
           audit.comparison = compareAudits(previousAudits[0], audit)
           audit.verifications = verifyActions(previousAudits[0], audit)
         }
-        storage.saveWebsites(allWebsites.some(item => item.id === website.id) ? allWebsites : [...allWebsites, website])
+        const updatedWebsites = (allWebsites.some(item => item.id === website.id) ? allWebsites : [...allWebsites, website]).map(item =>
+          item.id === website.id
+            ? { ...item, lastAuditId: audit.id, healthModel: audit.healthModel }
+            : item,
+        )
+        storage.saveWebsites(updatedWebsites)
         storage.saveAudits([...seedAudits, ...storage.audits(), audit])
         navigate('/app/audits/' + audit.id, { replace: true })
       } catch (cause) {
