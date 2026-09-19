@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { CollectionError, collectPage } from './collection'
+import { collectPage } from './collection'
 
 describe('collectPage', () => {
   it('returns collected page data from the server collection endpoint', async () => {
