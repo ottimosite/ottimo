@@ -146,7 +146,7 @@ export class PlaywrightPageCollector implements PageCollector {
         if (text.includes('wp-content/') || text.includes('wp-includes/')) add('WordPress','cms','wp-content/wp-includes paths detected','high')
         if (scripts.some(s => /googletagmanager|google-analytics/i.test(s))) add('Google Analytics / Tag Manager','analytics','Google analytics/tag manager script URL detected','high')
         if (scripts.some(s => /react/i.test(s)) || /data-reactroot|__NEXT_DATA__/.test(text)) add('React','framework','React markers detected in rendered document','medium')
-        if (scripts.some(s => /shopify/i.test(s)) || /cdn.shopify.com/i.test(text)) add('Shopify','commerce','Shopify CDN/script marker detected','high')
+        if (scripts.some(s => /shopify/i.test(s)) || /cdn\.shopify\.com/i.test(text)) add('Shopify','commerce','Shopify CDN/script marker detected','high')
         if (links.some(l => /cloudflare/i.test(l.href)) || scripts.some(s => /cloudflare/i.test(s))) add('Cloudflare','cdn','Cloudflare asset marker detected','medium')
         const jsonLd = [...document.querySelectorAll('script[type="application/ld+json"]')].length
         return {
