@@ -62,6 +62,7 @@ const toResult = (site: SiteAuditReport): AuditResult => {
         ttfbMs: firstPage?.timing.ttfbMs,
         fcpMs: firstPage?.timing.fcpMs,
         lcpMs: firstPage?.timing.lcpMs,
+        domContentLoadedMs: firstPage?.timing.domContentLoadedMs,
         cls: firstPage?.timing.cls,
         inpMs: firstPage?.timing.inpMs,
         mode: 'rendered-page',
