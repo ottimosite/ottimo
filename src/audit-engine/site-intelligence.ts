@@ -22,7 +22,7 @@ const numericSummary = (values: Array<{ value: number; page: string }>) => {
   const sorted = [...values].sort((a, b) => a.value - b.value)
   const median = sorted.length % 2
     ? sorted[Math.floor(sorted.length / 2)].value
-    : Math.round((sorted[sorted.length / 2 - 1].value + sorted[sorted.length / 2].value) / 2)
+    : Number(((sorted[sorted.length / 2 - 1].value + sorted[sorted.length / 2].value) / 2).toFixed(2))
   const worst = sorted[sorted.length - 1]
   return { median, worst: worst.value, worstPage: worst.page }
 }
