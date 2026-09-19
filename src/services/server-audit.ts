@@ -1,6 +1,7 @@
 import type { AuditResult, AuditIssue, Category, Severity } from '../types/domain'
 import { calculateHealth } from '../audit-engine/scoring'
 import { aggregateFindings } from '../audit-engine/aggregation'
+import { buildOptimizationActions } from '../audit-engine/actions'
 import type { AuditCategory, AuditReport } from '../audit-engine/types'
 
 interface ServerSiteAuditReport {
@@ -61,6 +62,7 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
       standards: finding.category === 'accessibility' ? ['WCAG 2.2 AA'] : finding.category === 'performance' ? ['Core Web Vitals'] : finding.category === 'seo' ? ['Technical SEO'] : undefined,
     }))
 
+  const actions = buildOptimizationActions(issues)
   const health = calculateHealth(successfulPages.map(page => page.report))
   const first = successfulPages[0].report
   const firstPage = first.page
@@ -76,6 +78,7 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
     score: health.score,
     scores: firstScores,
     issues,
+    actions,
     durationMs: site.run.durationMs,
     standards: ['WCAG 2.2 AA', 'Core Web Vitals', 'Technical SEO'],
     diagnostics: first.diagnostics,
