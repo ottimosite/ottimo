@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { categoryLabels, seedAudits, seedWebsites } from '../../data/mock'
 import { ServerAuditProvider } from '../../services/server-audit'
