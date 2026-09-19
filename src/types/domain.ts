@@ -37,8 +37,9 @@ export interface Website {
 
 export interface AuditScore {
   category: Category
-  score: number
+  score?: number
   previous?: number
+  measurement?: MeasurementStatus
 }
 
 export interface AuditEvidence {
