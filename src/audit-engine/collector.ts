@@ -64,7 +64,7 @@ export class PlaywrightPageCollector implements PageCollector {
           for (const entry of list.getEntries() as Array<PerformanceEntry & { duration?: number }>) {
             state.inpMs = Math.max(state.inpMs ?? 0, entry.duration ?? 0)
           }
-        }).observe({ type: 'event', buffered: true, durationThreshold: 16 })
+        }).observe({ type: 'event', buffered: true } as PerformanceObserverInit)
       } catch { state.inpMs = undefined }
     })
 
@@ -96,7 +96,7 @@ export class PlaywrightPageCollector implements PageCollector {
       if (!response) throw new Error('The browser did not receive a document response.')
 
       const html = await page.content()
-      if (Buffer.byteLength(html, 'utf8') > MAX_HTML_BYTES) {
+      if (new TextEncoder().encode(html).byteLength > MAX_HTML_BYTES) {
         throw new Error("The target HTML exceeds the collection limit.")
       }
 
