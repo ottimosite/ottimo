@@ -74,11 +74,17 @@ export function inferPageArchetype(url: string, title = ''): PageArchetype {
   return 'unknown'
 }
 
-function categoryCoverage(issues: AuditIssue[]): WebsiteHealthModel['categoryCoverage'] {
+function categoryCoverage(
+  pages: Array<{ measuredCategories?: Category[] }>,
+  issues: AuditIssue[],
+): WebsiteHealthModel['categoryCoverage'] {
   const categories: Category[] = ['performance', 'accessibility', 'seo', 'usability', 'technical', 'ai']
+  const measured = new Set(pages.flatMap(page => page.measuredCategories ?? []))
+
   return Object.fromEntries(categories.map(category => {
-    const count = issues.filter(issue => issue.category === category).length
-    return [category, count ? 'partial' : 'measured']
+    const hasMeasurement = measured.has(category)
+    const hasIssue = issues.some(issue => issue.category === category)
+    return [category, hasMeasurement ? (hasIssue ? 'partial' : 'measured') : hasIssue ? 'partial' : 'unavailable']
   })) as WebsiteHealthModel['categoryCoverage']
 }
 
@@ -110,7 +116,7 @@ function journeyForPages(pages: PageHealth[], issues: AuditIssue[], actions: Opt
 
 export function buildWebsiteHealthModel(input: {
   websiteUrl: string
-  pages: Array<{ url: string; title?: string; stats?: AuditStats }>
+  pages: Array<{ url: string; title?: string; stats?: AuditStats; measuredCategories?: Category[] }>
   issues: AuditIssue[]
   actions: OptimizationAction[]
   generatedAt?: string
@@ -155,7 +161,7 @@ export function buildWebsiteHealthModel(input: {
 
   const observations = pageHealth.flatMap(page => page.observations)
   return {
-    version: '2.0.0',
+    version: '2.1.0',
     generatedAt,
     websiteUrl: input.websiteUrl,
     pages: pageHealth,
@@ -163,6 +169,6 @@ export function buildWebsiteHealthModel(input: {
     observations,
     issueCount: input.issues.length,
     actionCount: input.actions.length,
-    categoryCoverage: categoryCoverage(input.issues),
+    categoryCoverage: categoryCoverage(input.pages, input.issues),
   }
 }
