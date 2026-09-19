@@ -1,3 +1,5 @@
+import { collectPage } from './collection'
+
 export type DiscoveryStep = 'reachable' | 'https' | 'homepage' | 'robots' | 'sitemap' | 'pages' | 'technology' | 'ready'
 export interface DiscoveryProgress { step: DiscoveryStep; label: string; status: 'running' | 'complete' | 'unavailable' | 'failed'; detail?: string }
 export interface DiscoveryResult {
@@ -14,8 +16,6 @@ export interface DiscoveryResult {
 }
 export interface DiscoveryContext { onProgress?: (progress: DiscoveryProgress) => void; signal?: AbortSignal }
 export interface DiscoveryProvider { discover(url: string, context?: DiscoveryContext): Promise<DiscoveryResult> }
-
-import { collectPage } from './collection'
 
 const progress = (context: DiscoveryContext | undefined, item: DiscoveryProgress) => context?.onProgress?.(item)
 
