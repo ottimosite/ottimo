@@ -21,7 +21,7 @@ export function NewAudit() {
 
   const run = async () => {
     if (!isValidUrl(url)) { setError('Enter a valid HTTP or HTTPS URL.'); return }
-    setRunning(true); setError(''); setProgress([])
+    setRunning(true); setError('')
     const auditStarted = performance.now()
     try {
       const result = await new ServerAuditProvider().runAudit(url, categories)
@@ -57,7 +57,7 @@ export function NewAudit() {
       void categories
       navigate(`/app/audits/${audit.id}`)
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Ottimo could not complete discovery.')
+      setError(cause instanceof Error ? cause.message : 'Ottimo could not complete the audit.')
     } finally {
       setRunning(false)
     }
@@ -67,9 +67,9 @@ export function NewAudit() {
     <div className="page-heading"><div><span className="eyebrow">Website audit</span><h1>Understand the rendered page before prioritising improvements.</h1><p>Ottimo runs the server-side audit engine against the website so browser, accessibility, SEO and technical evidence are collected outside the React client.</p></div></div>
     <Card>
       <label>Website URL<input disabled value={url} aria-describedby="url-help" /></label>
-      <p id="url-help" className="muted">Discovery starts from the URL you selected during onboarding.</p>
+      <p id="url-help" className="muted">The audit runs server-side so the target website is never fetched from the React client.</p>
       {error && <p className="error" role="alert">{error}</p>}
-      <Button disabled={running} onClick={run}>{running ? 'Discovering...' : 'Start discovery'}</Button>
+      <Button disabled={running} onClick={run}>{running ? 'Auditing...' : 'Start audit'}</Button>
       {running && <div className="audit-progress" aria-live="polite"><div>◌ · Running the rendered audit engine</div><div>· Collecting browser, accessibility, SEO and technical evidence</div></div>}
     </Card>
   </div>
