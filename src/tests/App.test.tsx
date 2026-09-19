@@ -9,7 +9,7 @@ describe('app', () => {
     expect(screen.getByRole('heading', { name: /know what your website is doing\. know what to fix first/i })).toBeInTheDocument()
     const auditLinks = screen.getAllByRole('link', { name: /analyse (my )?website/i })
     expect(auditLinks).toHaveLength(1)
-    expect(auditLinks[0]).toHaveAttribute('href', '/app/audits/new')
+    expect(auditLinks[0]).toHaveAttribute('href', '#start')
     expect(screen.getByRole('button', { name: /analyse my website/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /six lenses\. one view of the digital experience/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /measure first\. explain clearly\. improve progressively/i })).toBeInTheDocument()
