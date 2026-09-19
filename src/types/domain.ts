@@ -77,6 +77,11 @@ export interface AuditIssue {
   criterion?: string
   evidence?: AuditEvidence
   confidence?: 'high' | 'medium' | 'low'
+  affectedPages?: string[]
+  affectedResources?: string[]
+  occurrenceCount?: number
+  evidenceCount?: number
+  fingerprint?: string
 }
 
 export interface Audit {
