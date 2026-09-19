@@ -100,7 +100,7 @@ function journeyForPages(pages: PageHealth[], issues: AuditIssue[], actions: Opt
       pageUrls: selected.map(page => page.url),
       issueIds: [...new Set(issueIds)],
       actionIds: [...new Set(actionIds)],
-      confidence: selected.length >= 2 ? 'medium' : 'low',
+      confidence: (selected.length >= 2 ? 'medium' : 'low') as Journey['confidence'],
       rationale: selected.length
         ? 'Inferred from observed URL structure and page archetypes; no conversion analytics are assumed.'
         : 'No matching page archetypes were observed.',
