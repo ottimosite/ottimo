@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { kingdomCoffeeAudit, kingdomCoffeeSnapshot } from '../data/fixtures/kingdomCoffee'
+import { harbourPineAudit, harbourPineSnapshot } from '../data/fixtures/kingdomCoffee'
 import { isValidUrl, normaliseUrl } from '../lib/validation'
 import { MockAuditProvider, scoreCategory } from '../services/audit'
 
@@ -25,11 +25,11 @@ describe('audit engine', () => {
     expect(first.standards).toEqual(['WCAG 2.2 AA', 'Core Web Vitals', 'Technical SEO'])
   })
 
-  it('returns the saved Kingdom Coffee case study', async () => {
-    const result = await new MockAuditProvider().runAudit(kingdomCoffeeSnapshot.sourceUrl)
-    expect(result.score).toBe(kingdomCoffeeAudit.score)
-    expect(result.scores).toEqual(kingdomCoffeeAudit.scores)
-    expect(result.issues).toEqual(kingdomCoffeeAudit.issues)
-    expect(result.issues.some(issue => issue.title.toLowerCase().includes('delivery'))).toBe(true)
+  it('returns the saved Harbour & Pine case study', async () => {
+    const result = await new MockAuditProvider().runAudit(harbourPineSnapshot.sourceUrl)
+    expect(result.score).toBe(harbourPineAudit.score)
+    expect(result.scores).toEqual(harbourPineAudit.scores)
+    expect(result.issues).toEqual(harbourPineAudit.issues)
+    expect(result.issues.some(issue => issue.title.toLowerCase().includes('collection'))).toBe(true)
   })
 })
