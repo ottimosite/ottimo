@@ -149,6 +149,7 @@ export class SiteAuditEngine {
       }
 
       await Promise.all(Array.from({ length: Math.min(concurrency, queue.length) }, worker))
+      pages.sort((a, b) => a.url.localeCompare(b.url))
       const completedAt = new Date().toISOString()
 
       return {
