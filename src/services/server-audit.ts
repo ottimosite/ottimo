@@ -59,11 +59,12 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
   })
 
   return {
-    score: undefined,
+    score: health.score,
     scores: firstScores,
     issues,
     durationMs: site.run.durationMs,
     standards: ['WCAG 2.2 AA', 'Core Web Vitals', 'Technical SEO'],
+    diagnostics: first.diagnostics,
     stats: {
       htmlBytes: firstPage ? new TextEncoder().encode(firstPage.html).length : undefined,
       imageCount: firstPage ? (firstPage.html.match(/<img\\b/gi) ?? []).length : undefined,
@@ -89,6 +90,9 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
       },
       pageScope: 'site-crawl',
       source: 'live',
+        technologySignals: firstPage?.technology,
+        searchVisibility: firstPage?.searchVisibility,
+        socialPresence: firstPage?.socialPresence,
     },
   }
 }
