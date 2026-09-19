@@ -1,12 +1,22 @@
 import type { AuditResult, AuditIssue, Category, Severity } from '../types/domain'
 import { calculateHealth } from '../audit-engine/scoring'
-import type { AuditCategory, AuditReport, SiteAuditReport } from '../audit-engine/types'
+import type { AuditCategory, AuditReport } from '../audit-engine/types'
+
+interface ServerSiteAuditReport {
+  run: AuditReport['run']
+  requestedUrl: string
+  finalUrl: string
+  pages: Array<{ url: string; report: AuditReport }>
+  discoveredUrls: string[]
+  truncated: boolean
+  error?: AuditReport['error']
+}
 
 const categories: Category[] = ['performance', 'accessibility', 'seo', 'technical']
 
 const severity = (value: AuditReport['findings'][number]['severity']): Severity => value
 
-const toResult = (site: SiteAuditReport): AuditResult => {
+const toResult = (site: ServerSiteAuditReport): AuditResult => {
   const successfulPages = site.pages.filter(page => page.report.run.status === 'completed' && page.report.page)
   const failedPages = site.pages.filter(page => page.report.run.status === 'failed')
 
@@ -117,6 +127,6 @@ export class ServerAuditProvider {
       throw new Error('Ottimo received an invalid audit report from the audit service.')
     }
 
-    return toResult(payload as SiteAuditReport)
+    return toResult(payload as ServerSiteAuditReport)
   }
 }
