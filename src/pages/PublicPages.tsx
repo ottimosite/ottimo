@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Card } from '../components/ui'
-import { kingdomCoffeeAudit } from '../data/fixtures/kingdomCoffee'
+import { harbourPineAudit } from '../data/fixtures/harbourPine'
 
 const info = {
   '/services': ['Services', 'A practical optimisation partner for performance, visibility, accessibility and AI-ready digital products.'],
@@ -111,8 +111,8 @@ export function Home() {
     </section>
 
     <section className="case-study-lead">
-      <div><span className="eyebrow">Demo evidence / Kingdom Coffee</span><h2>A score is only useful when it points to the next decision.</h2><p>Our saved example looks at a coffee supplier through the same customer and technical lens: delivery promises, category paths, accessibility, page weight and structured business facts.</p><Link className="text-link" to="/app/audits/audit-kingdom-coffee">Explore the example audit →</Link></div>
-      <div className="case-score"><span>Overall health</span><strong>{kingdomCoffeeAudit.score}</strong><small>six categories reviewed</small><div className="case-bars">{kingdomCoffeeAudit.scores.slice(0, 4).map(score => <div key={score.category}><span>{score.category}</span><i style={{ width: `${score.score}%` }} /></div>)}</div></div>
+      <div><span className="eyebrow">Demo evidence / Harbour & Pine</span><h2>A score is only useful when it points to the next decision.</h2><p>Our saved example looks at an independent home and lifestyle retailer through the same customer and technical lens: delivery promises, collection paths, accessibility, page weight and structured business facts.</p><Link className="text-link" to="/app/audits/audit-kingdom-coffee">Explore the example audit →</Link></div>
+      <div className="case-score"><span>Overall health</span><strong>{harbourPineAudit.score}</strong><small>six categories reviewed</small><div className="case-bars">{harbourPineAudit.scores.slice(0, 4).map(score => <div key={score.category}><span>{score.category}</span><i style={{ width: `${score.score}%` }} /></div>)}</div></div>
     </section>
 
     <section className="principles-section">
