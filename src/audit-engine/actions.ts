@@ -1,29 +1,8 @@
-import type { AuditIssue, Effort, Severity, OptimizationAction } from '../types/domain'
+import type { AuditIssue, Effort, Severity, OptimizationAction, ActionPriorityBreakdown, ActionDependency, VerificationCriterion } from '../types/domain'
 
 export type ActionImpact = 'critical' | 'high' | 'medium' | 'low'
 
-export interface ActionPriorityBreakdown {
-  impact: number
-  severity: number
-  confidence: number
-  effort: number
-  evidence: number
-  score: number
-}
-
-export interface ActionDependency {
-  id: string
-  description: string
-  blocking: boolean
-}
-
-export interface VerificationCriterion {
-  description: string
-  affectedPages: string[]
-}
-
 export type { ActionPriorityBreakdown, ActionDependency, VerificationCriterion, OptimizationAction } from '../types/domain'
-
 
 const impactFor = (issue: AuditIssue): ActionImpact => {
   const occurrences = issue.occurrenceCount ?? issue.affectedPages?.length ?? 1
