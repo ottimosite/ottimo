@@ -6,6 +6,7 @@ import { auditStandards } from '../../services/audit'
 import { Badge, Button, Card, Progress, Score } from '../../components/ui'
 import { formatDate } from '../../lib/format'
 import { IssueTable } from './Audits'
+import type { Audit } from '../../types/domain'
 
 type MetricState = 'good' | 'needs-improvement' | 'poor' | 'unavailable'
 
