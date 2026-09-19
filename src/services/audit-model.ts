@@ -127,7 +127,7 @@ export const check = (input: Omit<AuditCheckResult, 'id'>): AuditCheckResult => 
 
 export const finding = (input: Omit<AuditFinding, 'id'>): AuditFinding => ({
   ...input,
-  id: stableId(input.auditRunId, input.pageId ?? 'site', input.category, input.title),
+  id: stableId(input.auditRunId, input.affectedPages[0] ?? 'site', input.category, input.title),
 })
 
 export interface AuditEvidenceBundle {
