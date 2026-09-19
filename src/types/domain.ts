@@ -74,7 +74,6 @@ export interface AuditIssue {
   priority: number
   status: Status
   standards?: AuditStandard[]
-  diagnostics?: { code: string; stage: string; message: string; technicalDetails?: string; targetUrl?: string; pageUrl?: string; retryable: boolean }
   criterion?: string
   evidence?: AuditEvidence
   confidence?: 'high' | 'medium' | 'low'
@@ -147,4 +146,5 @@ export interface AuditResult {
   durationMs: number
   stats?: AuditStats
   standards?: AuditStandard[]
+  diagnostics?: { code: string; stage: string; message: string; technicalDetails?: string; targetUrl?: string; pageUrl?: string; retryable: boolean }
 }
