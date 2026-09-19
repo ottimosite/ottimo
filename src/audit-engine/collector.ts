@@ -1,5 +1,5 @@
 import { chromium, type Browser } from 'playwright'
-import { source as axeSource } from 'axe-core'
+import axe from 'axe-core'
 import { assertPublicTarget } from './security'
 import type { AuditRequest, PageSnapshot, ResourceSnapshot } from './types'
 
@@ -10,6 +10,8 @@ const USER_AGENT = 'OttimoAuditEngine/0.1 (+https://ottimo-site.netlify.app/)'
 export interface PageCollector {
   collect(request: AuditRequest): Promise<PageSnapshot>
 }
+const axeSource = axe.source
+
 export type BrowserFactory = () => Promise<Browser>
 
 type BrowserMetrics = {
