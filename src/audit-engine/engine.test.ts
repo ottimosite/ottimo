@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { AuditEngine } from './engine'
-import type { PageCollector, PageSnapshot } from './types'
+import type { PageSnapshot } from './types'
+import type { PageCollector } from './collector'
 
 const snapshot: PageSnapshot = {
   requestedUrl: 'https://example.test',
