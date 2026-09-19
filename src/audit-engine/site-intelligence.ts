@@ -1,4 +1,5 @@
-import type { PerformanceMetrics, SearchVisibilityProfile, SocialPresenceProfile, TechnologySignal } from './types'
+import type { PerformanceMetrics } from '../types/domain'
+import type { SearchVisibilityProfile, SocialPresenceProfile, TechnologySignal } from './types'
 
 export interface PerformanceSiteSummary {
   pagesMeasured: number
