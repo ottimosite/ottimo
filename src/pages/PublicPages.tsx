@@ -66,7 +66,7 @@ export function Home() {
           <h1>Know what your website is doing. Know what to fix first.</h1>
           <p className="hero-copy">Ottimo turns a website into a clear, evidence-led improvement plan. Discover the issues affecting speed, accessibility, search and usability — then understand why they matter and what to do next.</p>
           <div className="hero-actions">
-            <Link className="btn btn-primary" to="/app/audits/new">Analyse my website <span aria-hidden="true">↗</span></Link>
+            <a className="btn btn-primary" href="#start">Analyse my website <span aria-hidden="true">↗</span></a>
             <a className="text-link" href="#coverage">See what we measure ↓</a>
           </div>
           <div className="ethos"><strong>Discover.</strong><strong>Understand.</strong><strong>Improve.</strong></div>
