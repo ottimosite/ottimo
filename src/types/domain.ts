@@ -84,6 +84,44 @@ export interface AuditIssue {
   fingerprint?: string
 }
 
+export interface ActionImpactSummary {
+  critical: number
+  high: number
+  medium: number
+  low: number
+}
+
+export interface ActionDependency {
+  id: string
+  description: string
+  blocking: boolean
+}
+
+export interface VerificationCriterion {
+  description: string
+  affectedPages: string[]
+}
+
+export interface OptimizationAction {
+  id: string
+  issueId: string
+  title: string
+  category: Category
+  severity: Severity
+  impact: 'critical' | 'high' | 'medium' | 'low'
+  confidence: 'high' | 'medium' | 'low'
+  effort: Effort
+  priorityScore: number
+  status: Status
+  affectedPages: string[]
+  affectedResources: string[]
+  evidenceCount: number
+  dependencies: ActionDependency[]
+  implementationSteps: string[]
+  verification: VerificationCriterion[]
+  expectedOutcome: string
+}
+
 export interface Audit {
   health?: AuditHealthSummary
   id: string
@@ -94,6 +132,7 @@ export interface Audit {
   durationMs: number
   scores: AuditScore[]
   issues: AuditIssue[]
+  actions?: OptimizationAction[]
   stats?: AuditStats
   standards?: AuditStandard[]
   diagnostics?: { code: string; stage: string; message: string; technicalDetails?: string; targetUrl?: string; pageUrl?: string; retryable: boolean }
@@ -151,6 +190,7 @@ export interface AuditResult {
   score?: number
   scores: AuditScore[]
   issues: AuditIssue[]
+  actions?: OptimizationAction[]
   durationMs: number
   stats?: AuditStats
   standards?: AuditStandard[]
