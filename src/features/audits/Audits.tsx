@@ -17,45 +17,40 @@ export function NewAudit() {
   const [url] = useState(normaliseUrl(initialUrl))
   const [running, setRunning] = useState(false)
   const [error, setError] = useState('')
-  const [progress, setProgress] = useState<import('../../services/discovery').DiscoveryProgress[]>([])
   const navigate = useNavigate()
 
   const run = async () => {
     if (!isValidUrl(url)) { setError('Enter a valid HTTP or HTTPS URL.'); return }
     setRunning(true); setError(''); setProgress([])
-    const discoveryStarted = performance.now()
+    const auditStarted = performance.now()
     try {
-      const discovery = await new (await import('../../services/discovery')).BrowserDiscoveryProvider().discover(url, {
-        onProgress: item => setProgress(current => [...current.filter(existing => existing.step !== item.step), item]),
-      })
-      const result = await new ServerAuditProvider().runAudit(discovery.finalUrl, categories)
+      const result = await new ServerAuditProvider().runAudit(url, categories)
       const website: typeof seedWebsites[number] = {
         id: `site-${Date.now()}`,
-        name: new URL(discovery.finalUrl).hostname,
-        url: discovery.finalUrl,
+        name: new URL(url).hostname,
+        url,
         createdAt: new Date().toISOString(),
       }
       const audit: Audit = {
         id: `audit-${Date.now()}`,
         websiteId: website.id,
-        url: discovery.finalUrl,
+        url,
         createdAt: new Date().toISOString(),
         ...result,
         stats: {
           ...result.stats,
           discovery: {
-            finalUrl: discovery.finalUrl,
-            https: discovery.https,
-            robotsFound: discovery.robots.found,
-            sitemapFound: discovery.sitemap.found,
-            sitemapPageCount: discovery.sitemap.pageCount,
-            discoveredPageCount: discovery.pages.length,
-            technologies: discovery.technology,
+            finalUrl: url,
+            https: new URL(url).protocol === 'https:',
+            robotsFound: false,
+            sitemapFound: false,
+            discoveredPageCount: 1,
+            technologies: [],
           },
           pageScope: 'single-page',
           source: 'live',
         },
-        durationMs: Math.round(performance.now() - discoveryStarted),
+        durationMs: Math.round(performance.now() - auditStarted),
       }
       storage.saveWebsites([...seedWebsites, website])
       storage.saveAudits([...seedAudits, audit])
@@ -69,13 +64,13 @@ export function NewAudit() {
   }
 
   return <div className="narrow stack">
-    <div className="page-heading"><div><span className="eyebrow">Website discovery</span><h1>Understand the site before auditing it.</h1><p>Ottimo first checks the public website, its crawl hints, linked pages and detectable technology. It then hands that evidence to the audit engine.</p></div></div>
+    <div className="page-heading"><div><span className="eyebrow">Website audit</span><h1>Understand the rendered page before prioritising improvements.</h1><p>Ottimo runs the server-side audit engine against the website so browser, accessibility, SEO and technical evidence are collected outside the React client.</p></div></div>
     <Card>
       <label>Website URL<input disabled value={url} aria-describedby="url-help" /></label>
       <p id="url-help" className="muted">Discovery starts from the URL you selected during onboarding.</p>
       {error && <p className="error" role="alert">{error}</p>}
       <Button disabled={running} onClick={run}>{running ? 'Discovering...' : 'Start discovery'}</Button>
-      {running && <div className="audit-progress" aria-live="polite">{progress.map(item => <div key={item.step} className={item.status === 'complete' ? 'done' : ''}>{item.status === 'running' ? '◌' : item.status === 'complete' ? '✓' : '–'} · {item.label}{item.detail ? ` — ${item.detail}` : ''}</div>)}</div>}
+      {running && <div className="audit-progress" aria-live="polite"><div>◌ · Running the rendered audit engine</div><div>· Collecting browser, accessibility, SEO and technical evidence</div></div>}
     </Card>
   </div>
 }
