@@ -13,6 +13,7 @@ const action = (status: 'open' | 'in_progress' | 'resolved' = 'open'): Optimizat
   effort: 'low',
   priorityScore: 90,
   status,
+  lifecycleStatus: status === 'resolved' ? 'resolved' : status === 'in_progress' ? 'in_progress' : 'planned',
   affectedPages: ['https://example.com/'],
   affectedResources: [],
   evidenceCount: 1,
