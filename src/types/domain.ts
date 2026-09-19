@@ -255,7 +255,8 @@ export interface OptimizationAction {
   confidence: 'high' | 'medium' | 'low'
   effort: Effort
   priorityScore: number
-  status: ActionLifecycleStatus
+  status: Status
+  lifecycleStatus: ActionLifecycleStatus
   affectedPages: string[]
   affectedResources: string[]
   evidenceCount: number
