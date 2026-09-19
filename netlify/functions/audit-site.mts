@@ -11,24 +11,42 @@ const json = (status: number, body: unknown) => new Response(JSON.stringify(body
 export default async (request: Request) => {
   if (request.method !== 'POST') return json(405, { error: 'Method not allowed.' })
 
-  let input: { url?: string; categories?: AuditCategory[]; timeoutMs?: number; maxPages?: number }
-  try { input = await request.json() as typeof input } catch { return json(400, { error: 'Request body must be valid JSON.' }) }
-  if (typeof input.url !== 'string') return json(400, { error: 'A URL is required.' })
+  try {
+    let input: { url?: string; categories?: AuditCategory[]; timeoutMs?: number; maxPages?: number }
+    try {
+      input = await request.json() as typeof input
+    } catch {
+      return json(400, { error: 'Request body must be valid JSON.' })
+    }
 
-  const pageEngine = new AuditEngine(
-    new PlaywrightPageCollector(async () => playwrightChromium.launch({
-      executablePath: await chromium.executablePath(),
-      args: chromium.args,
-      headless: chromium.headless,
-    })),
-  )
+    if (typeof input.url !== 'string' || !input.url.trim()) {
+      return json(400, { error: 'A URL is required.' })
+    }
 
-  const report = await new SiteAuditEngine(pageEngine).audit({
-    url: input.url,
-    categories: input.categories,
-    timeoutMs: Math.min(input.timeoutMs ?? 10_000, 15_000),
-    maxPages: Math.min(input.maxPages ?? 10, 25),
-  })
+    const pageEngine = new AuditEngine(
+      new PlaywrightPageCollector(async () => playwrightChromium.launch({
+        executablePath: await chromium.executablePath(),
+        args: chromium.args,
+        headless: chromium.headless,
+      })),
+    )
 
-  return json(report.run.status === 'completed' ? 200 : 422, report)
+    const report = await new SiteAuditEngine(pageEngine).audit({
+      url: input.url,
+      categories: input.categories,
+      timeoutMs: Math.min(input.timeoutMs ?? 8_000, 12_000),
+      maxPages: Math.min(input.maxPages ?? 10, 25),
+      concurrency: 2,
+    })
+
+    return json(report.run.status === 'completed' ? 200 : 422, report)
+  } catch (error) {
+    return json(500, {
+      error: {
+        code: 'audit_service_failed',
+        message: error instanceof Error ? error.message : 'The audit service failed unexpectedly.',
+        recoverable: true,
+      },
+    })
+  }
 }
