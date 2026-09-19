@@ -1,6 +1,7 @@
 import type { AuditResult, AuditIssue, AuditStandard, Category } from '../types/domain'
 import { auditScores } from '../data/mock'
 import { harbourPineAudit } from '../data/fixtures/harbourPine'
+import { collectPage } from './collection'
 export interface AuditProvider { runAudit(url:string): Promise<AuditResult> }
 export const auditStandards: { name: AuditStandard; description: string }[] = [
   { name: 'WCAG 2.2 AA', description: 'Accessibility signals mapped to perceivable, operable, understandable and robust content.' },
@@ -44,7 +45,7 @@ export class BrowserAuditProvider implements AuditProvider {
    const score: AuditResult['score'] = undefined
   const externalLinkCount = links.filter(link => { try { return new URL(link.href, url).origin !== new URL(url).origin } catch { return false } }).length
   const wordCount = (document.body.textContent ?? '').trim().split(/\s+/).filter(Boolean).length
-  return { score, scores, issues, durationMs: Math.round(performance.now() - started), standards: auditStandards.map(standard => standard.name), stats: { htmlBytes: new TextEncoder().encode(html).length, imageCount: images.length, linkCount: links.length, externalLinkCount, headingCount: document.querySelectorAll('h1,h2,h3').length, scriptCount: document.scripts.length, formCount: document.forms.length, buttonCount: buttons.length, wordCount, title, language: document.documentElement.lang || undefined, screenshotUrl: `https://image.thum.io/get/width/1200/fullpage/${url}`, screenshotMode: 'full-page', pageScope: 'single-page', performance: { fetchMs: Math.round(responseMs), firstResponseMs: Math.round(responseMs), htmlParseMs: Math.round(htmlParseMs), mode: 'browser-fetch' }, source: 'live' } }
+  return { score, scores, issues, durationMs: Math.round(performance.now() - started), standards: auditStandards.map(standard => standard.name), stats: { htmlBytes: new TextEncoder().encode(html).length, imageCount: images.length, linkCount: links.length, externalLinkCount, headingCount: document.querySelectorAll('h1,h2,h3').length, scriptCount: document.scripts.length, formCount: document.forms.length, buttonCount: buttons.length, wordCount, title, language: document.documentElement.lang || undefined, screenshotUrl: `https://image.thum.io/get/width/1200/fullpage/${url}`, screenshotMode: 'full-page', pageScope: 'single-page', performance: { collectionMs: Math.round(responseMs), htmlParseMs: Math.round(htmlParseMs), mode: 'unavailable' }, source: 'live' } }
  }
 }
 const issueTemplates: Omit<AuditIssue,'id'>[] = [
