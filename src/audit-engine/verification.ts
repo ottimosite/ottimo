@@ -21,9 +21,7 @@ export function verifyActions(previous: Audit, current: Audit, verifiedAt = new 
       ? current.issues.some(issue => issue.id === action.issueId || issue.title.toLowerCase() === action.title.toLowerCase())
       : currentFingerprints.has(action.id)
 
-    const resolvedByComparison = current.comparison?.changes.some(
-      change => change.type === 'resolved' && change.title.toLowerCase() === action.title.toLowerCase(),
-    ) ?? false
+    const resolvedByComparison = false
 
     const status: VerificationStatus = resolvedByComparison || !stillPresent
       ? 'verified'
