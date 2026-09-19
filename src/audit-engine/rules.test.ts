@@ -14,7 +14,10 @@ const page: PageSnapshot = {
   language: 'en',
   secureContext: true,
   timing: { ttfbMs: 120 },
-  resources: [\n    { url: 'https://example.test/missing.js', type: 'script', status: 404 },\n    { url: 'https://example.test/hero.webp', type: 'image', status: 200, transferSize: 700_000, durationMs: 450 },\n  ],
+  resources: [
+    { url: 'https://example.test/missing.js', type: 'script', status: 404 },
+    { url: 'https://example.test/hero.webp', type: 'image', status: 200, transferSize: 700_000, durationMs: 450 },
+  ],
   requestFailures: [],
   accessibility: { violations: [{ id: 'image-alt', impact: 'serious', help: 'Images must have alternate text', description: 'Images must have alternate text', nodes: [{ target: ['img'] }] }] },
 }
