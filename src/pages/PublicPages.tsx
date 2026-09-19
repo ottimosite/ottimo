@@ -111,7 +111,7 @@ export function Home() {
     </section>
 
     <section className="case-study-lead">
-      <div><span className="eyebrow">Demo evidence / Harbour & Pine</span><h2>A score is only useful when it points to the next decision.</h2><p>Our saved example looks at an independent home and lifestyle retailer through the same customer and technical lens: delivery promises, collection paths, accessibility, page weight and structured business facts.</p><Link className="text-link" to="/app/audits/audit-kingdom-coffee">Explore the example audit →</Link></div>
+      <div><span className="eyebrow">Demo evidence / Harbour & Pine</span><h2>A score is only useful when it points to the next decision.</h2><p>Our saved example looks at an independent home and lifestyle retailer through the same customer and technical lens: delivery promises, collection paths, accessibility, page weight and structured business facts.</p><Link className="text-link" to="/app/audits/audit-harbour-pine">Explore the example audit →</Link></div>
       <div className="case-score"><span>Overall health</span><strong>{harbourPineAudit.score}</strong><small>six categories reviewed</small><div className="case-bars">{harbourPineAudit.scores.slice(0, 4).map(score => <div key={score.category}><span>{score.category}</span><i style={{ width: `${score.score}%` }} /></div>)}</div></div>
     </section>
 
