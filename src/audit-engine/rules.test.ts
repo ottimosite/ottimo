@@ -21,7 +21,7 @@ const page: PageSnapshot = {
 
 describe('audit engine rules', () => {
   it('creates evidence-backed findings without calculating a synthetic score', () => {
-    const context = { page, evidence: [], measurements: [], checks: [], findings: [] }
+    const context = { page, evidence: [] as import('./types').AuditEvidence[], measurements: [] as import('./types').AuditMeasurement[], checks: [] as import('./types').AuditCheck[], findings: [] as import('./types').AuditFinding[] }
     runAuditRules(context, ['performance', 'accessibility', 'seo', 'technical'])
     expect(context.measurements.some(item => item.metric === 'ttfb')).toBe(true)
     expect(context.findings.some(item => item.category === 'accessibility')).toBe(true)
