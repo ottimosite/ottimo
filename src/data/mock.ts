@@ -1,9 +1,9 @@
 import type { Audit, AuditIssue, AuditScore, Website } from '../types/domain'
-import { kingdomCoffeeAudit, kingdomCoffeeWebsite } from './fixtures/kingdomCoffee'
+import { harbourPineAudit, harbourPineWebsite } from './fixtures/harbourPine'
 
 export const categoryLabels = { performance:'Performance', accessibility:'Accessibility', seo:'SEO', usability:'Usability', technical:'Technical', ai:'AI readiness' } as const
 export const seedWebsites: Website[] = [
-  kingdomCoffeeWebsite,
+  harbourPineWebsite,
   { id:'site-1', name:'Demo Business', url:'https://example.com', createdAt:'2026-08-30T10:00:00Z', lastAuditId:'audit-3' },
   { id:'site-2', name:'Ottimo Labs', url:'https://ottimo.test', createdAt:'2026-08-31T12:00:00Z', lastAuditId:'audit-2' }
 ]
@@ -22,5 +22,5 @@ export const seedAudits: Audit[] = [
   { id:'audit-1', websiteId:'site-1', url:'https://example.com', createdAt:'2026-08-20T09:15:00Z', score:78, durationMs:1840, scores:auditScores.map((s,i)=>({...s,score:Math.max(70,s.score-9+i)})), issues:baseIssues.map(i=>({...i,status:i.status==='resolved'?'resolved':'open'})) },
   { id:'audit-2', websiteId:'site-2', url:'https://ottimo.test', createdAt:'2026-08-29T13:40:00Z', score:83, durationMs:1720, scores:auditScores.map((s,i)=>({...s,score:Math.max(75,s.score-4+i%2)})), issues:baseIssues.slice(0,5).map(i=>({...i,id:`a2-${i.id}`})) },
   { id:'audit-3', websiteId:'site-1', url:'https://example.com', createdAt:'2026-09-05T16:30:00Z', score:87, durationMs:1510, scores:auditScores, issues:baseIssues },
-  kingdomCoffeeAudit
+  harbourPineAudit
 ]
