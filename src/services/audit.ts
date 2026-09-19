@@ -1,6 +1,6 @@
 import type { AuditResult, AuditIssue, AuditStandard, Category } from '../types/domain'
 import { auditScores } from '../data/mock'
-import { kingdomCoffeeAudit } from '../data/fixtures/kingdomCoffee'
+import { harbourPineAudit } from '../data/fixtures/harbourPine'
 export interface AuditProvider { runAudit(url:string): Promise<AuditResult> }
 export const auditStandards: { name: AuditStandard; description: string }[] = [
   { name: 'WCAG 2.2 AA', description: 'Accessibility signals mapped to perceivable, operable, understandable and robust content.' },
@@ -58,8 +58,8 @@ const issueTemplates: Omit<AuditIssue,'id'>[] = [
 export class MockAuditProvider implements AuditProvider {
  async runAudit(url:string):Promise<AuditResult>{
    await new Promise(r=>setTimeout(r,650))
-   if (url.replace(/\/$/, '') === kingdomCoffeeAudit.url) {
-    return { score: kingdomCoffeeAudit.score, scores: kingdomCoffeeAudit.scores, issues: kingdomCoffeeAudit.issues, durationMs: kingdomCoffeeAudit.durationMs, standards: auditStandards.map(standard => standard.name) }
+   if (url.replace(/\/$/, '') === harbourPineAudit.url) {
+    return { score: harbourPineAudit.score, scores: harbourPineAudit.scores, issues: harbourPineAudit.issues, durationMs: harbourPineAudit.durationMs, standards: auditStandards.map(standard => standard.name) }
    }
    const issues = issueTemplates.map((issue,i)=>({...issue,id:`generated-${i+1}`}))
   return { score:87, scores:auditScores, issues, durationMs:1480, standards: auditStandards.map(standard => standard.name) }

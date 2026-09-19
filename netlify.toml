@@ -1,0 +1,13 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Ottimo is a client-side React Router application. Serve index.html
+# for application routes so direct navigation and refreshes work in production.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
