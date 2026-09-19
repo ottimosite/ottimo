@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { categoryLabels, seedAudits, seedWebsites } from '../../data/mock'
 import { ServerAuditProvider } from '../../services/server-audit'
@@ -15,54 +15,65 @@ export function NewAudit() {
   const initialUrl = new URLSearchParams(location.search).get('url') ?? 'https://example.com'
   const categories = new URLSearchParams(location.search).get('categories')?.split(',').filter(Boolean) ?? []
   const [url] = useState(normaliseUrl(initialUrl))
-  const [running, setRunning] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  const startedRef = useRef(false)
 
-  const run = async () => {
-    if (!isValidUrl(url)) { setError('Enter a valid HTTP or HTTPS URL.'); return }
-    setRunning(true); setError('')
-    const auditStarted = performance.now()
-    try {
-      const result = await new ServerAuditProvider().runAudit(url, categories)
-      const website: typeof seedWebsites[number] = {
-        id: `site-${Date.now()}`,
-        name: new URL(url).hostname,
-        url,
-        createdAt: new Date().toISOString(),
+  useEffect(() => {
+    if (startedRef.current) return
+    startedRef.current = true
+
+    const run = async () => {
+      if (!isValidUrl(url)) {
+        setError('The website address is not valid.')
+        return
       }
-      const audit: Audit = {
-        id: `audit-${Date.now()}`,
-        websiteId: website.id,
-        url,
-        createdAt: new Date().toISOString(),
-        ...result,
-        stats: {
-          ...result.stats,
-          pageScope: 'site-crawl',
-          source: 'live',
-        },
-        durationMs: Math.round(performance.now() - auditStarted),
+
+      const auditStarted = performance.now()
+      try {
+        const result = await new ServerAuditProvider().runAudit(url, categories)
+        const website: typeof seedWebsites[number] = {
+          id: 'site-' + Date.now(),
+          name: new URL(url).hostname,
+          url,
+          createdAt: new Date().toISOString(),
+        }
+        const audit: Audit = {
+          id: 'audit-' + Date.now(),
+          websiteId: website.id,
+          url,
+          createdAt: new Date().toISOString(),
+          ...result,
+          stats: { ...result.stats, pageScope: 'site-crawl', source: 'live' },
+          durationMs: Math.round(performance.now() - auditStarted),
+        }
+        storage.saveWebsites([...seedWebsites, website])
+        storage.saveAudits([...seedAudits, audit])
+        navigate('/app/audits/' + audit.id, { replace: true })
+      } catch (cause) {
+        setError(cause instanceof Error ? cause.message : 'Ottimo could not complete the audit.')
       }
-      storage.saveWebsites([...seedWebsites, website])
-      storage.saveAudits([...seedAudits, audit])
-      void categories
-      navigate(`/app/audits/${audit.id}`)
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : 'Ottimo could not complete the audit.')
-    } finally {
-      setRunning(false)
     }
-  }
 
-  return <div className="narrow stack">
-    <div className="page-heading"><div><span className="eyebrow">Website audit</span><h1>Understand the rendered page before prioritising improvements.</h1><p>Ottimo runs the server-side audit engine against the website so browser, accessibility, SEO and technical evidence are collected outside the React client.</p></div></div>
-    <Card>
-      <label>Website URL<input disabled value={url} aria-describedby="url-help" /></label>
-      <p id="url-help" className="muted">The audit runs server-side so the target website is never fetched from the React client.</p>
-      {error && <p className="error" role="alert">{error}</p>}
-      <Button disabled={running} onClick={run}>{running ? 'Auditing...' : 'Start audit'}</Button>
-      {running && <div className="audit-progress" aria-live="polite"><div>◌ · Running the rendered audit engine</div><div>· Collecting browser, accessibility, SEO and technical evidence</div></div>}
+    void run()
+  }, [categories, navigate, url])
+
+  return <div className="audit-loading">
+    <div className="audit-loading-copy">
+      <span className="eyebrow">Ottimo audit</span>
+      <h1>{error ? 'We could not complete the audit.' : 'Your report is being built.'}</h1>
+      <p>{error ? 'The audit service returned an error. You can retry without starting the onboarding process again.' : 'We are rendering the site, collecting evidence and turning it into a useful report. You do not need to do anything else.'}</p>
+    </div>
+    <Card className="audit-loading-card">
+      <div className="audit-loading-site">
+        <span className="onboarding-site-mark" aria-hidden="true">↗</span>
+        <div><small>Analysing</small><strong>{url}</strong></div>
+      </div>
+      {error ? <div className="audit-loading-error" role="alert"><p>{error}</p><Button onClick={() => window.location.reload()}>Try again</Button></div> : <div className="audit-loading-steps" aria-live="polite">
+        <div className="audit-loading-step active"><span>01</span><div><strong>Discovering the rendered site</strong><small>Checking the page and its internal paths.</small></div><i aria-hidden="true">✓</i></div>
+        <div className="audit-loading-step active"><span>02</span><div><strong>Collecting evidence</strong><small>Performance, accessibility, SEO and technical signals.</small></div><i aria-hidden="true">✓</i></div>
+        <div className="audit-loading-step current"><span>03</span><div><strong>Building your report</strong><small>Turning observations into findings and recommendations.</small></div><i aria-hidden="true">◌</i></div>
+      </div>}
     </Card>
   </div>
 }
