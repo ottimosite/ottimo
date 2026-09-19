@@ -54,7 +54,10 @@ export function NewAudit() {
           stats: { ...result.stats, pageScope: 'site-crawl', source: 'live' },
           durationMs: Math.round(performance.now() - auditStarted),
         }
-        if (previousAudits[0]) {\n          audit.comparison = compareAudits(previousAudits[0], audit)\n          audit.verifications = verifyActions(previousAudits[0], audit)\n        }
+        if (previousAudits[0]) {
+          audit.comparison = compareAudits(previousAudits[0], audit)
+          audit.verifications = verifyActions(previousAudits[0], audit)
+        }
         storage.saveWebsites(allWebsites.some(item => item.id === website.id) ? allWebsites : [...allWebsites, website])
         storage.saveAudits([...seedAudits, ...storage.audits(), audit])
         navigate('/app/audits/' + audit.id, { replace: true })
