@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { categoryLabels, seedAudits, seedWebsites } from '../../data/mock'
 import { ServerAuditProvider } from '../../services/server-audit'
@@ -7,14 +7,14 @@ import type { Audit, Category, Severity, Status } from '../../types/domain'
 import { Badge, Button, Card, Progress } from '../../components/ui'
 import { formatDate } from '../../lib/format'
 import { isValidUrl, normaliseUrl } from '../../lib/validation'
-//.export function AuditList() { const [audits] = useState(() => storage.audits().length ? storage.audits() : seedAudits); return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Audits</span><h1>Turn a URL into a clear action plan.</h1><p>Run the live audit engine against the rendered website and turn its evidence into an action plan.</p></div><Link className="btn btn-primary" to="/app/audits/new">New audit</Link></div><Card><div className="audit-list">{audits.map(audit => <Link className="audit-item" key={audit.id} to={`/app/audits/${audit.id}`}><span className="audit-score">{audit.score ?? "—"}</span><span><strong>{seedWebsites.find(website => website.id === audit.websiteId)?.name ?? audit.url}</strong><small>{formatDate(audit.createdAt)} · {audit.issues.filter(issue => issue.status !== 'resolved').length} open issues</small></span><span>→</span></Link>)}</div></Card></div> }
+
+export function AuditList() { const [audits] = useState(() => storage.audits().length ? storage.audits() : seedAudits); return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Audits</span><h1>Turn a URL into a clear action plan.</h1><p>Run the live audit engine against the rendered website and turn its evidence into an action plan.</p></div><Link className="btn btn-primary" to="/app/audits/new">New audit</Link></div><Card><div className="audit-list">{audits.map(audit => <Link className="audit-item" key={audit.id} to={`/app/audits/${audit.id}`}><span className="audit-score">{audit.score ?? "—"}</span><span><strong>{seedWebsites.find(website => website.id === audit.websiteId)?.name ?? audit.url}</strong><small>{formatDate(audit.createdAt)} · {audit.issues.filter(issue => issue.status !== 'resolved').length} open issues</small></span><span>→</span></Link>)}</div></Card></div> }
 
 export function NewAudit() {
   const location = useLocation()
   const initialUrl = new URLSearchParams(location.search).get('url') ?? 'https://example.com'
   const categories = new URLSearchParams(location.search).get('categories')?.split(',').filter(Boolean) ?? []
   const [url] = useState(normaliseUrl(initialUrl))
-  const [running, setRunning] = useState(true)
   const [error, setError] = useState('')
   const navigate = useNavigate()
   const startedRef = useRef(false)
@@ -25,7 +25,6 @@ export function NewAudit() {
 
     const run = async () => {
       if (!isValidUrl(url)) {
-        setRunning(false)
         setError('The website address is not valid.')
         return
       }
@@ -34,30 +33,25 @@ export function NewAudit() {
       try {
         const result = await new ServerAuditProvider().runAudit(url, categories)
         const website: typeof seedWebsites[number] = {
-          id: \`site-\${Date.now()}\`,
+          id: 'site-' + Date.now(),
           name: new URL(url).hostname,
           url,
           createdAt: new Date().toISOString(),
         }
         const audit: Audit = {
-          id: \`audit-\${Date.now()}\`,
+          id: 'audit-' + Date.now(),
           websiteId: website.id,
           url,
           createdAt: new Date().toISOString(),
           ...result,
-          stats: {
-            ...result.stats,
-            pageScope: 'site-crawl',
-            source: 'live',
-          },
+          stats: { ...result.stats, pageScope: 'site-crawl', source: 'live' },
           durationMs: Math.round(performance.now() - auditStarted),
         }
         storage.saveWebsites([...seedWebsites, website])
         storage.saveAudits([...seedAudits, audit])
-        navigate(\`/app/audits/\${audit.id}\`, { replace: true })
+        navigate('/app/audits/' + audit.id, { replace: true })
       } catch (cause) {
         setError(cause instanceof Error ? cause.message : 'Ottimo could not complete the audit.')
-        setRunning(false)
       }
     }
 
@@ -70,17 +64,12 @@ export function NewAudit() {
       <h1>{error ? 'We could not complete the audit.' : 'Your report is being built.'}</h1>
       <p>{error ? 'The audit service returned an error. You can retry without starting the onboarding process again.' : 'We are rendering the site, collecting evidence and turning it into a useful report. You do not need to do anything else.'}</p>
     </div>
-
     <Card className="audit-loading-card">
       <div className="audit-loading-site">
         <span className="onboarding-site-mark" aria-hidden="true">↗</span>
         <div><small>Analysing</small><strong>{url}</strong></div>
       </div>
-
-      {error ? <div className="audit-loading-error" role="alert">
-        <p>{error}</p>
-        <Button onClick={() => window.location.reload()}>Try again</Button>
-      </div> : <div className="audit-loading-steps" aria-live="polite">
+      {error ? <div className="audit-loading-error" role="alert"><p>{error}</p><Button onClick={() => window.location.reload()}>Try again</Button></div> : <div className="audit-loading-steps" aria-live="polite">
         <div className="audit-loading-step active"><span>01</span><div><strong>Discovering the rendered site</strong><small>Checking the page and its internal paths.</small></div><i aria-hidden="true">✓</i></div>
         <div className="audit-loading-step active"><span>02</span><div><strong>Collecting evidence</strong><small>Performance, accessibility, SEO and technical signals.</small></div><i aria-hidden="true">✓</i></div>
         <div className="audit-loading-step current"><span>03</span><div><strong>Building your report</strong><small>Turning observations into findings and recommendations.</small></div><i aria-hidden="true">◌</i></div>
