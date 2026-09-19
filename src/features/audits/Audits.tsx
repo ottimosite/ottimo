@@ -39,15 +39,7 @@ export function NewAudit() {
         ...result,
         stats: {
           ...result.stats,
-          discovery: {
-            finalUrl: url,
-            https: new URL(url).protocol === 'https:',
-            robotsFound: false,
-            sitemapFound: false,
-            discoveredPageCount: 1,
-            technologies: [],
-          },
-          pageScope: 'single-page',
+          pageScope: 'site-crawl',
           source: 'live',
         },
         durationMs: Math.round(performance.now() - auditStarted),
