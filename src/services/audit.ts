@@ -35,34 +35,11 @@ export class BrowserAuditProvider implements AuditProvider {
   if (!document.documentElement.lang) add({ category:'technical', severity:'low', title:'Document language is not declared', summary:'The HTML element has no lang attribute.', impact:'Assistive technology may choose the wrong pronunciation rules.', solution:'Declare the primary content language on the html element.', effort:'low', priority:60, status:'open', standards:['WCAG 2.2 AA'], criterion:'WCAG 3.1.1 · Language of Page' })
   if (!document.querySelector('meta[name="viewport"]')) add({ category:'usability', severity:'medium', title:'Mobile viewport is not declared', summary:'No responsive viewport meta tag was found.', impact:'The page may render at an awkward scale on mobile devices.', solution:'Add a responsive viewport meta tag for predictable mobile layout.', effort:'low', priority:74, status:'open', standards:['Technical SEO', 'WCAG 2.2 AA'], criterion:'Mobile rendering baseline' })
   if (links.length < 3) add({ category:'usability', severity:'low', title:'Page has very few navigable links', summary:'The fetched document contains fewer than three links.', impact:'Visitors may have difficulty discovering the next useful page or action.', solution:'Provide clear links to key services, products, contact paths, or supporting information.', effort:'medium', priority:52, status:'open', standards:['Technical SEO'], criterion:'Crawlable internal paths' })
-   const performanceScore = Math.max(45, Math.min(98, 100 - Math.min(45, Math.round((html.length / 100000) * 10)) - Math.min(20, images.length * 2)))
-   const accessibilityScore = Math.max(45, 100 - issues.filter(issue => issue.category === 'accessibility').length * 10)
-   const seoScore = Math.max(45, 100 - issues.filter(issue => issue.category === 'seo').length * 12)
-   const usabilityScore = Math.max(45, 100 - issues.filter(issue => issue.category === 'usability').length * 12)
-   const technicalScore = Math.max(45, 100 - issues.filter(issue => issue.category === 'technical').length * 10)
-   const aiScore = Math.max(45, Math.min(96, 70 + (title ? 8 : 0) + (description ? 8 : 0) + (headings.length === 1 ? 8 : 0)))
-   const scores = [{ category:'performance' as const, score:performanceScore }, { category:'accessibility' as const, score:accessibilityScore }, { category:'seo' as const, score:seoScore }, { category:'usability' as const, score:usabilityScore }, { category:'technical' as const, score:technicalScore }, { category:'ai' as const, score:aiScore }]
-  const externalLinkCount = links.filter(link => { try { return new URL(link.href, url).origin !== new URL(url).origin } catch { return false } }).length
-  const wordCount = (document.body.textContent ?? '').trim().split(/\s+/).filter(Boolean).length
-  return { score: Math.round(scores.reduce((total, item) => total + item.score, 0) / scores.length), scores, issues, durationMs: Math.round(performance.now() - started), standards: auditStandards.map(standard => standard.name), stats: { htmlBytes: new TextEncoder().encode(html).length, imageCount: images.length, linkCount: links.length, externalLinkCount, headingCount: document.querySelectorAll('h1,h2,h3').length, scriptCount: document.scripts.length, formCount: document.forms.length, buttonCount: buttons.length, wordCount, title, language: document.documentElement.lang || undefined, screenshotUrl: `https://image.thum.io/get/width/1200/fullpage/${url}`, screenshotMode: 'full-page', pageScope: 'single-page', performance: { fetchMs: Math.round(responseMs), firstResponseMs: Math.round(responseMs), htmlParseMs: Math.round(htmlParseMs), mode: 'browser-fetch' }, source: 'live' } }
- }
-}
-const issueTemplates: Omit<AuditIssue,'id'>[] = [
- { category:'performance', severity:'high', title:'Largest image is not efficiently delivered', summary:'The primary visual is heavier than necessary and can delay LCP.', impact:'Faster visual completion improves perceived speed and mobile experience.', solution:'Serve a responsive modern format, reserve dimensions and preload only the critical asset.', effort:'low', priority:92, status:'open' },
- { category:'accessibility', severity:'high', title:'Interactive controls need clearer accessible names', summary:'Some controls depend too heavily on visual context.', impact:'Assistive technology users may miss the purpose of a control.', solution:'Provide explicit accessible names and keep visible labels where possible.', effort:'low', priority:88, status:'open' },
- { category:'seo', severity:'medium', title:'Page titles need stronger intent matching', summary:'Titles should more closely reflect page purpose and search intent.', impact:'Clear titles improve search-result comprehension and relevance.', solution:'Create unique, concise titles for each indexable page.', effort:'low', priority:71, status:'open' },
- { category:'technical', severity:'medium', title:'Non-critical JavaScript blocks useful work', summary:'Third-party work competes with core page interaction.', impact:'Reducing main-thread work can improve responsiveness.', solution:'Defer non-essential scripts and remove unused code paths.', effort:'medium', priority:76, status:'open' },
- { category:'usability', severity:'low', title:'Primary actions could be more obvious', summary:'Several controls share similar visual emphasis.', impact:'Users may hesitate before choosing a next step.', solution:'Use one clear primary action at key decision points.', effort:'low', priority:55, status:'open' },
- { category:'ai', severity:'medium', title:'Important facts should be more structured', summary:'Core content could be expressed more consistently for machines and people.', impact:'Better structure makes important business information easier to interpret.', solution:'Use semantic sections, consistent entities and structured content patterns.', effort:'medium', priority:66, status:'open' }
-]
-export class MockAuditProvider implements AuditProvider {
- async runAudit(url:string):Promise<AuditResult>{
-   await new Promise(r=>setTimeout(r,650))
-   if (url.replace(/\/$/, '') === harbourPineAudit.url) {
-    return { score: harbourPineAudit.score, scores: harbourPineAudit.scores, issues: harbourPineAudit.issues, durationMs: harbourPineAudit.durationMs, standards: auditStandards.map(standard => standard.name) }
-   }
-   const issues = issueTemplates.map((issue,i)=>({...issue,id:`generated-${i+1}`}))
-  return { score:87, scores:auditScores, issues, durationMs:1480, standards: auditStandards.map(standard => standard.name) }
- }
-}
-export function scoreCategory(scores:AuditResult['scores'], category:Category){ return scores.find(s=>s.category===category)?.score ?? 0 }
+   // Live browser-fetch inspection produces evidence, not a synthetic performance score.
+   // Rendered performance metrics and trustworthy cross-domain scoring belong to later audit providers.
+   const scores = (['performance', 'accessibility', 'seo', 'usability', 'technical', 'ai'] as const).map(category => ({
+     category,
+     measurement: 'unavailable' as const,
+   }))
+   const score: AuditResult['score'] = undefined
+
