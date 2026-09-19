@@ -90,9 +90,9 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
       },
       pageScope: 'site-crawl',
       source: 'live',
-        technologySignals: firstPage?.technology,
-        searchVisibility: firstPage?.searchVisibility,
-        socialPresence: firstPage?.socialPresence,
+      technologySignals: firstPage?.technology,
+      searchVisibility: firstPage?.searchVisibility,
+      socialPresence: firstPage?.socialPresence,
     },
   }
 }
