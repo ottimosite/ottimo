@@ -23,6 +23,22 @@ export interface TechnologySignal { name: string; category: 'cms' | 'framework' 
 export interface SearchVisibilityProfile { titlePresent: boolean; titleLength?: number; metaDescriptionPresent: boolean; metaDescriptionLength?: number; canonicalPresent: boolean; h1Count: number; structuredDataCount: number; openGraphPresent: boolean; twitterCardPresent: boolean; sitemapLinked: boolean }
 export interface SocialPresenceProfile { profiles: string[]; shareMetadata: string[]; socialScripts: string[] }
 
+export interface PerformanceSiteSummary {
+  pagesMeasured: number
+  lcpMs?: { median: number; worst: number; worstPage?: string }
+  fcpMs?: { median: number; worst: number; worstPage?: string }
+  ttfbMs?: { median: number; worst: number; worstPage?: string }
+  cls?: { median: number; worst: number; worstPage?: string }
+  inpMs?: { median: number; worst: number; worstPage?: string }
+}
+
+export interface SiteIntelligenceSummary {
+  performance: PerformanceSiteSummary
+  search: SearchVisibilitySummary
+  technology: TechnologySummary
+  social: SocialSummary
+}
+
 export interface SearchVisibilitySummary {
   pagesMeasured: number
   titleCoverage: number
@@ -148,6 +164,7 @@ export interface WebsiteHealthModel {
   issueCount: number
   actionCount: number
   categoryCoverage: Record<Category, 'measured' | 'partial' | 'unavailable'>
+  siteIntelligence: SiteIntelligenceSummary
 }
 
 export interface Website {

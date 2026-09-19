@@ -1,4 +1,51 @@
+import type { PerformanceMetrics } from '../types/domain'
 import type { SearchVisibilityProfile, SocialPresenceProfile, TechnologySignal } from './types'
+
+export interface PerformanceSiteSummary {
+  pagesMeasured: number
+  lcpMs?: { median: number; worst: number; worstPage?: string }
+  fcpMs?: { median: number; worst: number; worstPage?: string }
+  ttfbMs?: { median: number; worst: number; worstPage?: string }
+  cls?: { median: number; worst: number; worstPage?: string }
+  inpMs?: { median: number; worst: number; worstPage?: string }
+}
+
+export interface SiteIntelligenceSummary {
+  performance: PerformanceSiteSummary
+  search: SearchVisibilitySummary
+  technology: TechnologySummary
+  social: SocialSummary
+}
+
+const numericSummary = (values: Array<{ value: number; page: string }>) => {
+  if (!values.length) return undefined
+  const sorted = [...values].sort((a, b) => a.value - b.value)
+  const median = sorted.length % 2
+    ? sorted[Math.floor(sorted.length / 2)].value
+    : Number(((sorted[sorted.length / 2 - 1].value + sorted[sorted.length / 2].value) / 2).toFixed(2))
+  const worst = sorted[sorted.length - 1]
+  return { median, worst: worst.value, worstPage: worst.page }
+}
+
+export function summarisePerformance(pages: Array<{ url: string; performance?: PerformanceMetrics }>): PerformanceSiteSummary {
+  const metric = (key: keyof Pick<PerformanceMetrics, 'lcpMs' | 'fcpMs' | 'ttfbMs' | 'cls' | 'inpMs'>) =>
+    numericSummary(pages.flatMap(page => typeof page.performance?.[key] === 'number' ? [{ value: page.performance[key] as number, page: page.url }] : []))
+  return {
+    pagesMeasured: pages.filter(page => page.performance && Object.values(page.performance).some(value => typeof value === 'number')).length,
+    lcpMs: metric('lcpMs'), fcpMs: metric('fcpMs'), ttfbMs: metric('ttfbMs'), cls: metric('cls'), inpMs: metric('inpMs'),
+  }
+}
+
+export function buildSiteIntelligence(input: {
+  pages: Array<{ url: string; performance?: PerformanceMetrics; searchVisibility?: SearchVisibilityProfile; technology?: TechnologySignal[]; socialPresence?: SocialPresenceProfile }>
+}): SiteIntelligenceSummary {
+  return {
+    performance: summarisePerformance(input.pages),
+    search: summariseSearchVisibility(input.pages.map(page => page.searchVisibility)),
+    technology: summariseTechnology(input.pages.map(page => page.technology)),
+    social: summariseSocial(input.pages.map(page => page.socialPresence)),
+  }
+}
 
 export interface SearchVisibilitySummary {
   pagesMeasured: number

@@ -1,4 +1,6 @@
 import type { AuditIssue, AuditStats, Category, OptimizationAction } from '../types/domain'
+import { buildSiteIntelligence } from './site-intelligence'
+import type { SiteIntelligenceSummary } from './site-intelligence'
 
 export type PageArchetype = 'homepage' | 'landing' | 'product' | 'service' | 'category' | 'article' | 'contact' | 'utility' | 'unknown'
 
@@ -49,6 +51,7 @@ export interface WebsiteHealthModel {
   issueCount: number
   actionCount: number
   categoryCoverage: Record<Category, 'measured' | 'partial' | 'unavailable'>
+  siteIntelligence: SiteIntelligenceSummary
 }
 
 const normalisePath = (url: string) => {
@@ -120,6 +123,7 @@ export function buildWebsiteHealthModel(input: {
   issues: AuditIssue[]
   actions: OptimizationAction[]
   generatedAt?: string
+  siteIntelligence?: SiteIntelligenceSummary
 }): WebsiteHealthModel {
   const generatedAt = input.generatedAt ?? new Date().toISOString()
   const pageHealth = input.pages.map(page => {
@@ -170,5 +174,6 @@ export function buildWebsiteHealthModel(input: {
     issueCount: input.issues.length,
     actionCount: input.actions.length,
     categoryCoverage: categoryCoverage(input.pages, input.issues),
+    siteIntelligence: input.siteIntelligence ?? buildSiteIntelligence({ pages: input.pages.map(page => ({ url: page.url, performance: page.stats?.performance, searchVisibility: page.stats?.searchVisibility, technology: page.stats?.technologySignals, socialPresence: page.stats?.socialPresence })) }),
   }
 }
