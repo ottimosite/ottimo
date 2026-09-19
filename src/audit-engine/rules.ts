@@ -1,5 +1,5 @@
 import type { AuditRuleContext,AuditCategory,AuditEvidence,AuditCheck,AuditFinding,AuditMeasurement } from './types'
-const makeId=(prefix:string,value:string)=>prefix+'-'+Buffer.from(value).toString('base64url').slice(0,18);const now=()=>new Date().toISOString()
+const makeId=(prefix:string,value:string)=>{let hash=2166136261;for(const char of value){hash^=char.charCodeAt(0);hash=Math.imul(hash,16777619)}return prefix+'-'+(hash>>>0).toString(36)};const now=()=>new Date().toISOString()
 const evidence=(c:AuditRuleContext,x:Omit<AuditEvidence,'id'|'observedAt'>)=>{const e={...x,id:makeId('ev',x.kind+x.description+(x.url??'')+(x.selector??'')),observedAt:now()};c.evidence.push(e);return e}
 const check=(c:AuditRuleContext,x:Omit<AuditCheck,'id'>)=>{const e={...x,id:makeId('check',x.category+x.criterion)};c.checks.push(e);return e}
 const finding=(c:AuditRuleContext,x:Omit<AuditFinding,'id'>)=>{const e={...x,id:makeId('finding',x.category+x.title+(x.selector??'')+(x.resourceUrl??''))};c.findings.push(e);return e}
