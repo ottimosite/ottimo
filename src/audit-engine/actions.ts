@@ -2,6 +2,15 @@ import type { AuditIssue, Effort, Severity } from '../types/domain'
 
 export type ActionImpact = 'critical' | 'high' | 'medium' | 'low'
 
+export interface ActionPriorityBreakdown {
+  impact: number
+  severity: number
+  confidence: number
+  effort: number
+  evidence: number
+  score: number
+}
+
 export interface ActionDependency {
   id: string
   description: string
@@ -31,6 +40,7 @@ export interface OptimizationAction {
   implementationSteps: string[]
   verification: VerificationCriterion[]
   expectedOutcome: string
+  priority: ActionPriorityBreakdown
 }
 
 const impactFor = (issue: AuditIssue): ActionImpact => {
@@ -43,8 +53,16 @@ const impactFor = (issue: AuditIssue): ActionImpact => {
 }
 
 const impactWeight: Record<ActionImpact, number> = { critical: 100, high: 80, medium: 55, low: 30 }
+const severityWeight: Record<Severity, number> = { critical: 100, high: 80, medium: 55, low: 30 }
 const confidenceWeight: Record<NonNullable<AuditIssue['confidence']>, number> = { high: 1, medium: 0.85, low: 0.7 }
 const effortWeight: Record<Effort, number> = { low: 1, medium: 0.85, high: 0.7 }
+
+const priorityFor = (issue: AuditIssue, impact: ActionImpact, confidence: NonNullable<AuditIssue['confidence']>, effort: Effort, evidenceCount: number): ActionPriorityBreakdown => {
+  const evidence = Math.min(10, evidenceCount) * 2
+  const base = impactWeight[impact] * 0.35 + severityWeight[issue.severity] * 0.25 + evidence * 0.1
+  const score = Math.round(Math.min(100, base * confidenceWeight[confidence] * effortWeight[effort]))
+  return { impact: impactWeight[impact], severity: severityWeight[issue.severity], confidence: confidenceWeight[confidence], effort: effortWeight[effort], evidence, score }
+}
 
 const verificationFor = (issue: AuditIssue): VerificationCriterion[] => {
   const pages = issue.affectedPages ?? []
@@ -77,9 +95,9 @@ export function buildOptimizationActions(issues: AuditIssue[]): OptimizationActi
       const impact = impactFor(issue)
       const confidence = issue.confidence ?? 'low'
       const effort = issue.effort
-      const priorityScore = Math.round(
-        impactWeight[impact] * confidenceWeight[confidence] * effortWeight[effort],
-      )
+      const evidenceCount = issue.evidenceCount ?? (issue.evidence ? 1 : 0)
+      const priority = priorityFor(issue, impact, confidence, effort, evidenceCount)
+      const priorityScore = priority.score
 
       return {
         id: `action-${issue.id}`,
@@ -94,7 +112,8 @@ export function buildOptimizationActions(issues: AuditIssue[]): OptimizationActi
         status: issue.status,
         affectedPages: issue.affectedPages ?? [],
         affectedResources: issue.affectedResources ?? [],
-        evidenceCount: issue.evidenceCount ?? (issue.evidence ? 1 : 0),
+        evidenceCount,
+        priority,
         dependencies: [],
         implementationSteps: stepsFor(issue),
         verification: verificationFor(issue),

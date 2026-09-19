@@ -30,6 +30,8 @@ describe('optimization action engine', () => {
     expect(action.dependencies).toEqual([])
     expect(action.verification[0].description).toContain('non-empty document title')
     expect(action.implementationSteps).toHaveLength(3)
+    expect(action.priority.score).toBe(action.priorityScore)
+    expect(action.priority.evidence).toBe(4)
   })
 
   it('accounts for confidence and effort when calculating action priority', () => {
@@ -37,6 +39,12 @@ describe('optimization action engine', () => {
     const [highEffort] = buildOptimizationActions([issue({ effort: 'high' })])
 
     expect(lowEffort.priorityScore).toBeGreaterThan(highEffort.priorityScore)
+  })
+
+  it('uses the same deterministic inputs to order actions', () => {
+    const [highConfidence] = buildOptimizationActions([issue({ id: 'high', confidence: 'high', effort: 'low', evidenceCount: 4 })])
+    const [lowConfidence] = buildOptimizationActions([issue({ id: 'low', confidence: 'low', effort: 'high', evidenceCount: 1 })])
+    expect(highConfidence.priorityScore).toBeGreaterThan(lowConfidence.priorityScore)
   })
 
   it('keeps verification scoped to the affected pages', () => {
