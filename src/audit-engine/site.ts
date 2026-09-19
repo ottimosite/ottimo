@@ -1,5 +1,5 @@
 import { assertPublicTarget } from './security'
-import type { AuditReport, AuditRequest, AuditCategory } from './types'
+import type { AuditReport, AuditRequest } from './types'
 import { AuditEngine } from './engine'
 
 export interface SiteAuditRequest extends AuditRequest {
