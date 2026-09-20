@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { harbourPineAudit, harbourPineSnapshot } from '../data/fixtures/harbourPine'
+import { wikipediaAudit, wikipediaSnapshot } from '../data/fixtures/wikipedia'
 import { isValidUrl, normaliseUrl } from '../lib/validation'
 import { MockAuditProvider, scoreCategory } from '../services/audit'
 
@@ -15,21 +15,16 @@ describe('validation', () => {
 })
 
 describe('audit engine', () => {
-  it('returns deterministic scores', async () => {
-    const first = await new MockAuditProvider().runAudit('https://example.com')
-    const second = await new MockAuditProvider().runAudit('https://example.com')
-    expect(first.score).toBe(87)
-    expect(second.score).toBe(first.score)
-    expect(first.issues.length).toBeGreaterThan(3)
-    expect(scoreCategory(first.scores, 'performance')).toBe(91)
-    expect(first.standards).toEqual(['WCAG 2.2 AA', 'Core Web Vitals', 'Technical SEO'])
-  })
+  it('returns the deterministic Wikipedia snapshot without inventing health measurements', async () => {
+    const first = await new MockAuditProvider().runAudit(wikipediaSnapshot.sourceUrl)
+    const second = await new MockAuditProvider().runAudit(wikipediaSnapshot.sourceUrl)
 
-  it('returns the saved Harbour & Pine case study', async () => {
-    const result = await new MockAuditProvider().runAudit(harbourPineSnapshot.sourceUrl)
-    expect(result.score).toBe(harbourPineAudit.score)
-    expect(result.scores).toEqual(harbourPineAudit.scores)
-    expect(result.issues).toEqual(harbourPineAudit.issues)
-    expect(result.issues.some(issue => issue.title.toLowerCase().includes('collection'))).toBe(true)
+    expect(first).toEqual(second)
+    expect(first.score).toBeUndefined()
+    expect(first.scores).toEqual(wikipediaAudit.scores)
+    expect(first.issues).toEqual(wikipediaAudit.issues)
+    expect(scoreCategory(first.scores, 'performance')).toBe(0)
+    expect(first.stats?.source).toBe('local')
+    expect(first.stats?.title).toBe(wikipediaSnapshot.title)
   })
 })
