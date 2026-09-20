@@ -14,7 +14,7 @@ export function AIDecisionPanel({ audit }: { audit: Audit }) {
     if (!selectedIssue) return
     setState('loading')
     setAnalysis(undefined)
-    const result = await analyseWithSafeguards(new MockAIProvider(), buildAIContext(audit))
+    const focusedAudit = { ...audit, issues: [selectedIssue], actions: audit.actions?.filter(action => action.issueId === selectedIssue.id) ?? [] }\n    const result = await analyseWithSafeguards(new MockAIProvider(), buildAIContext(focusedAudit))
     if (!result) { setState('unavailable'); return }
     setAnalysis(result)
     setState('ready')
