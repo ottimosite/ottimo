@@ -87,6 +87,27 @@ export function WebsiteDetail() {
         </Card>
       </div>
 
+      <section className="card website-capability-navigation" aria-label="Website capability navigation">
+        <div className="section-head">
+          <div><span className="eyebrow">Website capabilities</span><h2>All of the evidence in one workspace</h2></div>
+          <span className="muted">Current website context</span>
+        </div>
+        <nav className="capability-links" aria-label="Website capabilities">
+          <Link to={`/app/websites/${encodeURIComponent(website.id)}`}>Health</Link>
+          <Link to={`/app/insights?website=${encodeURIComponent(website.id)}`}>Insights</Link>
+          <Link to={`/app/insights?website=${encodeURIComponent(website.id)}`}>Acquisition</Link>
+          <Link to={`/app/performance?website=${encodeURIComponent(website.id)}`}>Performance</Link>
+          <Link to={`/app/accessibility?website=${encodeURIComponent(website.id)}`}>Accessibility</Link>
+          <Link to={`/app/seo?website=${encodeURIComponent(website.id)}`}>Search</Link>
+          <Link to={`/app/usability?website=${encodeURIComponent(website.id)}`}>Experience</Link>
+          <Link to={`/app/technical?website=${encodeURIComponent(website.id)}`}>Technical</Link>
+          <Link to={`/app/ai-readiness?website=${encodeURIComponent(website.id)}`}>AI readiness</Link>
+          <Link to={`/app/recommendations?website=${encodeURIComponent(website.id)}`}>Actions</Link>
+          <Link to="/app/history">History</Link>
+          <Link to="/app/reports">Reports</Link>
+        </nav>
+      </section>
+
       <Card>
         <div className="section-head"><div><span className="eyebrow">Health by domain</span><h2>Where attention is concentrated</h2></div><span className="muted">Latest audit</span></div>
         <div className="health-domain-grid">
