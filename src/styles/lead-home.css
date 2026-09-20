@@ -241,3 +241,25 @@
   }
   .lead-home .ethos strong:first-child { padding-left: 0; }
 }
+
+.audit-example-card { transform: rotate(-2deg); }
+.audit-example-header { display:flex; justify-content:space-between; gap:16px; align-items:center; padding-bottom:18px; border-bottom:1px solid rgba(255,255,255,.18); }
+.audit-example-header span,.audit-example-header strong { color:var(--lime); font-size:.68rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
+.audit-example-header strong { color:#d9e7d6; }
+.audit-example-finding { padding:26px 0 22px; border-bottom:1px solid rgba(255,255,255,.18); }
+.audit-example-finding > span { color:#b9d1bf; font-size:.68rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
+.audit-example-finding h3 { margin:12px 0 10px; color:#fff; font:normal clamp(1.8rem,3vw,2.6rem)/.98 Georgia,serif; letter-spacing:-.04em; }
+.audit-example-finding p { margin:0; color:#d9e7d6; line-height:1.5; font-size:.86rem; }
+.audit-example-meta { display:grid; gap:0; padding:8px 0; }
+.audit-example-meta div { display:grid; grid-template-columns:110px 1fr; gap:14px; padding:12px 0; border-bottom:1px solid rgba(255,255,255,.12); }
+.audit-example-meta span { color:#b9d1bf; font-size:.68rem; font-weight:900; text-transform:uppercase; letter-spacing:.07em; }
+.audit-example-meta b { color:var(--lime); font-size:.78rem; line-height:1.4; }
+.audit-domain-states { display:grid; grid-template-columns:1fr 1fr; gap:1px; margin-top:18px; background:rgba(255,255,255,.12); }
+.audit-domain-states span { display:flex; justify-content:space-between; gap:8px; padding:10px; background:var(--forest); }
+.audit-domain-states b { color:#d9e7d6; font-size:.68rem; text-transform:capitalize; }
+.audit-domain-states em { color:var(--lime); font-size:.66rem; font-style:normal; font-weight:900; text-transform:capitalize; }
+@media(max-width:600px){
+  .audit-example-card { transform:none; }
+  .audit-example-header { align-items:flex-start; flex-direction:column; gap:7px; }
+  .audit-example-meta div { grid-template-columns:1fr; gap:4px; }
+}
