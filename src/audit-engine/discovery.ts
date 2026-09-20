@@ -88,7 +88,7 @@ export async function discoverRobots(baseUrl: string): Promise<RobotsPolicy> {
   const allow: string[] = []
   const sitemaps = new Set<string>()
 
-  for (const rawLine of body.split(/\\r?\\n/)) {
+  for (const rawLine of body.split(/\r?\n/)) {
     const line = rawLine.replace(/#.*/, '').trim()
     if (!line) continue
     const separator = line.indexOf(':')
@@ -127,7 +127,7 @@ export function isAllowedByRobots(url: string, policy: RobotsPolicy) {
 
 const xmlValues = (body: string, tag: string) =>
   [...body.matchAll(new RegExp('<' + tag + '\\b[^>]*>([\\s\\S]*?)</' + tag + '>', 'gi'))]
-    .map(match => match[1].replace(/<!\\[CDATA\\[|\\]\\]>/g, '').trim())
+    .map(match => match[1].replace(/<!\[CDATA\[|\]\]>/g, '').trim())
     .filter(Boolean)
 
 export async function discoverSitemaps(baseUrl: string, robots: RobotsPolicy): Promise<SitemapDiscovery> {
