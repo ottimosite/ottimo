@@ -40,7 +40,7 @@ export function AuditCommandCentre2({ audit, openIssues, actions }: Props) {
       </div>
     </header>
 
-    <nav className="audit-centre-v2__steps" aria-label="Audit workflow">
+    <nav className="audit-centre-v2__steps" aria-label="Audit stages">
       {phaseLabels.map((phase, index) => <a href={`#${phaseTargets[index]}`} key={phase}>
         <span>{index + 1}</span><strong>{phase}</strong>
       </a>)}
