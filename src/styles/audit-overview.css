@@ -85,3 +85,18 @@
 .audit-overview .audit-interpretation .audit-open-count {
   color: #ffffff;
 }
+
+
+.ai-decision-panel { border: 1px solid var(--border, #d9dee7); }
+.ai-decision-controls { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .75rem; align-items: end; max-width: 760px; }
+.ai-decision-controls label { grid-column: 1 / -1; font-weight: 650; }
+.ai-decision-controls select { min-height: 2.75rem; padding: .55rem .7rem; border: 1px solid var(--border, #cfd6e0); border-radius: .5rem; background: var(--surface, #fff); color: inherit; }
+.ai-decision-context { margin: 1rem 0 0; color: var(--muted, #5d6675); }
+.ai-decision-status { margin: 1rem 0 0; padding: .75rem 1rem; border-left: 3px solid currentColor; }
+.ai-decision-result { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
+.ai-decision-block { padding: 1rem; border-radius: .65rem; background: var(--surface-subtle, #f5f7fa); }
+.ai-decision-proposal { border: 1px dashed var(--border, #cfd6e0); }
+.ai-decision-label { display: block; font-weight: 700; margin-bottom: .4rem; }
+.ai-decision-block p { margin: 0 0 .5rem; }
+.ai-decision-block small { color: var(--muted, #5d6675); }
+@media (max-width: 720px) { .ai-decision-controls, .ai-decision-result { grid-template-columns: 1fr; } .ai-decision-controls .btn { width: 100%; } }
