@@ -26,6 +26,11 @@ export class AuthenticatedTenantRepository {
     return this.repository.listAudits(session)
   }
 
+  async listAuditsForWebsite(request: Request, websiteId: string): Promise<Audit[]> {
+    const session = await this.session(request)
+    return this.repository.listAuditsForWebsite(session, websiteId)
+  }
+
   async saveWebsite(request: Request, website: Website): Promise<void> {
     const session = await this.session(request)
     return this.repository.saveWebsite(session, website)
