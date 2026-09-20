@@ -123,3 +123,20 @@ When adding a scenario:
 ## Engineering workflow
 
 GitHub is the single source of truth for Ottimo planning and delivery. See [docs/engineering-workflow.md](docs/engineering-workflow.md) for the branch, issue, PR and quality-gate workflow.
+
+
+## Production security boundary
+
+The deployed browser surface applies baseline security headers through `netlify.toml`:
+
+- Content Security Policy limits executable content and prevents cross-origin framing.
+- `X-Content-Type-Options: nosniff` prevents MIME sniffing.
+- `Referrer-Policy: strict-origin-when-cross-origin` limits cross-origin referrer detail.
+- `Permissions-Policy` disables browser capabilities Ottimo does not require.
+- `X-Frame-Options: DENY` provides a legacy-compatible framing defence alongside CSP.
+
+The CSP intentionally permits inline styles because the existing application styling pipeline uses them in the built UI; executable scripts remain same-origin. Same-origin network access is retained because the production UI communicates with its own serverless audit/runtime endpoints.
+
+Session tokens remain signed with HMAC-SHA-256 and are verified with the Web Crypto verification primitive. Verification rejects malformed, expired, structurally invalid and unexpected session claims before a tenant session is accepted.
+
+An application-level error boundary contains unexpected render failures and provides an accessible recovery action. It does not treat a runtime failure as an audit result and does not modify persisted evidence.
