@@ -4,7 +4,7 @@ import { storage } from '../../services/storage'
 import type { ActionLifecycleStatus, Audit, OptimizationAction } from '../../types/domain'
 import { buildOptimizationActions } from '../../audit-engine/actions'
 import { buildInitialActionLifecycle } from '../../audit-engine/action-lifecycle'
-import { canTransitionAction, normaliseActionDependencies } from '../../audit-engine/action-dependencies'
+import { blockingDependencies, canTransitionAction, normaliseActionDependencies } from '../../audit-engine/action-dependencies'
 import { Badge, Card } from '../../components/ui'
 
 const lifecycleOrder: ActionLifecycleStatus[] = ['planned', 'in_progress', 'verification', 'resolved', 'failed', 'inconclusive']
@@ -46,6 +46,12 @@ const transition = (status: ActionLifecycleStatus, next: ActionLifecycleStatus):
   return allowed[status].includes(next)
 }
 
+const isBlocked = (action: OptimizationAction, actions: OptimizationAction[]) =>
+  action.lifecycleStatus !== 'resolved' &&
+  blockingDependencies(actions, action).some(dependency => dependency.lifecycleStatus !== 'resolved')
+
+const priorityLabel = (score: number) => score >= 80 ? 'High priority' : score >= 55 ? 'Medium priority' : 'Lower priority'
+
 export function Recommendations() {
   const [audits, setAudits] = useState(() => {
     const stored = storage.audits()
@@ -58,13 +64,19 @@ export function Recommendations() {
   const [sort, setSort] = useState('priority')
 
   const all = audits.flatMap(audit => (audit.actions ?? []).map(action => ({ ...action, auditId: audit.id })))
+  const blockedCount = all.filter(action => isBlocked(action, audits.find(audit => audit.id === action.auditId)?.actions ?? [])).length
+  const readyCount = all.filter(action => action.lifecycleStatus === 'planned' && !isBlocked(action, audits.find(audit => audit.id === action.auditId)?.actions ?? [])).length
+  const inProgressCount = all.filter(action => action.lifecycleStatus === 'in_progress' || action.lifecycleStatus === 'verification').length
+
   const shown = useMemo(() => [...all]
     .filter(action =>
       (category === 'all' || action.category === category) &&
       (status === 'all' || action.lifecycleStatus === status) &&
       `${action.title} ${action.expectedOutcome} ${action.implementationSteps.join(' ')}`.toLowerCase().includes(query.toLowerCase()),
     )
-    .sort((a, b) => sort === 'priority' ? b.priorityScore - a.priorityScore : a.title.localeCompare(b.title)),
+    .sort((a, b) => sort === 'priority'
+      ? b.priorityScore - a.priorityScore || a.title.localeCompare(b.title)
+      : a.title.localeCompare(b.title)),
   [all, category, query, sort, status])
 
   const updateLifecycle = (auditId: string, actionId: string, nextStatus: ActionLifecycleStatus) => {
@@ -75,7 +87,11 @@ export function Recommendations() {
       return {
         ...audit,
         actions: audit.actions?.map(item => item.id === actionId
-          ? { ...item, lifecycleStatus: nextStatus, status: nextStatus === 'resolved' ? 'resolved' : nextStatus === 'in_progress' ? 'in_progress' : item.status }
+          ? {
+              ...item,
+              lifecycleStatus: nextStatus,
+              status: nextStatus === 'resolved' ? 'resolved' : nextStatus === 'in_progress' ? 'in_progress' : item.status,
+            }
           : item),
       }
     })
@@ -88,38 +104,89 @@ export function Recommendations() {
       <div>
         <span className="eyebrow">Recommendations</span>
         <h1>Fix the things that matter most.</h1>
-        <p>Prioritised actions turn evidence into a practical queue. Lifecycle state is saved in this browser.</p>
+        <p>Prioritised actions turn evidence into a practical execution queue. Work is ordered by deterministic priority, while dependencies prevent unsafe transitions.</p>
       </div>
     </div>
+
+    <div className="action-summary" aria-label="Action queue summary">
+      <Card className="action-summary-card"><strong>{all.length}</strong><span>Total actions</span></Card>
+      <Card className="action-summary-card"><strong>{readyCount}</strong><span>Ready to act</span></Card>
+      <Card className="action-summary-card"><strong>{blockedCount}</strong><span>Blocked</span></Card>
+      <Card className="action-summary-card"><strong>{inProgressCount}</strong><span>In progress</span></Card>
+    </div>
+
     <Card>
+      <div className="queue-intro">
+        <div>
+          <span className="eyebrow">Execution queue</span>
+          <h2>Start with the highest-value unblocked work.</h2>
+        </div>
+        <p className="muted">Priority is evidence-led. A blocked action stays visible so its prerequisite is never hidden.</p>
+      </div>
+
       <div className="filters">
         <input aria-label="Search recommendations" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search recommendations..." />
         <select aria-label="Filter category" value={category} onChange={event => setCategory(event.target.value)}><option value="all">All categories</option>{Object.entries(categoryLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
         <select aria-label="Filter lifecycle status" value={status} onChange={event => setStatus(event.target.value)}><option value="all">All lifecycle states</option>{lifecycleOrder.map(value => <option key={value} value={value}>{lifecycleLabels[value]}</option>)}</select>
         <select aria-label="Sort recommendations" value={sort} onChange={event => setSort(event.target.value)}><option value="priority">Highest priority</option><option value="title">Title</option></select>
       </div>
+
       <div className="recommendations">
-        {shown.length ? shown.map(action => (
-          <article className="recommendation" key={`${action.auditId}-${action.id}`}>
-            <div>
-              <div className="rec-labels"><Badge tone={action.severity}>{action.severity}</Badge><Badge tone={lifecycleTone[action.lifecycleStatus]}>{lifecycleLabels[action.lifecycleStatus]}</Badge><span className="muted">{categoryLabels[action.category]}</span></div>
+        {shown.length ? shown.map(action => {
+          const audit = audits.find(item => item.id === action.auditId)
+          const dependencies = blockingDependencies(audit?.actions ?? [], action)
+          const blocked = isBlocked(action, audit?.actions ?? [])
+
+          return <article className={`recommendation ${blocked ? 'recommendation-blocked' : ''}`} key={`${action.auditId}-${action.id}`}>
+            <div className="recommendation-main">
+              <div className="rec-labels">
+                <Badge tone={action.severity}>{action.severity}</Badge>
+                <Badge tone={lifecycleTone[action.lifecycleStatus]}>{lifecycleLabels[action.lifecycleStatus]}</Badge>
+                {blocked && <Badge tone="critical">Blocked</Badge>}
+                <span className="muted">{categoryLabels[action.category]}</span>
+              </div>
+
               <h3>{action.title}</h3>
+              <p className="recommendation-priority"><strong>{priorityLabel(action.priorityScore)}</strong> · {action.priorityScore}/100 · {action.impact} impact · {action.effort} effort</p>
               <p>{action.implementationSteps[1]}</p>
               <p><strong>Why it matters:</strong> {action.expectedOutcome}</p>
-              <p><strong>Verification:</strong> {action.verification[0]?.description}</p>
-              <small>{action.affectedPages.length} affected page{action.affectedPages.length === 1 ? '' : 's'} · {action.evidenceCount} evidence item{action.evidenceCount === 1 ? '' : 's'} · audit {action.auditId}</small>
+
+              {blocked && <div className="dependency-warning" role="status">
+                <strong>Blocked by prerequisite{dependencies.length === 1 ? '' : 's'}:</strong>
+                <ul>
+                  {dependencies.filter(dependency => dependency.lifecycleStatus !== 'resolved').map(dependency =>
+                    <li key={dependency.id}>{dependency.title} — {lifecycleLabels[dependency.lifecycleStatus]}</li>,
+                  )}
+                </ul>
+              </div>}
+
+              <details>
+                <summary>Evidence, priority and verification</summary>
+                <div className="action-details">
+                  <p><strong>Verification:</strong> {action.verification[0]?.description}</p>
+                  <p><strong>Scope:</strong> {action.affectedPages.length} affected page{action.affectedPages.length === 1 ? '' : 's'} · {action.affectedResources.length} resource{action.affectedResources.length === 1 ? '' : 's'} · {action.evidenceCount} evidence item{action.evidenceCount === 1 ? '' : 's'}</p>
+                  <dl>
+                    <div><dt>Impact</dt><dd>{action.priority.impact}</dd></div>
+                    <div><dt>Severity</dt><dd>{action.priority.severity}</dd></div>
+                    <div><dt>Confidence</dt><dd>{action.confidence}</dd></div>
+                    <div><dt>Effort factor</dt><dd>{action.priority.effort}</dd></div>
+                    <div><dt>Evidence factor</dt><dd>{action.priority.evidence}</dd></div>
+                  </dl>
+                </div>
+              </details>
             </div>
+
             <div className="rec-meta">
               <strong>{action.priorityScore}</strong>
               <small>action priority</small>
-              <span>{action.impact} impact · {action.effort} effort</span>
+              <span>{blocked ? 'Prerequisite required' : 'Ready for next valid step'}</span>
               <label className="sr-only" htmlFor={`status-${action.auditId}-${action.id}`}>Lifecycle status for {action.title}</label>
               <select id={`status-${action.auditId}-${action.id}`} aria-label={`Lifecycle status for ${action.title}`} value={action.lifecycleStatus} onChange={event => updateLifecycle(action.auditId, action.id, event.target.value as ActionLifecycleStatus)}>
                 {lifecycleOrder.filter(next => next === action.lifecycleStatus || transition(action.lifecycleStatus, next)).map(next => <option key={next} value={next}>{lifecycleLabels[next]}</option>)}
               </select>
             </div>
           </article>
-        )) : <p className="muted">No recommendations match these filters.</p>}
+        }) : <p className="muted">No recommendations match these filters.</p>}
       </div>
     </Card>
   </div>
