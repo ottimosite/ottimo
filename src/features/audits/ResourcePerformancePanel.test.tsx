@@ -19,7 +19,8 @@ describe('ResourcePerformancePanel', () => {
       },
     }} />)
     expect(screen.getByRole('heading', { name: /where page weight and delay were observed/i })).toBeInTheDocument()
-    expect(screen.getByText(/attribution evidence/i)).toBeInTheDocument()
+    expect(screen.getByText(/these are browser observations/i)).toBeInTheDocument()
+    expect(screen.getByText(/this is attribution evidence, not causal proof/i)).toBeInTheDocument()
     expect(screen.getByText(/2.0 KB · script/i)).toBeInTheDocument()
     expect(screen.getByText(/1200 ms · image/i)).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /top observed contributors/i })).toBeInTheDocument()
