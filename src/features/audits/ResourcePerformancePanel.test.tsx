@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ResourcePerformancePanel } from '../features/audits/ResourcePerformancePanel'
+import { ResourcePerformancePanel } from './ResourcePerformancePanel'
 import { render, screen } from '@testing-library/react'
 
 describe('ResourcePerformancePanel', () => {
