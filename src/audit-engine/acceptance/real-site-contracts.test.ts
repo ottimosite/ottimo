@@ -62,11 +62,11 @@ const report = (page: PageSnapshot): AuditReport => ({
 
 describe('real-site acceptance contracts', () => {
   it('keeps discovery bounded and evidence reproducible for a content site fixture', async () => {
-    const html = '<html lang="en"><head><title>Fixture</title><link rel="canonical" href="https://fixture.test/"></head><body><h1>Home</h1><a href="/article">Article</a><a href="https://external.test/">External</a></body></html>'
+    const html = '<html lang="en"><head><title>Fixture</title><link rel="canonical" href="https://example.com/"></head><body><h1>Home</h1><a href="/article">Article</a><a href="https://external.test/">External</a></body></html>'
     const audited: string[] = []
     const pages = new Map([
-      ['https://fixture.test/', html],
-      ['https://fixture.test/article', '<html lang="en"><body><h1>Article</h1></body></html>'],
+      ['https://example.com/', html],
+      ['https://example.com/article', '<html lang="en"><body><h1>Article</h1></body></html>'],
     ])
     const fake = {
       audit: async ({ url }: { url: string }) => {
@@ -77,19 +77,19 @@ describe('real-site acceptance contracts', () => {
 
     const engine = new SiteAuditEngine(fake as never, async () => ({
       robots: { found: true, sitemaps: [], disallow: ['/private'], allow: [] },
-      sitemap: { found: true, documents: ['https://fixture.test/sitemap.xml'], urls: ['https://fixture.test/article', 'https://fixture.test/private/secret'] },
+      sitemap: { found: true, documents: ['https://example.com/sitemap.xml'], urls: ['https://example.com/article', 'https://example.com/private/secret'] },
     }))
-    const result = await engine.audit({ url: 'https://fixture.test/', maxPages: 2 })
+    const result = await engine.audit({ url: 'https://example.com/', maxPages: 2 })
 
     expect(result.pages).toHaveLength(2)
-    expect(audited).toEqual(['https://fixture.test/', 'https://fixture.test/article'])
-    expect(result.discoveredUrls).toContain('https://fixture.test/article')
+    expect(audited).toEqual(['https://example.com/', 'https://example.com/article'])
+    expect(result.discoveredUrls).toContain('https://example.com/article')
     expect(result.discoveredUrls).not.toContain('https://external.test/')
     expect(result.discovery.sitemapPageCount).toBe(2)
   })
 
   it('preserves unavailable performance evidence instead of inventing a measurement', async () => {
-    const url = 'https://spa.fixture.test/'
+    const url = 'https://spa.example.com/'
     const page = fixturePage(url, '<html lang="en"><body><div id="app"></div></body></html>', {
       timing: { ttfbMs: 300, fcpMs: undefined, lcpMs: undefined, cls: undefined, inpMs: undefined },
       resources: [],
@@ -113,20 +113,20 @@ describe('real-site acceptance contracts', () => {
 
   it('captures representative SEO and redirect evidence as facts', () => {
     const page = fixturePage(
-      'https://redirect.fixture.test/final',
-      '<html lang="en"><head><link rel="canonical" href="https://redirect.fixture.test/final"></head><body><h1>Final</h1></body></html>',
+      'https://redirect.example.com/final',
+      '<html lang="en"><head><link rel="canonical" href="https://redirect.example.com/final"></head><body><h1>Final</h1></body></html>',
       {
-        requestedUrl: 'https://redirect.fixture.test/',
-        redirectChain: ['https://redirect.fixture.test/', 'https://redirect.fixture.test/final'],
+        requestedUrl: 'https://redirect.example.com/',
+        redirectChain: ['https://redirect.example.com/', 'https://redirect.example.com/final'],
       },
     )
 
     expect(page.redirectChain).toEqual([
-      'https://redirect.fixture.test/',
-      'https://redirect.fixture.test/final',
+      'https://redirect.example.com/',
+      'https://redirect.example.com/final',
     ])
-    expect(page.finalUrl).toBe('https://redirect.fixture.test/final')
-    expect(page.searchVisibility?.canonicalUrl).toBe('https://redirect.fixture.test/final')
+    expect(page.finalUrl).toBe('https://redirect.example.com/final')
+    expect(page.searchVisibility?.canonicalUrl).toBe('https://redirect.example.com/final')
   })
 
   it('keeps failed audit runs without manufacturing a report', () => {
