@@ -126,25 +126,6 @@ function ActionPreview({ audit, actions }: { audit: Audit; actions: Optimization
   </Card>
 }
 
-function AuditCommandCentre({ audit, openIssues, actions }: { audit: Audit; openIssues: Audit['issues']; actions: OptimizationAction[] }) {
-  const health = audit.health?.score
-  const changed = audit.comparison ? audit.comparison.newFindings + audit.comparison.regressed : 0
-  const verified = audit.verifications?.filter(item => item.status === 'verified').length ?? 0
-  return <section className="audit-command-centre" aria-labelledby="audit-command-heading">
-    <div className="audit-command-lead">
-      <div><span className="eyebrow">Audit command centre</span><h2 id="audit-command-heading">From evidence to action.</h2><p>Ottimo turns what it observed into a clear sequence: understand the site, decide what matters, make the change, then verify it.</p></div>
-      <div className="audit-command-actions"><Link className="primary-action" to="/app/recommendations">Start with actions <span aria-hidden="true">→</span></Link><a className="secondary-action" href="#findings">Explore findings</a></div>
-    </div>
-    <div className="audit-command-grid">
-      <article><span>Health</span><strong>{health === undefined ? '—' : `${health}/100`}</strong><small>{audit.health?.status === 'not-measured' ? 'Not measured' : audit.health?.status ?? 'Evidence available'}</small></article>
-      <article><span>Open issues</span><strong>{openIssues.length}</strong><small>{openIssues.length ? 'Need a decision' : 'No unresolved findings'}</small></article>
-      <article><span>Priority actions</span><strong>{actions.length}</strong><small>{actions.length ? 'Evidence-led work' : 'No actions generated'}</small></article>
-      <article><span>Changed</span><strong>{audit.comparison ? changed : '—'}</strong><small>{audit.comparison ? 'New or regressed' : 'No comparison available'}</small></article>
-      <article><span>Verified</span><strong>{verified}</strong><small>{audit.verifications?.length ? 'Post-fix results' : 'No verification history'}</small></article>
-    </div>
-  </section>
-}
-
 function EngineerDiagnostics({ audit }: { audit: Audit }) {
   return <Card className="engineer-diagnostics"><div className="section-head"><div><span className="eyebrow">Engineer diagnostics</span><h2>Trace the audit</h2></div><span className="standard-tag">Technical detail</span></div>{audit.diagnostics ? <div className="diagnostic-grid"><span><small>Stage</small><strong>{audit.diagnostics.stage}</strong></span><span><small>Code</small><strong>{audit.diagnostics.code}</strong></span><span><small>Retryable</small><strong>{audit.diagnostics.retryable ? 'Yes' : 'No'}</strong></span><span><small>Target</small><strong>{audit.diagnostics.targetUrl ?? audit.url}</strong></span></div> : <p>No audit failure diagnostics were recorded for this completed audit.</p>}{audit.diagnostics?.technicalDetails && <details><summary>Technical trace</summary><pre>{audit.diagnostics.technicalDetails}</pre></details>}</Card>
 }
@@ -207,7 +188,19 @@ export function AuditOverview() {
     </header>
 
     <AuditCommandCentre2 audit={audit} openIssues={openIssues} actions={actions} />
+    <nav className="audit-detail-nav" aria-label="Audit sections">
+      <a href="#audit-evidence">Evidence</a>
+      <a href="#audit-decisions">Actions</a>
+      <a href="#audit-performance">Performance</a>
+      <a href="#audit-intelligence">Intelligence</a>
+      <a href="#audit-changes">Changes</a>
+      <a href="#findings">Findings</a>
+    </nav>
     <EvidenceExplorer audit={audit} />
+    <section id="audit-decisions" className="audit-primary-decision">
+      <div><span className="eyebrow">Next decision</span><h2>{openIssues.length ? 'Turn the highest-impact finding into action.' : 'Review the evidence and verify what is already resolved.'}</h2><p>{openIssues.length ? 'The audit has unresolved findings. Use the decision queue to work through priority, effort and dependencies without losing the evidence behind each action.' : 'No unresolved findings are recorded. Review comparison and verification evidence to understand what changed.'}</p></div>
+      <Link className="primary-action" to={openIssues.length ? "/app/recommendations" : "#audit-changes"}>{openIssues.length ? 'Open decision queue →' : 'Review changes →'}</Link>
+    </section>
     <Card className="standards-card audit-standards">
       <div><span className="eyebrow">Audit basis</span><h2>Standards applied</h2><p>These are the lenses used to interpret this audit.</p></div>
       <div className="standards-list">{(audit.standards ?? auditStandards.map(standard => standard.name)).map(standard => <span className="standard-tag" key={standard}>{standard}</span>)}</div>
@@ -233,15 +226,29 @@ export function AuditOverview() {
       <Card className="open-issues-card"><span className="muted">Open issues</span><strong className="big-number">{openIssues.length}</strong><div className="severity-list">{Object.entries(severityCounts).map(([severity, count]) => <span key={severity}><Badge tone={severity}>{severity}</Badge> {count}</span>)}</div></Card>
     </div>
     <div className="audit-insight-grid"><EvidenceCoveragePanel audit={audit} /><ActionPreview audit={audit} actions={actions} /></div>
-    <PerformancePanel metrics={stats?.performance} />
-    <ResourcePerformancePanel audit={audit} />
-    <IntelligencePanel stats={stats} />
-    <HealthModelPanel audit={audit} />
-    <ChangePanel audit={audit} />
+    <section id="audit-performance" className="audit-detail-section" aria-labelledby="audit-performance-heading">
+      <div className="section-head"><div><span className="eyebrow">Performance evidence</span><h2 id="audit-performance-heading">How the page performed</h2><p className="section-subtitle">Start with the measured experience, then inspect resource-level attribution when useful.</p></div></div>
+      <PerformancePanel metrics={stats?.performance} />
+      <ResourcePerformancePanel audit={audit} />
+    </section>
+    <section id="audit-intelligence" className="audit-detail-section" aria-labelledby="audit-intelligence-heading">
+      <div className="section-head"><div><span className="eyebrow">Website intelligence</span><h2 id="audit-intelligence-heading">What Ottimo learned about the site</h2><p className="section-subtitle">Search, technology, social discovery and page-model signals are grouped here instead of competing with the primary decision flow.</p></div></div>
+      <IntelligencePanel stats={stats} />
+      <HealthModelPanel audit={audit} />
+    </section>
+    <section id="audit-changes" className="audit-detail-section" aria-labelledby="audit-changes-heading">
+      <div className="section-head"><div><span className="eyebrow">Verification & comparison</span><h2 id="audit-changes-heading">Did anything change?</h2><p className="section-subtitle">Use later audit evidence to distinguish improvement, regression and unresolved work.</p></div></div>
+      <ChangePanel audit={audit} />
+    </section>
     {mode === 'engineer' && <EngineerDiagnostics audit={audit} />}
+    <details className="audit-secondary-details">
+      <summary>Technical page evidence and raw website statistics</summary>
+      <div className="audit-secondary-details__content">
     <div className="audit-evidence-grid"><Card className="screenshot-card"><div className="section-head"><div><span className="eyebrow">Visual evidence</span><h2>Page snapshot</h2></div><a href={screenshotUrl} target="_blank" rel="noreferrer">Open full image ↗</a></div><div className="screenshot-frame"><img src={screenshotUrl} alt={`Screenshot preview of ${audit.url}`} loading="lazy" /></div><small>Generated through the optional screenshot adapter. It may take a moment to appear.</small></Card><Card><span className="eyebrow">Page profile</span><h2>What we found</h2><div className="profile-list"><span><strong>{stats?.language || '—'}</strong> document language</span><span><strong>{formatStat(stats?.wordCount)}</strong> visible words</span><span><strong>{stats?.title ? 'Present' : '—'}</strong> page title</span><span><strong>{stats?.source === 'live' ? 'Fetched' : 'Fixture'}</strong> evidence source</span></div></Card></div>
     <section className="audit-stat-grid" aria-label="Website statistics"><Card><span className="stat-icon">Aa</span><strong>{formatStat(stats?.htmlBytes, ' bytes')}</strong><small>Fetched HTML size</small></Card><Card><span className="stat-icon">◈</span><strong>{formatStat(stats?.imageCount)}</strong><small>Images detected</small></Card><Card><span className="stat-icon">↗</span><strong>{formatStat(stats?.linkCount)}</strong><small>Links detected</small></Card><Card><span className="stat-icon">↗</span><strong>{formatStat(stats?.externalLinkCount)}</strong><small>External links</small></Card><Card><span className="stat-icon">H</span><strong>{formatStat(stats?.headingCount)}</strong><small>Headings detected</small></Card><Card><span className="stat-icon">JS</span><strong>{formatStat(stats?.scriptCount)}</strong><small>Scripts detected</small></Card><Card><span className="stat-icon">▣</span><strong>{formatStat(stats?.formCount)}</strong><small>Forms detected</small></Card><Card><span className="stat-icon">✓</span><strong>{formatStat(stats?.buttonCount)}</strong><small>Buttons detected</small></Card></section>
     <div className="grid-2"><Card><div className="section-head"><div><span className="eyebrow">Health by domain</span><h2>Where the experience stands</h2></div><span className="muted">/100</span></div><div className="score-list">{audit.scores.map(score => <div className="score-row" key={score.category}><span>{categoryLabels[score.category]}</span>{score.score === undefined ? <span className="muted">Not measured</span> : <><Progress value={score.score} /><strong>{score.score}</strong></>}</div>)}</div></Card><Card><div className="section-head"><div><span className="eyebrow">Start here</span><h2>Highest-impact actions</h2></div></div><div className="action-list">{topIssues.map(issue => <Link className="action" to="/app/recommendations" key={issue.id}><span><strong>{issue.title}</strong><small>{issue.effort} effort · {categoryLabels[issue.category]}</small></span><span>→</span></Link>)}</div></Card></div>
+    </div>
+    </details>
     <section id="findings"><Card><div className="section-head"><div><span className="eyebrow">Full findings</span><h2>Evidence, meaning and recommendations</h2></div><span className="muted">Search, filter and sort the audit</span></div><IssueTable issues={audit.issues} /></Card></section>
   </div>
 }
