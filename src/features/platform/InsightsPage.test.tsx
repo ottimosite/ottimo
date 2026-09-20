@@ -42,8 +42,14 @@ describe('InsightsPage', () => {
     expect(screen.getByRole('heading', { name: /turn audit evidence into useful understanding/i })).toBeInTheDocument()
     expect(screen.getByText(/Insights · Example site/i)).toBeInTheDocument()
     expect(screen.getByText('Slow resource')).toBeInTheDocument()
-    expect(screen.getByText('2 measured domains')).toBeInTheDocument()
-    expect(screen.getByText('1 partially inferred')).toBeInTheDocument()
+
+    const measured = screen.getByText('measured domains').parentElement
+    const inferred = screen.getByText('partially inferred').parentElement
+    expect(measured).not.toBeNull()
+    expect(inferred).not.toBeNull()
+    expect(within(measured as HTMLElement).getByText('2')).toBeInTheDocument()
+    expect(within(inferred as HTMLElement).getByText('1')).toBeInTheDocument()
+
     expect(screen.getAllByText('Unavailable').length).toBeGreaterThan(0)
     expect(screen.getByText(/do not establish rankings or organic acquisition/i)).toBeInTheDocument()
 
