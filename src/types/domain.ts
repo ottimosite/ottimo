@@ -236,9 +236,13 @@ export interface VerificationCriterion {
 }
 
 export interface ActionPriorityBreakdown {
+  /** Legacy factor retained for backwards-compatible stored actions. */
+  impact: number
   severity: number
-  scope: number
+  confidence: number
+  effort: number
   evidence: number
+  scope: number
   dependency: number
   verification: number
   regressionRisk: number
