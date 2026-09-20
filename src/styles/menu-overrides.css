@@ -23,3 +23,82 @@
   .sidebar nav a{padding:11px 13px;border-radius:12px}
   .sidebar nav a[aria-current=page]{background:var(--lime);color:var(--forest)}
 }
+
+/* Structured application navigation and contextual audit navigation. */
+.sidebar nav .nav-group {
+  display: grid;
+  gap: 3px;
+}
+.sidebar nav .nav-group + .nav-group {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+.nav-group-label {
+  display: block;
+  padding: 0 12px 5px;
+  color: rgba(255,255,255,.52);
+  font-size: .62rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.nav-group-settings {
+  margin-top: 12px !important;
+}
+.audit-context {
+  display: grid;
+  gap: 7px;
+  margin-top: 4px;
+  padding: 13px 10px;
+  border: 1px solid rgba(216,243,107,.2);
+  border-radius: 12px;
+  background: rgba(0,0,0,.1);
+}
+.audit-context-back a,
+.audit-context nav a {
+  color: #c8d9cf;
+  font-size: .72rem;
+  font-weight: 800;
+}
+.audit-context-back a:hover,
+.audit-context nav a:hover {
+  color: var(--lime);
+}
+.audit-context-label {
+  color: rgba(255,255,255,.52);
+  font-size: .6rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.audit-context-title {
+  color: #fff;
+  font-size: .78rem;
+}
+.audit-context nav {
+  display: grid;
+  gap: 2px;
+  margin-top: 3px;
+}
+.audit-context nav a {
+  padding: 7px 8px;
+  border-radius: 7px;
+}
+.audit-context nav a:hover,
+.audit-context nav a[aria-current="page"] {
+  background: rgba(216,243,107,.1);
+  color: var(--lime);
+}
+@media (max-width:700px) {
+  .sidebar nav .nav-group + .nav-group {
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+  .nav-group-label {
+    padding-top: 4px;
+  }
+  .audit-context {
+    margin-top: 8px;
+  }
+}
