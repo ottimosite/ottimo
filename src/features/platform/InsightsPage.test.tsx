@@ -44,7 +44,7 @@ describe('InsightsPage', () => {
     expect(screen.getByText('Slow resource')).toBeInTheDocument()
 
     const measured = screen.getByText('measured domains').parentElement
-    const inferred = screen.getByText('partially inferred').parentElement
+    const inferred = screen.getByText('inferred domains').parentElement
     expect(measured).not.toBeNull()
     expect(inferred).not.toBeNull()
     expect(within(measured as HTMLElement).getByText('2')).toBeInTheDocument()
