@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { Card } from '../../components/ui'
 import type { Audit, OptimizationAction } from '../../types/domain'
 import { blockingDependencies } from '../../audit-engine/action-dependencies'
 
