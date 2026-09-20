@@ -29,7 +29,7 @@ describe('app', () => {
     render(<MemoryRouter initialEntries={['/app/audits/new']}><App /></MemoryRouter>)
     const applicationNavigation = screen.getByRole('navigation', { name: /application/i })
     expect(within(applicationNavigation).getByText('Workspace')).toBeInTheDocument()
-    expect(within(applicationNavigation).getByText('Insights')).toBeInTheDocument()
+    expect(within(applicationNavigation).getByRole('link', { name: 'Insights' })).toBeInTheDocument()
     expect(within(applicationNavigation).getByText('Reporting')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /start with your website/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /run audit/i })).toBeInTheDocument()
