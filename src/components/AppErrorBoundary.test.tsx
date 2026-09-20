@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { AppErrorBoundary } from './AppErrorBoundary'
 
-function ThrowingView() {
+function ThrowingView(): never {
   throw new Error('test render failure')
 }
 
