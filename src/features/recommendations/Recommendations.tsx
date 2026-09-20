@@ -59,6 +59,7 @@ export function Recommendations() {
     const source = stored.length ? stored : seedAudits
     return source.map(hydrateAuditActions)
   })
+  const websiteId = new URLSearchParams(useLocation().search).get('website') ?? undefined
   const scopedAudits = websiteId ? audits.filter(audit => audit.websiteId === websiteId) : audits
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
