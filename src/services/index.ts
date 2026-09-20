@@ -5,3 +5,5 @@ export * from './audit-safety'
 export * from './audit-telemetry'
 export * from './deployment-checks'
 export * from './search-console'
+
+export * from './analytics-integration'
