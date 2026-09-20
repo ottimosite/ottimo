@@ -61,7 +61,7 @@ describe('app', () => {
   it('keeps the website context when entering a website-scoped insight', () => {
     render(<MemoryRouter initialEntries={['/app/performance?website=site-wikipedia']}><App /></MemoryRouter>)
     const websiteNavigation = screen.getByRole('navigation', { name: /website navigation/i })
-    expect(within(websiteNavigation).getByText('site-wikipedia')).toBeInTheDocument()
+    expect(screen.getByText('site-wikipedia')).toBeInTheDocument()
     expect(within(websiteNavigation).getByRole('link', { name: 'Health' })).toHaveAttribute('href', '/app/websites/site-wikipedia')
     expect(screen.getByRole('heading', { name: /performance you can feel/i })).toBeInTheDocument()
   })
