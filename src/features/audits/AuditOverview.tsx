@@ -12,6 +12,7 @@ import { buildOptimizationActions } from '../../audit-engine/actions'
 import { blockingDependencies } from '../../audit-engine/action-dependencies'
 import { AuditCommandCentre2 } from './AuditCommandCentre2'
 import { EvidenceExplorer } from './EvidenceExplorer'
+import { ResourcePerformancePanel } from './ResourcePerformancePanel'
 
 type MetricState = 'good' | 'needs-improvement' | 'poor' | 'unavailable'
 
@@ -233,6 +234,7 @@ export function AuditOverview() {
     </div>
     <div className="audit-insight-grid"><EvidenceCoveragePanel audit={audit} /><ActionPreview audit={audit} actions={actions} /></div>
     <PerformancePanel metrics={stats?.performance} />
+    <ResourcePerformancePanel audit={audit} />
     <IntelligencePanel stats={stats} />
     <HealthModelPanel audit={audit} />
     <ChangePanel audit={audit} />
