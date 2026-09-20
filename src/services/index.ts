@@ -7,3 +7,5 @@ export * from './deployment-checks'
 export * from './search-console'
 
 export * from './analytics-integration'
+
+export * from './acquisition-intelligence'
