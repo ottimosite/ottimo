@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { Recommendations } from './Recommendations'
 
-const saveAudits = vi.fn()
+const { saveAudits } = vi.hoisted(() => ({ saveAudits: vi.fn() }))
 vi.mock('../../services/storage', () => ({
   storage: {
     audits: () => [{
