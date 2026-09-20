@@ -1,0 +1,41 @@
+/* Deterministic application layout contracts. Imported last so critical component layouts win over shared primitives. */
+.audit-centre-v2 { width: 100%; }
+.audit-centre-v2__steps { display: grid !important; grid-template-columns: repeat(5, minmax(0, 1fr)) !important; }
+.audit-centre-v2__steps a { display: flex !important; align-items: center; gap: 9px; min-width: 0; }
+.audit-centre-v2__summary { display: grid !important; grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+.audit-centre-v2__summary a { display: block !important; min-width: 0; }
+.audit-centre-v2__summary a span,.audit-centre-v2__summary a strong,.audit-centre-v2__summary a small { display: block !important; }
+.audit-centre-v2__guidance { display: flex !important; align-items: center; justify-content: space-between; gap: 24px; }
+.audit-centre-v2__guidance-links { display: flex !important; flex-wrap: wrap; gap: 8px; }
+.audit-centre-v2__link { display: inline-flex !important; align-items: center; min-height: 44px; }
+.issue-top { display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(150px, auto); align-items: start; gap: 24px; }
+.issue-priority { display: grid !important; gap: 4px; text-align: right; white-space: normal; }
+.issue-priority strong,.issue-priority small { display: block; }
+.issue-priority small { max-width: 180px; }
+.issue-explanation,.issue-evidence { display: grid !important; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.issue-explanation > div,.issue-evidence > div { min-width: 0; }
+.issue-explanation small,.issue-evidence small,.issue-explanation p,.issue-evidence p { display: block !important; }
+.audit-example-meta { display: grid !important; gap: 0; }
+.audit-example-meta > div { display: grid !important; grid-template-columns: minmax(90px, auto) minmax(0, 1fr); align-items: baseline; gap: 14px; }
+.audit-example-meta span,.audit-example-meta b,.audit-example-meta small { display: block !important; }
+.audit-example-meta small { grid-column: 2; }
+.audit-domain-states { display: grid !important; grid-template-columns: 1fr 1fr; gap: 1px; }
+.audit-domain-states span { display: flex !important; justify-content: space-between; gap: 8px; }
+@media (max-width:1000px) { .audit-centre-v2__summary { grid-template-columns: repeat(3,minmax(0,1fr)) !important; } }
+@media (max-width:760px) {
+ .audit-centre-v2__steps { grid-template-columns:1fr 1fr !important; }
+ .audit-centre-v2__summary { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+ .audit-centre-v2__guidance { display:grid !important; }
+ .issue-top { grid-template-columns:1fr; }
+ .issue-priority { text-align:left; }
+ .issue-explanation,.issue-evidence { grid-template-columns:1fr !important; }
+}
+@media (max-width:520px) {
+ .audit-centre-v2__steps { grid-template-columns:1fr !important; }
+ .audit-centre-v2__summary { grid-template-columns:1fr !important; }
+ .audit-centre-v2__summary a { border-right:0 !important; border-bottom:1px solid var(--line); }
+ .audit-centre-v2__summary a:last-child { border-bottom:0; }
+ .audit-domain-states { grid-template-columns:1fr; }
+ .audit-example-meta > div { grid-template-columns:1fr; gap:4px; }
+ .audit-example-meta small { grid-column:1; }
+}
