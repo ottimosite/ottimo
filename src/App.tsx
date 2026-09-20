@@ -10,6 +10,7 @@ import { Recommendations } from './features/recommendations/Recommendations'
 import { CategoryPage, HistoryPage, InsightsPage, ReportsPage, SettingsPage, WebsiteDetail } from './features/platform/PlatformPages'
 import { ConceptPage, ConceptsIndex } from './pages/ConceptPages'
 import { AuditOnboarding } from './features/audits/AuditOnboarding'
+import { AuthProvider, ProtectedWorkspace } from './features/auth/AuthBoundary'
 export default function App() {
 	return <Routes>
 		<Route element={<PublicLayout />}>
@@ -33,7 +34,7 @@ export default function App() {
 			<Route path="/concepts/speed" element={<ConceptPage theme="speed" />} />
 			<Route path="/concepts/friendly" element={<ConceptPage theme="friendly" />} />
 		</Route>
-		<Route path="/app" element={<AppLayout />}>
+		<Route path="/app" element={<AuthProvider><ProtectedWorkspace><AppLayout /></ProtectedWorkspace></AuthProvider>}>
 			<Route index element={<Navigate to="/app/dashboard" replace />} />
 			<Route path="dashboard" element={<Dashboard />} />
 			<Route path="websites" element={<Websites />} />
