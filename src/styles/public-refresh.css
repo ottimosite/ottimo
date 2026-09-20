@@ -74,3 +74,17 @@
   .lead-hero .ethos { grid-template-columns:repeat(2,minmax(0,1fr)); }
   .onboarding-progress { max-width:none; }
 }
+
+.audit-output-section { padding: 80px 0; border-top: 1px solid var(--line); }
+.audit-output-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:34px; border-top:1px solid var(--line); border-left:1px solid var(--line); }
+.audit-output-grid article { min-height:220px; padding:28px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); background:#fff; }
+.audit-output-grid article > span { color:var(--coral); font-size:.7rem; font-weight:950; letter-spacing:.1em; }
+.audit-output-grid h3 { margin:38px 0 10px; color:var(--forest); font-size:1.35rem; }
+.audit-output-grid p { color:var(--ink-soft); line-height:1.55; }
+.faq-section { padding:80px 0; border-top:1px solid var(--line); }
+.faq-list { margin-top:30px; border-top:1px solid var(--line); }
+.faq-list details { border-bottom:1px solid var(--line); }
+.faq-list summary { cursor:pointer; padding:22px 0; color:var(--forest); font-weight:900; list-style-position:outside; }
+.faq-list p { max-width:70ch; padding:0 0 22px 20px; color:var(--ink-soft); line-height:1.6; }
+@media (max-width:900px) { .audit-output-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:600px) { .audit-output-section,.faq-section { padding:58px 0; } .audit-output-grid { grid-template-columns:1fr; } .audit-output-grid article { min-height:0; } }
