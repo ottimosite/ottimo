@@ -30,6 +30,8 @@ npm run lint
 - Replaceable audit boundary: `AuditProvider`
 - Deterministic local `MockAuditProvider` backed by a captured real-site fixture
 - Local repositories via `localStorage`
+- Server-side authenticated tenant repository
+- Provider-independent durable storage contract with a Netlify production adapter
 - Native SVG/CSS-style data presentation; no charting library
 - Vitest + Testing Library for automated tests
 
@@ -42,7 +44,7 @@ src/
   features/         dashboard, websites, audits, recommendations, platform views
   lib/              validation and formatting utilities
   pages/            public website pages
-  services/         audit provider and local storage
+  services/         audit, authentication, persistence and runtime integrations
   styles/           global responsive design system
   tests/             unit/component tests
   types/             domain models
@@ -60,10 +62,22 @@ The deterministic fixture lives in `src/data/fixtures/wikipedia.ts`. It records 
 
 To refresh it, capture the public `https://www.wikipedia.org/` portal again, record the new capture date and source revision/observations, update the fixture, and update its tests. Do not make CI fetch Wikipedia directly.
 
+## Production persistence
+
+The server-side persistence path is provider-independent at the repository boundary:
+
+1. `AuthenticatedTenantRepository` verifies the session before tenant operations.
+2. `DurableServerStorageAdapter` validates versioned tenant envelopes.
+3. `NetlifyBlobObjectStore` maps that contract to Netlify Blobs.
+4. `createProductionRepository()` composes the authenticated production repository.
+
+Netlify production uses a site-wide strongly consistent store. Preview and branch deployments use deploy-scoped storage so non-production data is isolated from production. The runtime receives Netlify storage configuration from the platform; no storage credentials are committed to the repository.
+
+Set `OTTIMO_SESSION_SECRET` as a server-side environment variable with at least 32 characters. Local tests inject their own secret and never require Netlify credentials.
 
 ## Future integrations
 
-The current service boundaries are designed so real Lighthouse/PageSpeed/crawler, authentication, billing, AI, reporting and monitoring providers can replace the local providers without rewriting the UI.
+The current service boundaries are designed so real Lighthouse/PageSpeed/crawler, authentication, durable storage, billing, AI, reporting and monitoring providers can replace the local providers without rewriting the UI.
 
 ## Performance and accessibility checklist
 
@@ -80,7 +94,7 @@ The current service boundaries are designed so real Lighthouse/PageSpeed/crawler
 
 ## Environment
 
-Copy `.env.example` only when adding environment-specific integrations. The local demo does not need environment variables.
+Production secrets and platform configuration must be managed through the deployment environment rather than committed to source control.
 
 ## Real-site acceptance scenarios
 
