@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { Recommendations } from './Recommendations'
 
@@ -45,12 +45,18 @@ describe('Recommendations lifecycle UX', () => {
   it('exposes lifecycle state and only offers valid next states', () => {
     render(<MemoryRouter><Recommendations /></MemoryRouter>)
 
-    expect(screen.getByText('Planned')).toBeInTheDocument()
-    const select = screen.getByRole('combobox', { name: /lifecycle status/i })
-    expect(screen.getAllByRole('option')).toHaveLength(5)
+    const select = screen.getByRole('combobox', { name: /lifecycle status for improve test performance/i })
+    expect(screen.getByText('Planned', { selector: '.badge' })).toBeInTheDocument()
+    expect(select).toHaveValue('planned')
+
+    const options = within(select).getAllByRole('option')
+    expect(options).toHaveLength(2)
+    expect(options.map(option => option.textContent)).toEqual(['Planned', 'In progress'])
+    expect(within(select).queryByRole('option', { name: 'Verification' })).not.toBeInTheDocument()
+
     fireEvent.change(select, { target: { value: 'in_progress' } })
 
     expect(saveAudits).toHaveBeenCalled()
-    expect(screen.getByRole('combobox', { name: /lifecycle status/i })).toHaveValue('in_progress')
+    expect(screen.getByRole('combobox', { name: /lifecycle status for improve test performance/i })).toHaveValue('in_progress')
   })
 })
