@@ -14,12 +14,12 @@ describe('transparent action prioritisation', () => {
   it('uses deterministic evidence factors instead of business-impact claims', () => {
     const priority = prioritiseAction(issue())
     expect(priority.severity).toBe(80)
-    expect(priority.scope).toBe(50)
+    expect(priority.scope).toBe(40)
     expect(priority.evidence).toBe(66)
     expect(priority.dependency).toBe(100)
     expect(priority.verification).toBe(50)
     expect(priority.regressionRisk).toBe(0)
-    expect(priority.score).toBe(64)
+    expect(priority.score).toBe(58)
   })
 
   it('increases priority when supported regression risk is present', () => {
