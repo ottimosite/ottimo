@@ -47,7 +47,7 @@ function AuditContextNav({ closeMenu }: { closeMenu: () => void }) {
       <NavLink end to={`/app/audits/${id}`} onClick={closeMenu}>Overview</NavLink>
       <a href={`/app/audits/${id}#findings`} onClick={closeMenu}>Findings</a>
       <Link to="/app/recommendations" onClick={closeMenu}>Actions</Link>
-      <Link to={`/app/audits/new?url=${encodeURIComponent(location.state?.url ?? '')}`} onClick={closeMenu}>Run again</Link>
+      <Link to={`/app/audits/new?audit=${encodeURIComponent(id)}`} onClick={closeMenu}>Run again</Link>
     </nav>
   </div>
 }
