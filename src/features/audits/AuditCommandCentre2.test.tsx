@@ -33,7 +33,7 @@ describe('AuditCommandCentre2', () => {
 
     expect(screen.getByRole('heading', { name: /know what matters/i })).toBeInTheDocument()
 
-    const workflow = screen.getByRole('navigation', { name: /Audit stages/i })
+    const workflow = screen.getByRole('navigation', { name: /Audit (stages|workflow)/i })
     expect(within(workflow).getByRole('link', { name: /1 Understand/i })).toHaveAttribute('href', '#audit-evidence')
     expect(within(workflow).getByRole('link', { name: /2 Decide/i })).toHaveAttribute('href', '#audit-action-queue')
     expect(within(workflow).getByRole('link', { name: /3 Act/i })).toHaveAttribute('href', '#audit-action-queue')
