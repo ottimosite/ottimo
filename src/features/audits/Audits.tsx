@@ -6,7 +6,9 @@ import { storage } from '../../services/storage'
 import type { Audit, Category, Severity, Status } from '../../types/domain'
 import { Badge, Button, Card, Progress } from '../../components/ui'
 import { formatDate } from '../../lib/format'
-import { isValidUrl, normaliseUrl } from '../../lib/validation'\nimport { compareAudits } from '../../audit-engine/audit-comparison'\nimport { verifyActions } from '../../audit-engine/verification'
+import { isValidUrl, normaliseUrl } from '../../lib/validation'
+import { compareAudits } from '../../audit-engine/audit-comparison'
+import { verifyActions } from '../../audit-engine/verification'
 
 export function AuditList() { const [audits] = useState(() => storage.audits().length ? storage.audits() : seedAudits); return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Audits</span><h1>Turn a URL into a clear action plan.</h1><p>Run the live audit engine against the rendered website and turn its evidence into an action plan.</p></div><Link className="btn btn-primary" to="/app/audits/new">New audit</Link></div><Card><div className="audit-list">{audits.map(audit => <Link className="audit-item" key={audit.id} to={`/app/audits/${audit.id}`}><span className="audit-score">{audit.score ?? "—"}</span><span><strong>{seedWebsites.find(website => website.id === audit.websiteId)?.name ?? audit.url}</strong><small>{formatDate(audit.createdAt)} · {audit.issues.filter(issue => issue.status !== 'resolved').length} open issues</small></span><span>→</span></Link>)}</div></Card></div> }
 
@@ -52,7 +54,10 @@ export function NewAudit() {
           stats: { ...result.stats, pageScope: 'site-crawl', source: 'live' },
           durationMs: Math.round(performance.now() - auditStarted),
         }
-        if (previousAudits[0]) {\n          audit.comparison = compareAudits(previousAudits[0], audit)\n          audit.verifications = verifyActions(previousAudits[0], audit)\n        }
+        if (previousAudits[0]) {
+          audit.comparison = compareAudits(previousAudits[0], audit)
+          audit.verifications = verifyActions(previousAudits[0], audit)
+        }
         storage.saveWebsites(allWebsites.some(item => item.id === website.id) ? allWebsites : [...allWebsites, website])
         storage.saveAudits([...seedAudits, ...storage.audits(), audit])
         navigate('/app/audits/' + audit.id, { replace: true })
