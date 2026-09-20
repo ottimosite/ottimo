@@ -14,6 +14,7 @@ describe('buildWebsiteHealthTrends',()=>{
   expect(result.overall.direction).toBe('improving')
   expect(result.overall.scoreDelta).toBe(10)
   expect(result.categories[0].trend.direction).toBe('improving')
+  expect(result.overall.evidence).toBe('measured')
  })
  it('reports regression and stability without inventing evidence',()=>{
   const reg=buildWebsiteHealthTrends(buildWebsiteHistory([audit('a',80,80),audit('b',70,70)],'site-1'))
