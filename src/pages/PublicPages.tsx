@@ -170,7 +170,7 @@ function TrustRow() {
 }
 
 export function Home() {
-  usePublicMetadata('Find what is holding your website back.', 'Ottimo audits the technical foundations of your website and turns the evidence into a prioritised improvement plan.')
+  usePublicMetadata('Know what is holding your website back.', 'Ottimo audits performance, search, accessibility, experience, technical quality and AI readiness, then turns the evidence into a prioritised improvement plan.')
 
   return <div className="public-home lead-home">
     <section className="hero lead-hero">
@@ -178,20 +178,25 @@ export function Home() {
       <div className="lead-hero-grid">
         <div>
           <span className="eyebrow">Website optimisation, without the guesswork</span>
-          <h1>Find what is holding your website back.</h1>
-          <p className="hero-copy">Ottimo checks the parts of your website that affect speed, discoverability, accessibility, usability and technical quality — then turns the evidence into a clear list of what to fix next.</p>
+          <h1>Know what’s holding your website back.<br /><em>Know what to fix next.</em></h1>
+          <p className="hero-copy">Ottimo examines performance, search, accessibility, experience, technical quality and AI readiness — then turns the evidence into a prioritised plan your team can act on.</p>
           <div className="hero-actions">
             <a className="btn btn-primary" href="#start">Analyse my website <span aria-hidden="true">↗</span></a>
             <a className="text-link" href="#method">See how it works ↓</a>
           </div>
           <div className="ethos"><strong>Find the problems.</strong><strong>Understand the impact.</strong><strong>Fix what matters.</strong><strong>Verify the change.</strong></div>
         </div>
-        <div className="audit-preview" aria-label="Illustrative Ottimo audit summary">
-          <div className="audit-preview-top"><span className="eyebrow">Illustrative audit view</span><span className="preview-status">Evidence first</span></div>
-          <div className="preview-score"><strong>Evidence</strong><span>before scores, promises or recommendations</span></div>
-          <div className="preview-lines"><div><span>Performance</span><b>Measured</b></div><div><span>Accessibility</span><b>Measured</b></div><div><span>Search visibility</span><b>Evidence</b></div></div>
-          <p className="preview-note">Every finding is labelled as measured, inferred or unavailable. Unknown is a valid result.</p>
-          <Link className="preview-link" to="/methodology">Read the methodology →</Link>
+        <div className="audit-preview audit-preview-product" aria-label="Illustrative Ottimo audit finding">
+          <div className="audit-preview-top"><span className="eyebrow">Illustrative finding</span><span className="preview-status">Measured</span></div>
+          <div className="preview-finding">
+            <span className="preview-domain">Performance · Home page</span>
+            <strong>Largest content element loads late.</strong>
+            <p>The main page content is waiting on a resource that can be reduced or deferred.</p>
+          </div>
+          <div className="preview-evidence"><span>Evidence</span><b>Observed resource</b><small>Support: page + resource timing</small></div>
+          <div className="preview-action"><span>Next action</span><strong>Inspect the blocking resource →</strong></div>
+          <p className="preview-note">Findings are labelled as measured, inferred or unavailable. Unknown is a valid result.</p>
+          <Link className="preview-link" to="/methodology">See how Ottimo explains findings →</Link>
         </div>
       </div>
     </section>
