@@ -33,7 +33,7 @@ describe('AuditCommandCentre2', () => {
     expect(screen.getByRole('heading', { name: /know what matters/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /understand/i })).toHaveAttribute('href', '#audit-evidence')
     expect(screen.getByRole('link', { name: /decide/i })).toHaveAttribute('href', '#audit-decisions')
-    expect(screen.getByRole('link', { name: /Act/i })).toHaveAttribute('href', '#audit-actions')
+    expect(within(screen.getByRole('navigation', { name: /Audit workflow/i })).getByRole('link', { name: /^Act$/i })).toHaveAttribute('href', '#audit-actions')
     expect(screen.getByRole('link', { name: /verify/i })).toHaveAttribute('href', '#audit-verification')
     expect(screen.getByRole('link', { name: /compare/i })).toHaveAttribute('href', '#audit-changes')
   })
