@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { auditScores, categoryLabels, seedAudits, seedWebsites } from '../../data/mock'
 import { storage } from '../../services/storage'
 import type { Category } from '../../types/domain'
@@ -17,7 +17,10 @@ const categoryCopy: Record<Category, { title: string; body: string; next: string
 function currentAudits() { return storage.audits().length ? storage.audits() : seedAudits }
 
 export function CategoryPage({ category }: { category: Category }) {
-  const audit = currentAudits().at(-1) ?? seedAudits.at(-1)!
+  const location = useLocation()
+  const websiteId = new URLSearchParams(location.search).get('website')
+  const audits = websiteId ? currentAudits().filter(item => item.websiteId === websiteId) : currentAudits()
+  const audit = audits.at(-1) ?? seedAudits.at(-1)!
   const score = audit.scores.find(item => item.category === category) ?? auditScores.find(item => item.category === category)!
   const issues = audit.issues.filter(issue => issue.category === category).sort((a, b) => b.priority - a.priority)
   const copy = categoryCopy[category]
