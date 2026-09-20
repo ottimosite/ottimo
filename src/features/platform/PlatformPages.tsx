@@ -191,7 +191,7 @@ export function InsightsPage() {
       <div className="section-head"><div><span className="eyebrow">Website insights</span><h2>Where attention is concentrated</h2></div><Link to={`/app/audits/${audit.id}#audit-evidence`}>Inspect evidence →</Link></div>
       <div className="insight-grid">
         {categories.map(({ category, score, coverage, issue }) => <article className="insight-card" key={category}>
-          <div className="insight-card__top"><span className="eyebrow">{categoryLabels[category]}</span><span className={`evidence-status evidence-status--${coverage}`}>{titleCase(coverage)}</span></div>
+          <div className="insight-card__top"><span className="eyebrow">{categoryLabels[category]}</span><span className={`evidence-status evidence-status--${coverage}`}>{evidenceLabel(coverage)}</span></div>
           <strong className="insight-score">{score === undefined ? '—' : score}<small>{score === undefined ? 'not measured' : '/100'}</small></strong>
           <p>{issue ? issue.summary : categoryCopy[category].body}</p>
           {issue && <div className="insight-card__finding"><Badge tone={issue.severity}>{issue.severity}</Badge><span>{issue.title}</span></div>}
