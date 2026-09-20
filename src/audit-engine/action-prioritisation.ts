@@ -81,6 +81,9 @@ export function prioritiseAction(
   )
 
   return {
+    impact: severityWeight[issue.severity],
+    confidence: issue.confidence === 'high' ? 1 : issue.confidence === 'medium' ? 0.85 : 0.7,
+    effort: 1,
     severity: severityWeight[issue.severity],
     scope,
     evidence,
