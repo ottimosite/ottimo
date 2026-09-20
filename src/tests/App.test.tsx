@@ -6,7 +6,7 @@ import App from '../App'
 describe('app', () => {
   it('renders the product landing page around a clear improvement proposition', () => {
     render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>)
-    expect(screen.getByRole('heading', { name: /find what is holding your website back/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /know what’s holding your website back\. know what to fix next\./i })).toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: /analyse my website/i }).length).toBeGreaterThan(0)
     expect(screen.getByRole('heading', { name: /six lenses\. one digital experience/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /from website signal to verified improvement/i })).toBeInTheDocument()
