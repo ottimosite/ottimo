@@ -40,7 +40,7 @@ describe('InsightsPage', () => {
     render(<MemoryRouter initialEntries={['/app/insights?website=site-test']}><InsightsPage /></MemoryRouter>)
 
     expect(screen.getByRole('heading', { name: /turn audit evidence into useful understanding/i })).toBeInTheDocument()
-    expect(screen.getByText('Example site')).toBeInTheDocument()
+    expect(screen.getByText(/Insights · Example site/i)).toBeInTheDocument()
     expect(screen.getByText('Slow resource')).toBeInTheDocument()
     expect(screen.getByText('1 measured')).toBeInTheDocument()
     expect(screen.getByText('1 partially inferred')).toBeInTheDocument()
