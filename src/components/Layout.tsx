@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router-dom'
+import { seedAudits } from '../data/mock'
+import { storage } from '../services/storage'
 
 const publicLinks = [
   ['/services', 'Services'],
@@ -11,7 +13,7 @@ const publicLinks = [
 
 const navigationGroups = [
   { label: 'Workspace', links: [['/app/dashboard', 'Overview'], ['/app/websites', 'Websites'], ['/app/audits', 'Audits'], ['/app/recommendations', 'Actions']] },
-  { label: 'Insights', links: [['/app/insights', 'Insights'], ['/app/performance', 'Performance'], ['/app/seo', 'Search'], ['/app/accessibility', 'Accessibility'], ['/app/usability', 'Experience'], ['/app/technical', 'Technical'], ['/app/ai', 'AI readiness']] },
+  { label: 'Understand', links: [['/app/insights', 'Insights']] },
   { label: 'Reporting', links: [['/app/reports', 'Reports'], ['/app/history', 'History']] },
 ]
 
@@ -41,9 +43,13 @@ function useMenuFocus(open: boolean, closeMenu: () => void, toggleRef: React.Ref
 
 function WebsiteContextNav({ closeMenu }: { closeMenu: () => void }) {
   const location = useLocation()
-  const match = location.pathname.match(/^\/app\/websites\/([^/]+)$/)
-  const id = match?.[1]
-  if (!id) return null
+  const { id: auditId } = useParams()
+  const websiteRouteMatch = location.pathname.match(/^\/app\/websites\/([^/]+)$/)
+  const websiteIdFromQuery = new URLSearchParams(location.search).get('website')
+  const audit = auditId ? [...storage.audits(), ...seedAudits].find(item => item.id === auditId) : undefined
+  const id = websiteRouteMatch?.[1] ?? websiteIdFromQuery ?? audit?.websiteId
+
+  if (!id || location.pathname.endsWith('/new') || location.pathname.endsWith('/run')) return null
 
   const encodedId = encodeURIComponent(id)
   const links = [
@@ -79,7 +85,7 @@ function AuditContextNav({ closeMenu }: { closeMenu: () => void }) {
     <div className="audit-context-back"><Link to="/app/audits" onClick={closeMenu}>← All audits</Link></div>
     <span className="audit-context-label">Audit</span>
     <strong className="audit-context-title">Command centre</strong>
-    <nav aria-label="Audit navigation">
+    <nav aria-label="Audit workflow">
       <NavLink end to={`/app/audits/${id}`} onClick={closeMenu}>Overview</NavLink>
       <a href={`/app/audits/${id}#findings`} onClick={closeMenu}>Findings</a>
       <Link to="/app/recommendations" onClick={closeMenu}>Actions</Link>
@@ -105,7 +111,7 @@ export function AppLayout() {
   const toggleRef = useRef<HTMLButtonElement>(null)
   const closeMenu = useCallback(() => setMenuOpen(false), [])
   useMenuFocus(menuOpen, closeMenu, toggleRef, 'app-navigation')
-  return <div className="app-shell"><SkipLink /><aside className={`sidebar ${menuOpen ? 'menu-open' : ''}`}><div className="sidebar-top"><Link className="brand" to="/" onClick={closeMenu}>OTTIMO<span aria-hidden="true">.</span></Link><MenuToggle buttonRef={toggleRef} open={menuOpen} controls="app-navigation" onClick={() => setMenuOpen(open => !open)} /></div><nav id="app-navigation" aria-label="Application">
+  return <div className={`app-shell`}><SkipLink /><aside className={`sidebar ${menuOpen ? 'menu-open' : ''}`}><div className="sidebar-top"><Link className="brand" to="/" onClick={closeMenu}>OTTIMO<span aria-hidden="true">.</span></Link><MenuToggle buttonRef={toggleRef} open={menuOpen} controls="app-navigation" onClick={() => setMenuOpen(open => !open)} /></div><nav id="app-navigation" aria-label="Application">
     {navigationGroups.map(group => <div className="nav-group" key={group.label}><span className="nav-group-label">{group.label}</span>{group.links.map(([to, label]) => <NavLink key={to} to={to} end onClick={closeMenu}>{label}</NavLink>)}</div>)}
     <div className="nav-group nav-group-settings"><span className="nav-group-label">Settings</span><NavLink to="/app/settings" end onClick={closeMenu}>Settings</NavLink></div>
   </nav><WebsiteContextNav closeMenu={closeMenu} /><AuditContextNav closeMenu={closeMenu} /><Link className="side-cta" to="/" onClick={closeMenu}>← Public site</Link></aside><div className="app-main"><header className="app-top"><div><span className="eyebrow">Ottimo platform</span><strong>Digital presence, made measurable.</strong></div><div className="demo-chip">Demo mode · local data</div></header><main id="main" tabIndex={-1} className="app-content"><Outlet /></main></div></div>
