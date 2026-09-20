@@ -14,6 +14,10 @@ export interface ActionPrioritisationContext {
 }
 
 export interface ActionPriorityBreakdown {
+  /** Legacy factors retained so existing stored actions remain type-compatible. */
+  impact: number
+  confidence: number
+  effort: number
   severity: number
   scope: number
   evidence: number
