@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import App from '../App'
 
@@ -44,11 +44,12 @@ describe('app', () => {
 
   it('provides website-context navigation for the primary workspace', () => {
     render(<MemoryRouter initialEntries={['/app/websites/site-wikipedia']}><App /></MemoryRouter>)
-    expect(screen.getByRole('navigation', { name: /website navigation/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Health' })).toHaveAttribute('href', '/app/websites/site-wikipedia')
-    expect(screen.getByRole('link', { name: 'Audits' })).toHaveAttribute('href', '/app/audits?website=site-wikipedia')
-    expect(screen.getByRole('link', { name: 'Actions' })).toHaveAttribute('href', '/app/recommendations?website=site-wikipedia')
-    expect(screen.getByRole('link', { name: 'Performance' })).toHaveAttribute('href', '/app/performance?website=site-wikipedia')
+    const websiteNavigation = screen.getByRole('navigation', { name: /website navigation/i })
+    expect(websiteNavigation).toBeInTheDocument()
+    expect(within(websiteNavigation).getByRole('link', { name: 'Health' })).toHaveAttribute('href', '/app/websites/site-wikipedia')
+    expect(within(websiteNavigation).getByRole('link', { name: 'Audits' })).toHaveAttribute('href', '/app/audits?website=site-wikipedia')
+    expect(within(websiteNavigation).getByRole('link', { name: 'Actions' })).toHaveAttribute('href', '/app/recommendations?website=site-wikipedia')
+    expect(within(websiteNavigation).getByRole('link', { name: 'Performance' })).toHaveAttribute('href', '/app/performance?website=site-wikipedia')
   })
 
   it('renders dashboard route', () => {
