@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { seedAudits, categoryLabels } from '../../data/mock'
 import { storage } from '../../services/storage'
 import type { ActionLifecycleStatus, Audit, OptimizationAction } from '../../types/domain'
@@ -58,13 +59,14 @@ export function Recommendations() {
     const source = stored.length ? stored : seedAudits
     return source.map(hydrateAuditActions)
   })
+  const scopedAudits = websiteId ? audits.filter(audit => audit.websiteId === websiteId) : audits
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
   const [status, setStatus] = useState('all')
   const [sort, setSort] = useState('priority')
 
-  const all = audits.flatMap(audit => (audit.actions ?? []).map(action => ({ ...action, auditId: audit.id })))
-  const blockedCount = all.filter(action => isBlocked(action, audits.find(audit => audit.id === action.auditId)?.actions ?? [])).length
+  const all = scopedAudits.flatMap(audit => (audit.actions ?? []).map(action => ({ ...action, auditId: audit.id })))
+  const blockedCount = all.filter(action => isBlocked(action, scopedAudits.find(audit => audit.id === action.auditId)?.actions ?? [])).length
   const readyCount = all.filter(action => action.lifecycleStatus === 'planned' && !isBlocked(action, audits.find(audit => audit.id === action.auditId)?.actions ?? [])).length
   const inProgressCount = all.filter(action => action.lifecycleStatus === 'in_progress' || action.lifecycleStatus === 'verification').length
 
@@ -77,7 +79,7 @@ export function Recommendations() {
     .sort((a, b) => sort === 'priority'
       ? b.priorityScore - a.priorityScore || a.title.localeCompare(b.title)
       : a.title.localeCompare(b.title)),
-  [all, category, query, sort, status])
+  [all, category, query, sort, status, scopedAudits])
 
   const updateLifecycle = (auditId: string, actionId: string, nextStatus: ActionLifecycleStatus) => {
     const next = audits.map(audit => {
