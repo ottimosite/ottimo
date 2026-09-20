@@ -2,7 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router-dom'
 
-const publicLinks = [['/services', 'Services'], ['/performance', 'Performance'], ['/seo', 'SEO'], ['/accessibility', 'Accessibility'], ['/ai', 'AI'], ['/methodology', 'Methodology'], ['/pricing', 'Pricing'], ['/concepts', 'Concept lab']]
+const publicLinks = [
+  ['/services', 'Services'],
+  ['/methodology', 'Methodology'],
+  ['/pricing', 'Plans'],
+  ['/about', 'About'],
+] as const
 
 const navigationGroups = [
   { label: 'Workspace', links: [['/app/dashboard', 'Overview'], ['/app/websites', 'Websites'], ['/app/audits', 'Audits'], ['/app/recommendations', 'Actions']] },
@@ -92,7 +97,7 @@ export function PublicLayout() {
   const toggleRef = useRef<HTMLButtonElement>(null)
   const closeMenu = useCallback(() => setMenuOpen(false), [])
   useMenuFocus(menuOpen, closeMenu, toggleRef, 'primary-navigation')
-  return <><SkipLink /><header className={`site-header ${menuOpen ? 'menu-open' : ''}`}><Link className="brand" to="/" onClick={closeMenu}>OTTIMO<span aria-hidden="true">.</span></Link><MenuToggle buttonRef={toggleRef} open={menuOpen} controls="primary-navigation" onClick={() => setMenuOpen(open => !open)} /><nav id="primary-navigation" aria-label="Primary">{publicLinks.map(([to, label]) => <NavLink key={to} to={to} end onClick={closeMenu}>{label}</NavLink>)}</nav><div className="header-actions"><Link className="btn btn-ghost" to="/contact" onClick={closeMenu}>Contact</Link><Link className="btn btn-primary" to="/app/dashboard" onClick={closeMenu}>Open platform</Link></div></header><main id="main" tabIndex={-1}><Outlet /></main><footer><div className="footer-brand">OTTIMO.</div><p>Fast. Accessible. Clear. Useful.</p><p>Ottimo helps digital teams improve the websites that matter.</p><Link className="footer-concepts" to="/concepts">Explore the concept lab →</Link></footer></>
+  return <><SkipLink /><header className={`site-header ${menuOpen ? 'menu-open' : ''}`}><Link className="brand" to="/" onClick={closeMenu}>OTTIMO<span aria-hidden="true">.</span></Link><MenuToggle buttonRef={toggleRef} open={menuOpen} controls="primary-navigation" onClick={() => setMenuOpen(open => !open)} /><nav id="primary-navigation" aria-label="Primary">{publicLinks.map(([to, label]) => <NavLink key={to} to={to} end onClick={closeMenu}>{label}</NavLink>)}</nav><div className="header-actions"><Link className="btn btn-ghost" to="/contact" onClick={closeMenu}>Contact</Link><Link className="btn btn-primary" to="/#start" onClick={closeMenu}>Analyse website</Link></div></header><main id="main" tabIndex={-1}><Outlet /></main><footer><div className="footer-brand">OTTIMO.</div><p>Fast. Accessible. Clear. Useful.</p><p>Website performance, visibility and experience — connected by evidence.</p><div className="footer-links"><Link to="/services">Services</Link><Link to="/methodology">Methodology</Link><Link to="/case-studies">Evidence</Link><Link to="/contact">Contact</Link><Link to="/concepts">Concept lab</Link></div></footer></>
 }
 
 export function AppLayout() {
