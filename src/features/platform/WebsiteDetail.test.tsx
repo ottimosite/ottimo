@@ -82,7 +82,7 @@ describe('WebsiteDetail', () => {
     expect(screen.getByLabelText('Current website decision')).toBeInTheDocument()
     expect(screen.getByRole('region', { name: 'Website capability navigation' })).toBeInTheDocument()
     expect(screen.getByText('All of the evidence in one workspace')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /Acquisition/ })).toHaveAttribute('href', '/app/insights?website=site-wikipedia')
+    expect(screen.getByRole('link', { name: /Acquisition/ })).toHaveAttribute('href', '/app/insights?website=site-test')
     expect(screen.getByText('Is the work proving itself?')).toBeInTheDocument()
     const verification = screen.getByRole('heading', { name: 'Is the work proving itself?' }).closest('.card')
     expect(verification).not.toBeNull()
