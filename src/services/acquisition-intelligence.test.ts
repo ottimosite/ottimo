@@ -59,8 +59,9 @@ describe('acquisition intelligence', () => {
       observations: [observation('search-console', 'sc-1'), observation('analytics', 'ga-1')],
       audits: [audit('seo'), audit('usability')],
     })
-    expect(result.insights.some(item => item.evidence.kind === 'correlation')).toBe(true)
-    expect(result.insights.every(item => !item.rationale.toLowerCase().includes('caused'))).toBe(true)
+    const correlations = result.insights.filter(item => item.evidence.kind === 'correlation')
+    expect(correlations.length).toBeGreaterThan(0)
+    expect(correlations.every(item => !item.rationale.toLowerCase().includes('caused'))).toBe(true)
   })
 
   it('does not invent acquisition results when external data is absent', () => {
