@@ -9,3 +9,58 @@
 .signal-list small,.diagnostic-grid small{color:var(--muted);font-size:.75rem}
 .engineer-diagnostics pre{white-space:pre-wrap;overflow:auto;padding:12px;border-radius:8px;background:#111;color:#eee;font-size:.72rem}
 @media(max-width:900px){.audit-intelligence-grid{grid-template-columns:1fr}.audit-mode-switch{order:3}}
+
+/* Audit overview UX refinement */
+.audit-overview{--audit-card-gap:18px}
+.audit-hero{padding:4px 0 6px}
+.audit-breadcrumb{display:flex;align-items:center;gap:8px;margin-bottom:22px;color:var(--muted);font-size:.72rem;font-weight:800}
+.audit-breadcrumb a{color:var(--green-dark);text-decoration:underline;text-underline-offset:3px}
+.audit-hero-main{display:flex;align-items:flex-end;justify-content:space-between;gap:32px}
+.audit-title-block{min-width:0}
+.audit-title-block h1{margin:10px 0 8px;color:var(--forest);font:normal clamp(2.7rem,5vw,5.2rem)/.92 Georgia,serif;letter-spacing:-.055em}
+.audit-title-block .audit-url{display:inline-block;max-width:100%;color:var(--green-dark);font-weight:700;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:4px}
+.audit-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:15px}
+.audit-meta span{padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--muted);font-size:.7rem;font-weight:800}
+.audit-actions{align-items:center}
+.audit-standards{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-top:8px}
+.audit-standards h2{margin:8px 0 4px}
+.audit-standards p{margin:0;color:var(--muted);font-size:.8rem}
+.audit-interpretation{padding:28px;background:var(--forest);border-radius:18px}
+.audit-interpretation .section-head{margin-bottom:4px}
+.audit-interpretation h2{color:#fff}
+.audit-interpretation .eyebrow{color:var(--lime)}
+.audit-interpretation .section-subtitle{margin:7px 0 0;color:#d9e7df;font-size:.82rem}
+.audit-open-count{padding:6px 10px;border:1px solid rgba(255,255,255,.25);border-radius:999px;color:#fff;font-size:.72rem;font-weight:850}
+.audit-interpretation .interpretation-grid{gap:14px}
+.audit-interpretation .interpretation-item{min-height:145px;align-items:flex-start;background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.18)}
+.audit-interpretation .interpretation-number{display:grid;place-items:center;min-width:42px;height:42px;border-radius:12px;background:var(--lime);color:var(--forest);font-size:1.25rem}
+.interpretation-label{display:block;margin-bottom:6px;color:#cfe0d5;font-size:.67rem;font-weight:900;letter-spacing:.07em;text-transform:uppercase}
+.audit-interpretation .interpretation-item strong{display:block;color:#fff;font-size:1rem}
+.audit-interpretation .interpretation-item p{color:#d9e7df}
+.audit-health-row{align-items:stretch}
+.audit-health{min-height:210px}
+.health-score-block{min-width:170px}
+.health-explanation{max-width:620px}
+.health-explanation p{margin-bottom:12px}
+.inline-action{display:inline-flex;align-items:center;gap:7px;color:var(--forest);font-weight:900;text-decoration:underline;text-underline-offset:4px}
+.open-issues-card{display:flex;flex-direction:column;justify-content:center}
+.open-issues-card .big-number{margin-top:8px}
+.audit-overview .card:focus-within{outline:2px solid var(--lime);outline-offset:2px}
+.audit-overview a:focus-visible,.audit-overview button:focus-visible{outline:3px solid var(--coral);outline-offset:3px}
+@media(max-width:900px){
+ .audit-hero-main,.audit-standards{align-items:flex-start;flex-direction:column}
+ .audit-actions{width:100%}
+ .audit-actions .btn{flex:1}
+ .audit-interpretation .interpretation-grid{grid-template-columns:1fr}
+ .audit-interpretation .interpretation-item{min-height:auto}
+ .audit-health-row{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+ .audit-title-block h1{font-size:3rem}
+ .audit-meta{display:grid;grid-template-columns:1fr 1fr}
+ .audit-meta span:last-child{grid-column:1/-1}
+ .audit-actions{display:grid;grid-template-columns:1fr 1fr}
+ .audit-mode-switch{grid-column:1/-1;justify-self:start}
+ .audit-actions .btn{min-width:0}
+ .audit-interpretation{padding:22px}
+}
