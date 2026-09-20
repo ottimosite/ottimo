@@ -17,6 +17,7 @@ export interface PersistedEnvelope<T> {
 export interface PersistentRepository {
   listWebsites(principal: TenantPrincipal): Promise<Website[]>
   listAudits(principal: TenantPrincipal): Promise<Audit[]>
+  listAuditsForWebsite(principal: TenantPrincipal, websiteId: string): Promise<Audit[]>
   saveWebsite(principal: TenantPrincipal, website: Website): Promise<void>
   saveAudit(principal: TenantPrincipal, audit: Audit): Promise<void>
 }
@@ -56,6 +57,12 @@ export class TenantRepository implements PersistentRepository {
     requirePrincipal(principal)
     const envelope = await this.adapter.read<Audit[]>(tenantKey(principal, 'audits'))
     return envelope?.tenantId === principal.tenantId ? envelope.data : []
+  }
+
+  async listAuditsForWebsite(principal: TenantPrincipal, websiteId: string): Promise<Audit[]> {
+    requirePrincipal(principal)
+    const audits = await this.listAudits(principal)
+    return audits.filter(audit => audit.websiteId === websiteId)
   }
 
   async saveWebsite(principal: TenantPrincipal, website: Website): Promise<void> {
