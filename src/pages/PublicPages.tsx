@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Card } from '../components/ui'
-import { wikipediaSnapshot } from '../data/fixtures/wikipedia'
+import { wikipediaAudit, wikipediaSnapshot } from '../data/fixtures/wikipedia'
 
 const info = {
   '/services': ['Services', 'A practical optimisation partner for performance, visibility, accessibility and AI-ready digital products.'],
@@ -112,7 +112,7 @@ export function Home() {
 
     <section className="case-study-lead">
       <div><span className="eyebrow">Snapshot evidence / Wikipedia</span><h2>Test the audit experience against a real website.</h2><p>Ottimo uses a captured snapshot of Wikipedia as its deterministic real-site fixture. It gives us genuine structure and content signals without making CI depend on the live Wikipedia service.</p><Link className="text-link" to="/app/audits/audit-wikipedia">Explore the Wikipedia snapshot →</Link></div>
-      <div className="case-score"><span>Overall health</span><strong>{harbourPineAudit.score}</strong><small>six categories reviewed</small><div className="case-bars">{harbourPineAudit.scores.slice(0, 4).map(score => <div key={score.category}><span>{score.category}</span><i style={{ width: `${score.score}%` }} /></div>)}</div></div>
+      <div className="case-score"><span>Overall health</span><strong>{wikipediaAudit.score ?? '—'}</strong><small>snapshot evidence · six lenses</small><div className="case-bars">{wikipediaAudit.scores.slice(0, 4).map(score => <div key={score.category}><span>{score.category}</span><i style={{ width: `${score.score}%` }} /></div>)}</div></div>
     </section>
 
     <section className="principles-section">
