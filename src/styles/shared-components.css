@@ -1,0 +1,22 @@
+/* Shared component primitives.
+   One authoritative home for reusable controls and common content surfaces. */
+
+.btn{display:inline-flex;min-height:44px;align-items:center;justify-content:center;gap:7px;border:1px solid transparent;border-radius:var(--radius-md);padding:10px var(--space-4);font-size:var(--text-md);font-weight:900;line-height:1;text-decoration:none;transition:transform var(--motion-fast) var(--ease-standard),background-color var(--motion-fast) var(--ease-standard),border-color var(--motion-fast) var(--ease-standard)}
+.btn:hover{transform:translateY(-1px)}
+.btn-primary{background:var(--forest);color:#fff;border-color:var(--forest)}
+.btn-primary:hover{background:var(--green-dark)}
+.btn-ghost{background:transparent;color:var(--forest);border-color:var(--line)}
+.btn-secondary{background:var(--lime);color:var(--forest);border-color:var(--lime)}
+.btn:focus-visible{position:relative;z-index:1}
+
+.card{min-width:0;padding:26px;border:1px solid var(--line);border-radius:var(--radius-xl);background:var(--surface);box-shadow:var(--shadow-card)}
+.card>h2{margin:0 0 16px;color:var(--forest);font:normal 1.9rem/1.05 var(--font-serif);letter-spacing:-.04em}
+.card p:last-child{margin-bottom:0}
+.card>a{color:var(--green-dark);font-weight:850}
+
+.eyebrow{display:inline-block;color:var(--coral);font-size:var(--text-xs);font-weight:950;letter-spacing:.11em;line-height:1.2;text-transform:uppercase}
+
+.muted{color:var(--muted)}
+.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.section-head h2{margin:7px 0 0;color:var(--forest);font:normal 1.9rem/1.05 var(--font-serif);letter-spacing:-.04em}
+.section-head>a{color:var(--green-dark);font-weight:850;white-space:nowrap}
