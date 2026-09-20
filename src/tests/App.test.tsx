@@ -24,9 +24,10 @@ describe('app', () => {
 
   it('gives public information pages distinct, useful content', () => {
     render(<MemoryRouter initialEntries={['/performance']}><App /></MemoryRouter>)
-    expect(screen.getByRole('heading', { name: /speed is part of the product/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /find the bottleneck/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /prioritise the journey/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /make important pages faster for real people/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /start with the signal, not the story/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /useful outcomes, not vanity metrics/i })).toBeInTheDocument()
+    expect(screen.getByText(/resource and asset analysis/i)).toBeInTheDocument()
   })
 
   it('uses grouped application navigation and a streamlined audit start surface', () => {

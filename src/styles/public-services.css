@@ -1,0 +1,19 @@
+.public-service-page{width:100%;max-width:1160px;margin:0 auto;padding:0 30px 110px}
+.service-hero{padding:90px 0 95px;max-width:900px}
+.service-hero h1{max-width:900px;margin:18px 0 24px;font:normal clamp(3.3rem,7vw,6.6rem)/.91 Georgia,serif;letter-spacing:-.06em;color:var(--forest)}
+.service-hero>p{max-width:720px;color:var(--ink-soft);font-size:1.18rem;line-height:1.65}
+.service-problem{display:grid;grid-template-columns:.8fr 1.2fr;gap:80px;padding:75px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.service-problem h2,.service-detail-grid h2,.service-proof h2{margin:15px 0;color:var(--forest);font:normal clamp(2.2rem,4vw,4rem)/.96 Georgia,serif;letter-spacing:-.05em}
+.service-problem>p{max-width:650px;margin:0;color:var(--ink-soft);font-size:1.08rem;line-height:1.7}
+.service-detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:70px;background:var(--line);border:1px solid var(--line)}
+.service-detail-grid>div{padding:38px;background:var(--cream);min-height:360px}
+.service-detail-grid ul{display:grid;gap:14px;margin:30px 0 0;padding:0;list-style:none}
+.service-detail-grid li{padding:16px 0 16px 25px;border-bottom:1px solid var(--line);color:var(--ink-soft);position:relative}
+.service-detail-grid li::before{content:'→';position:absolute;left:0;color:var(--coral);font-weight:900}
+.service-proof{margin-top:70px;padding:65px;background:var(--lime)}
+.service-proof h2{max-width:760px}
+.service-proof p{max-width:700px;color:var(--ink-soft);font-size:1.05rem;line-height:1.65}
+.service-proof .text-link{display:inline-block;margin-top:12px}
+.public-service-page>.callout{margin-top:18px}
+@media(max-width:800px){.service-problem,.service-detail-grid{grid-template-columns:1fr}.service-detail-grid>div{min-height:0}.service-problem{gap:30px}.service-hero{padding-top:65px}.service-proof{padding:42px 30px}}
+@media(max-width:600px){.public-service-page{padding-inline:22px}.service-hero{padding:50px 0 65px}.service-hero h1{font-size:clamp(3rem,14vw,5rem)}.service-hero>p{font-size:1.02rem}.service-problem{padding:55px 0}.service-detail-grid{margin-top:55px}.service-detail-grid>div{padding:28px 22px}.service-proof{margin-top:55px;margin-inline:-22px;padding:38px 22px}}
