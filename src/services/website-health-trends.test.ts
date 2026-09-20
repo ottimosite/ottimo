@@ -4,6 +4,7 @@ import { buildWebsiteHealthTrends, buildWebsiteHistory } from './longitudinal-in
 
 const audit=(id:string, score:number|undefined, categoryScore:number|undefined, measurement='measured' as const): Audit=>({
  id,websiteId:'site-1',url:'https://example.com',createdAt:id,durationMs:1,
+ score,
  scores:[{category:'performance',score:categoryScore,measurement}],
  issues:[]
 })
