@@ -11,3 +11,5 @@ export * from './analytics-integration'
 export * from './acquisition-intelligence'
 
 export * from './scheduled-audits'
+
+export * from './regression-detection'
