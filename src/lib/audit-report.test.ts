@@ -35,10 +35,11 @@ describe('audit report export',()=>{
   })
   it('downloads the generated report',()=>{
     const click=vi.fn()
-    const anchor={click,href:'',download:''} as unknown as HTMLAnchorElement
+    const anchor={click,href:'',download:'',remove:vi.fn()} as unknown as HTMLAnchorElement
     vi.spyOn(document,'createElement').mockReturnValue(anchor)
-    vi.spyOn(URL,'createObjectURL').mockReturnValue('blob:test')
-    vi.spyOn(URL,'revokeObjectURL').mockImplementation(()=>{})
+    vi.spyOn(document.body,'appendChild').mockImplementation(() => anchor)
+    Object.defineProperty(URL, 'createObjectURL', { configurable:true, value:vi.fn(() => 'blob:test') })
+    Object.defineProperty(URL, 'revokeObjectURL', { configurable:true, value:vi.fn() })
     downloadAuditReport(audit,'Example')
     expect(click).toHaveBeenCalledOnce()
     expect(anchor.download).toBe('example-ottimo-audit.html')
