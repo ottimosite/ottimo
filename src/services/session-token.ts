@@ -22,8 +22,11 @@ const fromBase64Url = (value: string) => {
   return Uint8Array.from(atob(padded), char => char.charCodeAt(0))
 }
 
+const importKey = (secret: string) =>
+  crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify'])
+
 const sign = async (value: string, secret: string) => {
-  const key = await crypto.subtle.importKey('raw', encoder.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify'])
+  const key = await importKey(secret)
   const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(value))
   return toBase64Url(new Uint8Array(signature))
 }
@@ -47,15 +50,25 @@ export class HmacSessionVerifier implements SessionVerifier {
     if (!payload || !signature) return undefined
 
     try {
-      const expected = await sign(payload, this.secret)
-      const expectedBytes = fromBase64Url(expected)
+      const key = await importKey(this.secret)
       const suppliedBytes = fromBase64Url(signature)
-      if (expectedBytes.length !== suppliedBytes.length || !expectedBytes.every((byte, index) => byte === suppliedBytes[index])) return undefined
+      if (!(await crypto.subtle.verify('HMAC', key, suppliedBytes, encoder.encode(payload)))) return undefined
 
-      const decoded = JSON.parse(new TextDecoder().decode(fromBase64Url(payload))) as SessionTokenPayload
-      if (!decoded.sessionId || !decoded.userId || !decoded.tenantId || !decoded.expiresAt) return undefined
-      if (new Date(decoded.expiresAt).getTime() <= Date.now()) return undefined
-      return decoded
+      const decoded = JSON.parse(new TextDecoder().decode(fromBase64Url(payload))) as Record<string, unknown>
+      const keys = Object.keys(decoded).sort()
+      const expectedKeys = ['expiresAt', 'sessionId', 'tenantId', 'userId']
+      if (keys.length !== expectedKeys.length || keys.some((key, index) => key !== expectedKeys[index])) return undefined
+
+      const { sessionId, userId, tenantId, expiresAt } = decoded
+      if (
+        typeof sessionId !== 'string' || sessionId.length === 0 ||
+        typeof userId !== 'string' || userId.length === 0 ||
+        typeof tenantId !== 'string' || tenantId.length === 0 ||
+        typeof expiresAt !== 'string' || Number.isNaN(Date.parse(expiresAt)) ||
+        new Date(expiresAt).getTime() <= Date.now()
+      ) return undefined
+
+      return { sessionId, userId, tenantId, expiresAt }
     } catch {
       return undefined
     }
