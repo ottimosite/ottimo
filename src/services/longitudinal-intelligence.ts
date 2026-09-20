@@ -12,7 +12,6 @@ export interface LongitudinalAuditSnapshot {
   createdAt: string
   url: string
   score?: number
-  scoreMeasurement: MeasurementStatus
   issueCount: number
   actionCount: number
   coverage: LongitudinalCoverage
@@ -57,7 +56,6 @@ export function snapshotAudit(audit: Audit): LongitudinalAuditSnapshot {
     createdAt: audit.createdAt,
     url: audit.url,
     score: audit.score,
-    scoreMeasurement: audit.scores.find(score => score.score !== undefined)?.measurement ?? 'unavailable',
     issueCount: audit.issues.length,
     actionCount: audit.actions?.length ?? 0,
     coverage: coverageFor(audit),
@@ -290,11 +288,14 @@ export function buildWebsiteHealthTrends(history: LongitudinalWebsiteHistory): W
   const previous = history.previous
   const current = history.latest
 
+  const previousScoreMeasurement = previous?.categories.find(category => category.score !== undefined)?.measurement
+  const currentScoreMeasurement = current?.categories.find(category => category.score !== undefined)?.measurement
+
   const overall = trendForScores(
     previous?.score,
     current?.score,
-    previous?.scoreMeasurement,
-    current?.scoreMeasurement,
+    previousScoreMeasurement,
+    currentScoreMeasurement,
     previous?.auditId,
     current?.auditId,
   )
