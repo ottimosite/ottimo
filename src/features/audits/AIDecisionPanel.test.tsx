@@ -23,6 +23,8 @@ describe('AIDecisionPanel', () => {
     expect(await screen.findByText(/evidence-backed explanation/i)).toBeInTheDocument()
     expect(screen.getByText('Proposal', { exact: true })).toBeInTheDocument()
     expect(screen.getByText(/evidence reference supplied/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /explain with evidence/i })).toBeInTheDocument()
+    expect(screen.getByText(/inspect supplied evidence/i)).toBeInTheDocument()
   })
 
   it('does not offer guidance when there are no unresolved findings', () => {
@@ -30,5 +32,14 @@ describe('AIDecisionPanel', () => {
     render(<AIDecisionPanel audit={resolvedAudit} />)
     expect(screen.getByText(/no unresolved findings/i)).toBeInTheDocument()
     expect(screen.queryByRole('button', { name: /explain with evidence/i })).not.toBeInTheDocument()
+  })
+})
+
+
+describe('AIDecisionPanel context', () => {
+  it('honours a finding query parameter so hand-offs keep decision context', () => {
+    window.history.pushState({}, '', '/app/audits/audit-ai?finding=issue-ai#ai-decision')
+    render(<AIDecisionPanel audit={audit} />)
+    expect(screen.getByText(/selected finding:/i)).toHaveTextContent('Slow LCP')
   })
 })
