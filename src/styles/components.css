@@ -82,3 +82,8 @@
   .rec-meta { grid-template-columns:1fr 1fr; }
   .rec-meta select { grid-column:1 / -1; }
 }
+
+.rec-labels { display:flex; flex-wrap:wrap; align-items:center; gap:7px; }
+.rec-labels .muted { font-size:.76rem; }
+.rec-meta select { min-height:44px; background:#fff; border:1px solid var(--line); border-radius:9px; color:var(--forest); font-weight:800; }
+.rec-meta select:focus-visible { outline:3px solid var(--lime); outline-offset:2px; }
