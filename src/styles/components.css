@@ -87,3 +87,14 @@
 .rec-labels .muted { font-size:.76rem; }
 .rec-meta select { min-height:44px; background:#fff; border:1px solid var(--line); border-radius:9px; color:var(--forest); font-weight:800; }
 .rec-meta select:focus-visible { outline:3px solid var(--lime); outline-offset:2px; }
+
+/* UX-04 action queue touch and narrow-screen hardening */
+.action-next-step { display:grid; gap:4px; margin:12px 0; padding:12px 14px; border-left:3px solid var(--green); background:var(--mint); }
+.action-next-step strong { color:var(--forest); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; }
+.action-next-step span { color:var(--ink-soft); font-size:.82rem; }
+.action-evidence-chain { display:flex; align-items:center; flex-wrap:wrap; gap:7px; margin:12px 0; color:var(--muted); font-size:.72rem; font-weight:850; }
+.action-evidence-chain span:not(:nth-child(even)) { padding:5px 8px; border:1px solid var(--line); border-radius:999px; background:var(--cream); color:var(--green-dark); }
+@media(max-width:600px) {
+  .action-proof__links a { min-height:44px; display:inline-flex; align-items:center; }
+  .action-details input, .action-details textarea, .rec-meta select { min-height:44px; }
+}
