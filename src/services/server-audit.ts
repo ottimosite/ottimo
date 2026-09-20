@@ -1,4 +1,4 @@
-import type { AuditResult, AuditIssue, Category, Severity } from '../types/domain'
+import type { AuditResult, AuditIssue, Category, Severity, AuditStats, PerformanceResourceSummary } from '../types/domain'
 import { calculateHealth } from '../audit-engine/scoring'
 import { aggregateFindings } from '../audit-engine/aggregation'
 import { buildOptimizationActions } from '../audit-engine/actions'\nimport { buildWebsiteHealthModel } from '../audit-engine/health-model'
@@ -17,6 +17,29 @@ interface ServerSiteAuditReport {
 const categories: Category[] = ['performance', 'accessibility', 'seo', 'technical']
 
 const severity = (value: AuditReport['findings'][number]['severity']): Severity => value
+
+const resourcePerformanceFor = (reports: Array<{ report: AuditReport }>): PerformanceResourceSummary => {
+  const resources = reports.flatMap(({ report }) => report.page?.resources ?? []).filter(resource => !resource.failed)
+  const byTypeMap = new Map<string, { count: number; transferBytes: number }>()
+  for (const resource of resources) {
+    const type = resource.type || 'other'
+    const current = byTypeMap.get(type) ?? { count: 0, transferBytes: 0 }
+    current.count += 1
+    current.transferBytes += resource.transferSize ?? resource.encodedBodySize ?? 0
+    byTypeMap.set(type, current)
+  }
+  const withSize = resources.filter(resource => resource.transferSize !== undefined || resource.encodedBodySize !== undefined)
+  const withDuration = resources.filter(resource => resource.durationMs !== undefined)
+  const sizeOf = (resource: typeof resources[number]) => resource.transferSize ?? resource.encodedBodySize ?? 0
+  return {
+    resourceCount: resources.length,
+    totalTransferBytes: resources.reduce((sum, resource) => sum + sizeOf(resource), 0),
+    byType: [...byTypeMap.entries()].map(([type, value]) => ({ type, ...value })).sort((a, b) => b.transferBytes - a.transferBytes),
+    largest: withSize.sort((a, b) => sizeOf(b) - sizeOf(a)).slice(0, 8).map(resource => ({ url: resource.url, type: resource.type, transferBytes: resource.transferSize ?? resource.encodedBodySize, durationMs: resource.durationMs })),
+    slowest: withDuration.sort((a, b) => (b.durationMs ?? 0) - (a.durationMs ?? 0)).slice(0, 8).map(resource => ({ url: resource.url, type: resource.type, transferBytes: resource.transferSize ?? resource.encodedBodySize, durationMs: resource.durationMs })),
+  }
+}
+
 
 const toResult = (site: ServerSiteAuditReport): AuditResult => {
   const successfulPages = site.pages.filter(page => page.report.run.status === 'completed' && page.report.page)
@@ -74,6 +97,8 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
     return { category, score: measured?.value, measurement: measured ? 'measured' as const : 'unavailable' as const }
   })
 
+  const resourcePerformance = resourcePerformanceFor(successfulPages)
+
   return {
     score: health.score,
     scores: firstScores,
@@ -97,6 +122,7 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
         inpMs: firstPage?.timing.inpMs,
         mode: 'rendered-page',
       },
+      resourcePerformance,
       discovery: {
         finalUrl: site.finalUrl,
         https: site.finalUrl.startsWith('https:'),
