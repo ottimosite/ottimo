@@ -55,8 +55,8 @@ The last stylesheet is explicitly described in source as a tactical deterministi
 | performance-metrics.css | 2,209 | 29 | 60 | 2 | 0 |
 | onboarding.css | 5,639 | 74 | 151 | 2 | 1 |
 | quality.css | 545 | 6 | 2 | 2 | 4 |
-| application-layout.css | 2,721 | 30 | 57 | 3 | 22 |
-| **Total** | **102,686** | **1,381** | **2,346** | **85** | **29** |
+| application-layout.css | 3,208 | 39 | 47 | 3 | 27 |
+| **Total** | **103,173** | **1,390** | **2,336** | **85** | **34** |
 
 Counts are mechanical inventory measures, not quality scores. Selector occurrences include repeated selector tokens within selectors and therefore should not be interpreted as unique rule counts.
 
@@ -128,7 +128,7 @@ Confirmed observations:
 1. `src/main.tsx` relies on global stylesheet import order.
 2. `overrides.css` and `menu-overrides.css` both redefine application/public shell concepts already present in `global.css`.
 3. `application-layout.css` is imported last specifically to override earlier layout rules.
-4. `application-layout.css` contains 22 `!important` declarations.
+4. `application-layout.css` contains 27 `!important` declarations.
 5. Other `!important` declarations exist in `menu-overrides.css`, `audit-overview.css`, `onboarding.css` and `quality.css`.
 6. Responsive rules are distributed across most stylesheet files, with 85 `@media` occurrences in the current inventory.
 7. The architecture therefore depends partly on cascade order rather than a single explicit ownership model.
