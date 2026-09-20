@@ -227,9 +227,29 @@ export function Home() {
       <div className="coverage-grid">{coverage.map(([title, body], index) => <article className="coverage-item" key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{body}</p><Link to={`/app/${title === 'Search visibility' ? 'seo' : title === 'Experience' ? 'usability' : title === 'Technical quality' ? 'technical' : title.toLowerCase()}`}>Explore in the platform →</Link></article>)}</div>
     </section>
 
-    <section className="case-study-lead">
-      <div><span className="eyebrow">See the product, not a mockup</span><h2>Explore the working audit experience.</h2><p>The public site is backed by the same application architecture as the product. The deterministic Wikipedia fixture gives the platform a real-site structure without pretending fixture data is a live measurement.</p><Link className="text-link" to="/app/audits/audit-wikipedia">Explore the working audit →</Link></div>
-      <div className="case-score"><span>Fixture status</span><strong>Live</strong><small>working product · deterministic evidence</small><div className="case-bars">{wikipediaAudit.scores.slice(0, 4).map(score => <div key={score.category}><span>{score.category}</span><i style={{ width: `${score.score}%` }} /></div>)}</div></div>
+    <section className="case-study-lead" aria-labelledby="audit-example-title">
+      <div>
+        <span className="eyebrow">See the product, not a mockup</span>
+        <h2 id="audit-example-title">See how Ottimo turns evidence into an action.</h2>
+        <p>This is a deterministic example from the Wikipedia fixture. It shows the shape of an Ottimo audit without pretending the saved snapshot is a live measurement.</p>
+        <Link className="text-link" to="/app/audits/audit-wikipedia">Explore the working audit →</Link>
+      </div>
+      <div className="case-score audit-example-card">
+        <div className="audit-example-header"><span>Illustrative audit</span><strong>Deterministic fixture</strong></div>
+        <div className="audit-example-finding">
+          <span>SEO · Site scope</span>
+          <h3>{wikipediaAudit.issues[1].title}</h3>
+          <p>{wikipediaAudit.issues[1].summary}</p>
+        </div>
+        <div className="audit-example-meta">
+          <div><span>Evidence</span><b>Measured</b></div>
+          <div><span>Confidence</span><b>{wikipediaAudit.issues[1].confidence}</b></div>
+          <div><span>Next action</span><b>{wikipediaAudit.issues[1].solution}</b></div>
+        </div>
+        <div className="audit-domain-states">
+          {wikipediaAudit.scores.slice(0, 6).map(score => <span key={score.category}><b>{score.category}</b><em>{score.measurement}</em></span>)}
+        </div>
+      </div>
     </section>
 
     <section className="audit-output-section" aria-labelledby="audit-output-title">
