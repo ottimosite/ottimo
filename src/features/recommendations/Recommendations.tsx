@@ -226,7 +226,7 @@ export function Recommendations() {
               </div>
 
               <h3>{action.title}</h3>
-              <p className="recommendation-priority"><strong>{priorityLabel(action.priorityScore)}</strong> · {action.priorityScore}/100 · {action.impact} impact · {action.effort} effort</p>
+              <p className="recommendation-priority"><strong>{priorityLabel(action.priorityScore)}</strong> · {action.priorityScore}/100 · {action.severity} severity · {action.affectedPages.length} affected pages</p>
               <p>{action.implementationSteps[1]}</p>
               <p><strong>Why it matters:</strong> {action.expectedOutcome}</p>
 
@@ -267,11 +267,12 @@ export function Recommendations() {
                   <p><strong>Implementation:</strong> {action.implementationSteps.join(' → ')}</p>
                   <p><strong>Scope:</strong> {action.affectedPages.length} affected page{action.affectedPages.length === 1 ? '' : 's'} · {action.affectedResources.length} resource{action.affectedResources.length === 1 ? '' : 's'} · {action.evidenceCount} evidence item{action.evidenceCount === 1 ? '' : 's'}</p>
                   <dl>
-                    <div><dt>Impact</dt><dd>{action.priority.impact}</dd></div>
-                    <div><dt>Severity</dt><dd>{action.priority.severity}</dd></div>
-                    <div><dt>Confidence</dt><dd>{action.confidence}</dd></div>
-                    <div><dt>Effort factor</dt><dd>{action.priority.effort}</dd></div>
+                    <div><dt>Severity factor</dt><dd>{action.priority.severity}</dd></div>
+                    <div><dt>Scope factor</dt><dd>{action.priority.scope}</dd></div>
                     <div><dt>Evidence factor</dt><dd>{action.priority.evidence}</dd></div>
+                    <div><dt>Dependency factor</dt><dd>{action.priority.dependency}</dd></div>
+                    <div><dt>Verification factor</dt><dd>{action.priority.verification}</dd></div>
+                    <div><dt>Regression-risk factor</dt><dd>{action.priority.regressionRisk}</dd></div>
                   </dl>
                 </div>
               </details>
