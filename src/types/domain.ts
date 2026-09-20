@@ -236,11 +236,12 @@ export interface VerificationCriterion {
 }
 
 export interface ActionPriorityBreakdown {
-  impact: number
   severity: number
-  confidence: number
-  effort: number
+  scope: number
   evidence: number
+  dependency: number
+  verification: number
+  regressionRisk: number
   score: number
 }
 
