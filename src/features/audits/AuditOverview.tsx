@@ -113,7 +113,7 @@ function ActionPreview({ audit, actions }: { audit: Audit; actions: Optimization
   const ready = actions.filter(action => action.lifecycleStatus === 'planned' && !blocked(action)).length
   const active = actions.filter(action => action.lifecycleStatus === 'in_progress' || action.lifecycleStatus === 'verification').length
   const verified = audit.verifications?.filter(item => item.status === 'verified').length ?? 0
-  return <Card className="audit-action-centre">
+  return <Card className="audit-action-centre" id="audit-action-queue">
     <div className="section-head"><div><span className="eyebrow">Act</span><h2>Your optimisation queue</h2></div><Link className="inline-action" to="/app/recommendations">Open full queue <span aria-hidden="true">→</span></Link></div>
     <div className="audit-command-stats">
       <div><strong>{ready}</strong><span>Ready to act</span></div>
@@ -192,14 +192,14 @@ export function AuditOverview() {
     <AIDecisionPanel audit={audit} />
     <nav className="audit-detail-nav" aria-label="Audit sections">
       <a href="#audit-evidence">Evidence</a>
-      <a href="#audit-decisions">Actions</a>
+      <a href="#audit-action-queue">Actions</a>
       <a href="#audit-performance">Performance</a>
       <a href="#audit-intelligence">Intelligence</a>
       <a href="#audit-changes">Changes</a>
       <a href="#findings">Findings</a>
     </nav>
     <EvidenceExplorer audit={audit} />
-    <section id="audit-decisions" className="audit-primary-decision">
+    <section id="audit-decision" className="audit-primary-decision">
       <div><span className="eyebrow">Next decision</span><h2>{openIssues.length ? 'Turn the highest-impact finding into action.' : 'Review the evidence and verify what is already resolved.'}</h2><p>{openIssues.length ? 'The audit has unresolved findings. Use the decision queue to work through priority, effort and dependencies without losing the evidence behind each action.' : 'No unresolved findings are recorded. Review comparison and verification evidence to understand what changed.'}</p></div>
       <Link className="primary-action" to={openIssues.length ? "/app/recommendations" : "#audit-changes"}>{openIssues.length ? 'Open decision queue →' : 'Review changes →'}</Link>
     </section>
