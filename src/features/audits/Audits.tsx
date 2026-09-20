@@ -14,11 +14,8 @@ export function AuditList() { const [audits] = useState(() => storage.audits().l
 
 export function NewAudit() {
   const location = useLocation()
-  const search = new URLSearchParams(location.search)
-  const requestedAuditId = search.get('audit')
-  const requestedAudit = requestedAuditId ? [...seedAudits, ...storage.audits()].find(item => item.id === requestedAuditId) : undefined
-  const initialUrl = search.get('url') ?? requestedAudit?.url ?? 'https://example.com'
-  const categories = search.get('categories')?.split(',').filter(Boolean) ?? []
+  const initialUrl = new URLSearchParams(location.search).get('url') ?? 'https://example.com'
+  const categories = new URLSearchParams(location.search).get('categories')?.split(',').filter(Boolean) ?? []
   const [url] = useState(normaliseUrl(initialUrl))
   const [error, setError] = useState('')
   const navigate = useNavigate()
@@ -61,12 +58,7 @@ export function NewAudit() {
           audit.comparison = compareAudits(previousAudits[0], audit)
           audit.verifications = verifyActions(previousAudits[0], audit)
         }
-        const updatedWebsites = (allWebsites.some(item => item.id === website.id) ? allWebsites : [...allWebsites, website]).map(item =>
-          item.id === website.id
-            ? { ...item, lastAuditId: audit.id, healthModel: audit.healthModel }
-            : item,
-        )
-        storage.saveWebsites(updatedWebsites)
+        storage.saveWebsites(allWebsites.some(item => item.id === website.id) ? allWebsites : [...allWebsites, website])
         storage.saveAudits([...seedAudits, ...storage.audits(), audit])
         navigate('/app/audits/' + audit.id, { replace: true })
       } catch (cause) {
