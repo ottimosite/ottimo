@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { PublicLayout, AppLayout } from './components/Layout'
 import { Home, InfoPage } from './pages/PublicPages'
+import { PublicServicePage } from './pages/PublicServicePages'
 import { Dashboard } from './features/dashboard/Dashboard'
 import { Websites } from './features/websites/Websites'
 import { AuditList, NewAudit } from './features/audits/Audits'
@@ -16,11 +17,13 @@ export default function App() {
 		</Route>
 		<Route element={<PublicLayout />}>
 			<Route path="/services" element={<InfoPage path="/services" />} />
-			<Route path="/performance" element={<InfoPage path="/performance" />} />
-			<Route path="/seo" element={<InfoPage path="/seo" />} />
-			<Route path="/accessibility" element={<InfoPage path="/accessibility" />} />
-			<Route path="/ai" element={<InfoPage path="/ai" />} />
+			<Route path="/performance" element={<PublicServicePage slug="performance" />} />
+			<Route path="/seo" element={<PublicServicePage slug="seo" />} />
+			<Route path="/accessibility" element={<PublicServicePage slug="accessibility" />} />
+			<Route path="/ai" element={<PublicServicePage slug="ai" />} />
 			<Route path="/methodology" element={<InfoPage path="/methodology" />} />
+			<Route path="/usability" element={<PublicServicePage slug="usability" />} />
+			<Route path="/technical" element={<PublicServicePage slug="technical" />} />
 			<Route path="/pricing" element={<InfoPage path="/pricing" />} />
 			<Route path="/about" element={<InfoPage path="/about" />} />
 			<Route path="/case-studies" element={<InfoPage path="/case-studies" />} />
