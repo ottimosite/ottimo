@@ -44,6 +44,7 @@ function WebsiteContextNav({ closeMenu }: { closeMenu: () => void }) {
   const encodedId = encodeURIComponent(id)
   const links = [
     [`/app/websites/${encodedId}`, 'Health'],
+    [`/app/insights?website=${encodedId}`, 'Insights'],
     [`/app/audits?website=${encodedId}`, 'Audits'],
     [`/app/performance?website=${encodedId}`, 'Performance'],
     [`/app/seo?website=${encodedId}`, 'Search'],
