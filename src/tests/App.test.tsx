@@ -42,6 +42,15 @@ describe('app', () => {
     expect(runAudit.getAttribute('href')).toMatch(/\/app\/audits\/new\/run\?url=/)
   })
 
+  it('provides website-context navigation for the primary workspace', () => {
+    render(<MemoryRouter initialEntries={['/app/websites/site-wikipedia']}><App /></MemoryRouter>)
+    expect(screen.getByRole('navigation', { name: /website navigation/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Health' })).toHaveAttribute('href', '/app/websites/site-wikipedia')
+    expect(screen.getByRole('link', { name: 'Audits' })).toHaveAttribute('href', '/app/audits?website=site-wikipedia')
+    expect(screen.getByRole('link', { name: 'Actions' })).toHaveAttribute('href', '/app/recommendations?website=site-wikipedia')
+    expect(screen.getByRole('link', { name: 'Performance' })).toHaveAttribute('href', '/app/performance?website=site-wikipedia')
+  })
+
   it('renders dashboard route', () => {
     render(<MemoryRouter initialEntries={['/app/dashboard']}><App /></MemoryRouter>)
     expect(screen.getByRole('heading', { name: /your digital presence at a glance/i })).toBeInTheDocument()
