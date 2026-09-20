@@ -56,24 +56,47 @@ const statsForPage = (report: AuditReport): AuditStats | undefined => {
 }
 
 const resourcePerformanceFor = (reports: Array<{ report: AuditReport }>): NonNullable<AuditStats['resourcePerformance']> => {
-  const resources = reports.flatMap(({ report }) => report.page?.resources ?? []).filter(resource => !resource.failed)
+  const resources = reports.flatMap(({ report }) => report.page?.resources.map(resource => ({ resource, pageUrl: report.page!.finalUrl })) ?? []).filter(({ resource }) => !resource.failed)
   const byTypeMap = new Map<string, { count: number; transferBytes: number }>()
-  const sizeOf = (resource: (typeof resources)[number]) => resource.transferSize ?? resource.encodedBodySize ?? 0
-  for (const resource of resources) {
+  const sizeOf = (resource: (typeof resources)[number]['resource']) => resource.transferSize ?? resource.encodedBodySize ?? 0
+  for (const { resource } of resources) {
     const type = resource.type || 'other'
     const current = byTypeMap.get(type) ?? { count: 0, transferBytes: 0 }
     current.count += 1
     current.transferBytes += sizeOf(resource)
     byTypeMap.set(type, current)
   }
-  const withSize = resources.filter(resource => resource.transferSize !== undefined || resource.encodedBodySize !== undefined)
-  const withDuration = resources.filter(resource => resource.durationMs !== undefined)
+  const withSize = resources.filter(({ resource }) => resource.transferSize !== undefined || resource.encodedBodySize !== undefined)
+  const withDuration = resources.filter(({ resource }) => resource.durationMs !== undefined)
+  const totalTransferBytes = resources.reduce((sum, item) => sum + sizeOf(item.resource), 0)
+  const totalDurationMs = resources.reduce((sum, item) => sum + (item.resource.durationMs ?? 0), 0)
+  const contributors = [...resources]
+    .filter(({ resource }) => sizeOf(resource) > 0 || (resource.durationMs ?? 0) > 0)
+    .sort((a, b) => (sizeOf(b.resource) + (b.resource.durationMs ?? 0) * 10) - (sizeOf(a.resource) + (a.resource.durationMs ?? 0) * 10))
+    .slice(0, 12)
+    .map(({ resource, pageUrl }) => {
+      let host = 'unknown'
+      try { host = new URL(resource.url).host } catch { /* Keep an explicit unknown host. */ }
+      return {
+        pageUrl,
+        url: resource.url,
+        type: resource.type || 'other',
+        host,
+        transferBytes: resource.transferSize ?? resource.encodedBodySize,
+        durationMs: resource.durationMs,
+        transferShare: totalTransferBytes > 0 ? Number((sizeOf(resource) / totalTransferBytes).toFixed(4)) : undefined,
+        durationShare: totalDurationMs > 0 && resource.durationMs !== undefined ? Number((resource.durationMs / totalDurationMs).toFixed(4)) : undefined,
+        evidence: 'measured' as const,
+      }
+    })
+
   return {
     resourceCount: resources.length,
-    totalTransferBytes: resources.reduce((sum, resource) => sum + sizeOf(resource), 0),
+    totalTransferBytes,
     byType: [...byTypeMap.entries()].map(([type, value]) => ({ type, ...value })).sort((a, b) => b.transferBytes - a.transferBytes),
-    largest: withSize.sort((a, b) => sizeOf(b) - sizeOf(a)).slice(0, 8).map(resource => ({ url: resource.url, type: resource.type || 'other', transferBytes: resource.transferSize ?? resource.encodedBodySize, durationMs: resource.durationMs })),
-    slowest: withDuration.sort((a, b) => (b.durationMs ?? 0) - (a.durationMs ?? 0)).slice(0, 8).map(resource => ({ url: resource.url, type: resource.type || 'other', transferBytes: resource.transferSize ?? resource.encodedBodySize, durationMs: resource.durationMs })),
+    largest: withSize.sort((a, b) => sizeOf(b.resource) - sizeOf(a.resource)).slice(0, 8).map(({ resource }) => ({ url: resource.url, type: resource.type || 'other', transferBytes: resource.transferSize ?? resource.encodedBodySize, durationMs: resource.durationMs })),
+    slowest: withDuration.sort((a, b) => (b.resource.durationMs ?? 0) - (a.resource.durationMs ?? 0)).slice(0, 8).map(({ resource }) => ({ url: resource.url, type: resource.type || 'other', transferBytes: resource.transferSize ?? resource.encodedBodySize, durationMs: resource.durationMs })),
+    contributors,
   }
 }
 

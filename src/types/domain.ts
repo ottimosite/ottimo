@@ -286,12 +286,25 @@ export interface Audit {
   diagnostics?: { code: string; stage: string; message: string; technicalDetails?: string; targetUrl?: string; pageUrl?: string; retryable: boolean }
 }
 
+export interface PerformanceResourceAttribution {
+  pageUrl: string
+  url: string
+  type: string
+  host: string
+  transferBytes?: number
+  durationMs?: number
+  transferShare?: number
+  durationShare?: number
+  evidence: MeasurementStatus
+}
+
 export interface PerformanceResourceSummary {
   resourceCount: number
   totalTransferBytes: number
   byType: Array<{ type: string; count: number; transferBytes: number }>
   largest: Array<{ url: string; type: string; transferBytes?: number; durationMs?: number }>
   slowest: Array<{ url: string; type: string; transferBytes?: number; durationMs?: number }>
+  contributors: PerformanceResourceAttribution[]
 }
 
 export interface AuditStats {
