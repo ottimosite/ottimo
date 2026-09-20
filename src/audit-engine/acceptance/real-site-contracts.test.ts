@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { SiteAuditEngine } from '../site'
+import { buildOptimizationActions } from '../actions'
+import { compareAudits } from '../audit-comparison'
+import { verifyActions } from '../verification'
+import type { Audit } from '../../types/domain'
 import type { AuditReport, PageSnapshot } from '../types'
 
 const fixturePage = (url: string, html: string, overrides: Partial<PageSnapshot> = {}): PageSnapshot => ({
@@ -149,5 +153,64 @@ describe('real-site acceptance contracts', () => {
     expect(failed.run.status).toBe('failed')
     expect(failed.page).toBeUndefined()
     expect(failed.error?.code).toBe('timeout')
+  })
+})
+
+
+describe('real-site workflow contracts', () => {
+  const issue = {
+    id: 'issue-contract',
+    category: 'performance' as const,
+    severity: 'high' as const,
+    title: 'Largest Contentful Paint is slow',
+    summary: 'LCP exceeds the good threshold.',
+    impact: 'Users may wait longer for the primary content.',
+    solution: 'Reduce the render-blocking work affecting the page.',
+    effort: 'medium' as const,
+    priority: 85,
+    status: 'open' as const,
+    confidence: 'high' as const,
+    affectedPages: ['https://example.com/'],
+    evidenceCount: 2,
+    fingerprint: 'performance|lcp|example',
+  }
+
+  const audit = (id: string, issues: typeof issue[]): Audit => ({
+    id,
+    websiteId: 'site-contract',
+    url: 'https://example.com/',
+    createdAt: id === 'audit-1' ? '2026-09-20T00:00:00.000Z' : '2026-09-20T01:00:00.000Z',
+    durationMs: 100,
+    scores: [{ category: 'performance', score: id === 'audit-1' ? 60 : 85, measurement: 'measured' }],
+    issues,
+    actions: buildOptimizationActions(issues),
+  })
+
+  it('keeps finding, action, comparison and verification contracts connected', () => {
+    const previous = audit('audit-1', [issue])
+    const current = audit('audit-2', [])
+    const comparison = compareAudits(previous, current)
+    const verification = verifyActions(previous, current, '2026-09-20T01:01:00.000Z')
+
+    expect(previous.actions?.[0]?.issueId).toBe(issue.id)
+    expect(previous.actions?.[0]?.verification[0]?.affectedPages).toEqual(issue.affectedPages)
+    expect(comparison.resolved).toBeGreaterThanOrEqual(1)
+    expect(comparison.improved).toBeGreaterThanOrEqual(1)
+    expect(verification).toHaveLength(1)
+    expect(verification[0].status).toBe('verified')
+    expect(verification[0].previousAuditId).toBe(previous.id)
+    expect(verification[0].currentAuditId).toBe(current.id)
+  })
+
+  it('keeps unavailable browser measurements unavailable', () => {
+    const page = fixturePage('https://spa.example.com/', '<html><body><div id="app"></div></body></html>', {
+      timing: { ttfbMs: 250, fcpMs: undefined, lcpMs: undefined, cls: undefined, inpMs: undefined },
+      resources: [],
+    })
+    expect(page.timing).toMatchObject({ ttfbMs: 250 })
+    expect(page.timing.fcpMs).toBeUndefined()
+    expect(page.timing.lcpMs).toBeUndefined()
+    expect(page.timing.cls).toBeUndefined()
+    expect(page.timing.inpMs).toBeUndefined()
   })
 })
