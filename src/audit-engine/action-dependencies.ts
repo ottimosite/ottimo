@@ -69,12 +69,26 @@ export function normaliseActionDependencies(
   actions: OptimizationAction[],
 ): OptimizationAction[] {
   const validIds = new Set(actions.map(action => action.id))
-  return actions.map(action => ({
-    ...action,
-    dependencies: [...new Map(
-      action.dependencies
-        .filter(dependency => dependency.id !== action.id && validIds.has(dependency.id))
-        .map(dependency => [dependency.id, dependency]),
-    ).values()],
-  }))
+  return actions.map(action => {
+    const dependencies = new Map<string, ActionDependency>()
+
+    for (const dependency of action.dependencies) {
+      if (dependency.id === action.id || !validIds.has(dependency.id)) continue
+
+      const existing = dependencies.get(dependency.id)
+      if (!existing) {
+        dependencies.set(dependency.id, dependency)
+      } else {
+        dependencies.set(dependency.id, {
+          ...existing,
+          blocking: existing.blocking || dependency.blocking,
+        })
+      }
+    }
+
+    return {
+      ...action,
+      dependencies: [...dependencies.values()],
+    }
+  })
 }
