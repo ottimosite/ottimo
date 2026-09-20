@@ -107,8 +107,7 @@ export class SiteAuditEngine {
       const firstUrl = target.href
       const timeoutMs = Math.min(request.timeoutMs ?? 10_000, 15_000)
 
-      const robots = await discoverRobots(firstUrl)
-      const sitemap = await discoverSitemaps(firstUrl, robots)
+      const { robots, sitemap } = await this.discoveryLoader(firstUrl)
       const discovery: SiteAuditDiscovery = {
         robotsFound: robots.found,
         robots,
