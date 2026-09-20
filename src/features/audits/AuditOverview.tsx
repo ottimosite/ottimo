@@ -11,6 +11,7 @@ import type { Audit, OptimizationAction } from '../../types/domain'
 import { buildOptimizationActions } from '../../audit-engine/actions'
 import { blockingDependencies } from '../../audit-engine/action-dependencies'
 import { AuditCommandCentre2 } from './AuditCommandCentre2'
+import { EvidenceExplorer } from './EvidenceExplorer'
 
 type MetricState = 'good' | 'needs-improvement' | 'poor' | 'unavailable'
 
@@ -205,6 +206,7 @@ export function AuditOverview() {
     </header>
 
     <AuditCommandCentre2 audit={audit} openIssues={openIssues} actions={actions} />
+    <EvidenceExplorer audit={audit} />
     <Card className="standards-card audit-standards">
       <div><span className="eyebrow">Audit basis</span><h2>Standards applied</h2><p>These are the lenses used to interpret this audit.</p></div>
       <div className="standards-list">{(audit.standards ?? auditStandards.map(standard => standard.name)).map(standard => <span className="standard-tag" key={standard}>{standard}</span>)}</div>
