@@ -140,7 +140,7 @@ export function buildWebsiteHealthModel(input: {
       })
     }
 
-    const issueIds = issues.filter(issue => (issue.affectedPages ?? []).includes(page.url)).map(issue => issue.id)
+    const issueIds = input.issues.filter(issue => (issue.affectedPages ?? []).includes(page.url)).map(issue => issue.id)
     const actionIds = actions.filter(action => action.affectedPages.includes(page.url)).map(action => action.id)
 
     return {
