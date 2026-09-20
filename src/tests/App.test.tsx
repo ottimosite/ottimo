@@ -37,7 +37,7 @@ describe('app', () => {
   })
 
   it('prepares a saved website for a direct audit action', () => {
-    render(<MemoryRouter initialEntries={['/app/websites/site-demo']}><App /></MemoryRouter>)
+    render(<MemoryRouter initialEntries={['/app/websites/site-1']}><App /></MemoryRouter>)
     const runAudit = screen.getByRole('link', { name: /run audit/i })
     expect(runAudit.getAttribute('href')).toMatch(/\/app\/audits\/new\/run\?url=/)
   })
