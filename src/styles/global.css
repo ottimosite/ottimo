@@ -101,14 +101,6 @@ a { text-decoration: none; }
 #main { min-height: 60vh; }
 
 
-.btn { display:inline-flex; min-height:44px; align-items:center; justify-content:center; gap:7px; border:1px solid transparent; border-radius:9px; padding:10px 16px; font-size:.78rem; font-weight:900; line-height:1; text-decoration:none; transition:transform .18s ease,background-color .18s ease,border-color .18s ease; }
-.btn:hover { transform:translateY(-1px); }
-.btn-primary { background:var(--forest); color:#fff; border-color:var(--forest); }
-.btn-primary:hover { background:var(--green-dark); }
-.btn-ghost { background:transparent; color:var(--forest); border-color:var(--line); }
-.btn-secondary { background:var(--lime); color:var(--forest); border-color:var(--lime); }
-.eyebrow { display:inline-block; color:var(--coral); font-size:.68rem; font-weight:950; letter-spacing:.11em; line-height:1.2; text-transform:uppercase; }
-
 .hero { width:100%; max-width:1220px; margin:0 auto; padding:72px 30px 90px; }
 .hero-kicker { max-width:680px; margin-bottom:42px; color:var(--green-dark); font-size:.72rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
 .hero h1 { margin:18px 0 25px; color:var(--forest); font:normal clamp(3.4rem,7vw,7rem)/.94 Georgia,serif; letter-spacing:-.06em; }
