@@ -61,7 +61,10 @@ describe('acquisition intelligence', () => {
     })
     const correlations = result.insights.filter(item => item.evidence.kind === 'correlation')
     expect(correlations.length).toBeGreaterThan(0)
-    expect(correlations.every(item => !item.rationale.toLowerCase().includes('caused'))).toBe(true)
+    expect(correlations.every(item =>
+      item.rationale.toLowerCase().includes('does not establish') &&
+      item.rationale.toLowerCase().includes('caused'),
+    )).toBe(true)
   })
 
   it('does not invent acquisition results when external data is absent', () => {
