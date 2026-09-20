@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router-dom'
 
@@ -33,7 +33,6 @@ function useMenuFocus(open: boolean, closeMenu: () => void, toggleRef: React.Ref
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [open, closeMenu, toggleRef, menuId])
 }
-
 
 function WebsiteContextNav({ closeMenu }: { closeMenu: () => void }) {
   const location = useLocation()
@@ -84,21 +83,25 @@ function AuditContextNav({ closeMenu }: { closeMenu: () => void }) {
   </div>
 }
 
+function SkipLink() {
+  return <a className="skip-link" href="#main">Skip to main content</a>
+}
+
 export function PublicLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const toggleRef = useRef<HTMLButtonElement>(null)
-  const closeMenu = () => setMenuOpen(false)
+  const closeMenu = useCallback(() => setMenuOpen(false), [])
   useMenuFocus(menuOpen, closeMenu, toggleRef, 'primary-navigation')
-  return <><header className={`site-header ${menuOpen ? 'menu-open' : ''}`}><Link className="brand" to="/" onClick={closeMenu}>OTTIMO<span aria-hidden="true">.</span></Link><MenuToggle buttonRef={toggleRef} open={menuOpen} controls="primary-navigation" onClick={() => setMenuOpen(open => !open)} /><nav id="primary-navigation" aria-label="Primary">{publicLinks.map(([to, label]) => <NavLink key={to} to={to} end onClick={closeMenu}>{label}</NavLink>)}</nav><div className="header-actions"><Link className="btn btn-ghost" to="/contact" onClick={closeMenu}>Contact</Link><Link className="btn btn-primary" to="/app/dashboard" onClick={closeMenu}>Open platform</Link></div></header><main id="main"><Outlet /></main><footer><div className="footer-brand">OTTIMO.</div><p>Fast. Accessible. Clear. Useful.</p><p>Ottimo helps digital teams improve the websites that matter.</p><Link className="footer-concepts" to="/concepts">Explore the concept lab →</Link></footer></>
+  return <><SkipLink /><header className={`site-header ${menuOpen ? 'menu-open' : ''}`}><Link className="brand" to="/" onClick={closeMenu}>OTTIMO<span aria-hidden="true">.</span></Link><MenuToggle buttonRef={toggleRef} open={menuOpen} controls="primary-navigation" onClick={() => setMenuOpen(open => !open)} /><nav id="primary-navigation" aria-label="Primary">{publicLinks.map(([to, label]) => <NavLink key={to} to={to} end onClick={closeMenu}>{label}</NavLink>)}</nav><div className="header-actions"><Link className="btn btn-ghost" to="/contact" onClick={closeMenu}>Contact</Link><Link className="btn btn-primary" to="/app/dashboard" onClick={closeMenu}>Open platform</Link></div></header><main id="main" tabIndex={-1}><Outlet /></main><footer><div className="footer-brand">OTTIMO.</div><p>Fast. Accessible. Clear. Useful.</p><p>Ottimo helps digital teams improve the websites that matter.</p><Link className="footer-concepts" to="/concepts">Explore the concept lab →</Link></footer></>
 }
 
 export function AppLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const toggleRef = useRef<HTMLButtonElement>(null)
-  const closeMenu = () => setMenuOpen(false)
+  const closeMenu = useCallback(() => setMenuOpen(false), [])
   useMenuFocus(menuOpen, closeMenu, toggleRef, 'app-navigation')
-  return <div className="app-shell"><aside className={`sidebar ${menuOpen ? 'menu-open' : ''}`}><div className="sidebar-top"><Link className="brand" to="/" onClick={closeMenu}>OTTIMO<span aria-hidden="true">.</span></Link><MenuToggle buttonRef={toggleRef} open={menuOpen} controls="app-navigation" onClick={() => setMenuOpen(open => !open)} /></div><nav id="app-navigation" aria-label="Application">
+  return <div className="app-shell"><SkipLink /><aside className={`sidebar ${menuOpen ? 'menu-open' : ''}`}><div className="sidebar-top"><Link className="brand" to="/" onClick={closeMenu}>OTTIMO<span aria-hidden="true">.</span></Link><MenuToggle buttonRef={toggleRef} open={menuOpen} controls="app-navigation" onClick={() => setMenuOpen(open => !open)} /></div><nav id="app-navigation" aria-label="Application">
     {navigationGroups.map(group => <div className="nav-group" key={group.label}><span className="nav-group-label">{group.label}</span>{group.links.map(([to, label]) => <NavLink key={to} to={to} end onClick={closeMenu}>{label}</NavLink>)}</div>)}
     <div className="nav-group nav-group-settings"><span className="nav-group-label">Settings</span><NavLink to="/app/settings" end onClick={closeMenu}>Settings</NavLink></div>
-  </nav><WebsiteContextNav closeMenu={closeMenu} /><AuditContextNav closeMenu={closeMenu} /><Link className="side-cta" to="/" onClick={closeMenu}>← Public site</Link></aside><div className="app-main"><header className="app-top"><div><span className="eyebrow">Ottimo platform</span><strong>Digital presence, made measurable.</strong></div><div className="demo-chip">Demo mode · local data</div></header><main id="main" className="app-content"><Outlet /></main></div></div>
+  </nav><WebsiteContextNav closeMenu={closeMenu} /><AuditContextNav closeMenu={closeMenu} /><Link className="side-cta" to="/" onClick={closeMenu}>← Public site</Link></aside><div className="app-main"><header className="app-top"><div><span className="eyebrow">Ottimo platform</span><strong>Digital presence, made measurable.</strong></div><div className="demo-chip">Demo mode · local data</div></header><main id="main" tabIndex={-1} className="app-content"><Outlet /></main></div></div>
 }
