@@ -6,17 +6,17 @@ const STORE_NAME = 'ottimo-tenant-state'
 
 export function createNetlifyBlobStore(context = process.env.CONTEXT): Store {
   if (context === 'production') {
-    return getStore(STORE_NAME, { consistency: 'strong' })
+    return getStore({ name: STORE_NAME, consistency: 'strong' })
   }
 
-  return getDeployStore(STORE_NAME, { consistency: 'strong' })
+  return getDeployStore({ name: STORE_NAME, consistency: 'strong' })
 }
 
 export class NetlifyBlobObjectStore implements DurableObjectStore {
   constructor(private readonly store: Pick<Store, 'get' | 'setJSON'>) {}
 
   async get<T>(key: string): Promise<T | null> {
-    return this.store.get(key, { type: 'json', consistency: 'strong' }) as Promise<T | null>
+    return this.store.get(key, { type: 'json' }) as Promise<T | null>
   }
 
   async set<T>(key: string, value: T): Promise<void> {
