@@ -190,7 +190,7 @@ export function InsightsPage() {
           <strong className="insight-score">{score === undefined ? '—' : score}<small>{score === undefined ? 'not measured' : '/100'}</small></strong>
           <p>{issue ? issue.summary : categoryCopy[category].body}</p>
           {issue && <div className="insight-card__finding"><Badge tone={issue.severity}>{issue.severity}</Badge><span>{issue.title}</span></div>}
-          <Link to={`/app/${category === 'seo' ? 'seo' : category === 'ai' ? 'ai' : category}?website=${encodeURIComponent(audit.websiteId ?? websiteId ?? '')}`}>Explore {categoryLabels[category]} →</Link>
+          <div className="insight-card__links"><Link to={`/app/${category === 'seo' ? 'seo' : category === 'ai' ? 'ai' : category}?website=${encodeURIComponent(audit.websiteId ?? websiteId ?? '')}`}>Explore {categoryLabels[category]} →</Link>{issue && <Link to={`/app/audits/${audit.id}?finding=${encodeURIComponent(issue.id)}#ai-decision`}>Explain with evidence →</Link>}</div>
         </article>)}
       </div>
     </Card>

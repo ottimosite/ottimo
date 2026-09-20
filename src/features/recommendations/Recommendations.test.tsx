@@ -51,6 +51,7 @@ describe('Recommendations lifecycle UX', () => {
     expect(screen.getByText('Implementation is not proof.')).toBeInTheDocument()
     expect(screen.getByText('Not yet observed', { selector: '.badge' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /review originating evidence/i })).toHaveAttribute('href', '/app/audits/audit-1#findings')
+    expect(screen.getByRole('link', { name: /explain with evidence/i })).toHaveAttribute('href', '/app/audits/audit-1?finding=issue-1#ai-decision')
     expect(screen.getByRole('link', { name: /run verification audit/i })).toHaveAttribute('href', '/app/audits/new/run?audit=audit-1')
     expect(screen.getByText('Planned', { selector: '.badge' })).toBeInTheDocument()
     expect(select).toHaveValue('planned')

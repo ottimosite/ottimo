@@ -198,7 +198,7 @@ export function Recommendations() {
                 <div className="action-proof__head"><div><span className="eyebrow">Proof of change</span><strong>{verificationLabels[verificationView]}</strong></div><Badge tone={verificationTone[verificationView]}>{verificationLabels[verificationView]}</Badge></div>
                 <p><strong>Verify:</strong> {action.verification[0]?.description ?? 'A later audit must provide enough evidence to confirm the intended change.'}</p>
                 {verification ? <p className="muted"><strong>Observed evidence:</strong> {verification.evidence}</p> : <p className="muted">No later-audit verification evidence is recorded yet. This is not treated as success or failure.</p>}
-                <div className="action-proof__links"><Link to={evidenceHref}>Review originating evidence →</Link><Link to={`/app/audits/new/run?audit=${encodeURIComponent(action.auditId)}`}>Run verification audit →</Link></div>
+                <div className="action-proof__links"><Link to={evidenceHref}>Review originating evidence →</Link><Link to={`/app/audits/${action.auditId}?finding=${encodeURIComponent(action.issueId ?? '')}#ai-decision`}>Explain with evidence →</Link><Link to={`/app/audits/new/run?audit=${encodeURIComponent(action.auditId)}`}>Run verification audit →</Link></div>
               </div>
 
               <details>
