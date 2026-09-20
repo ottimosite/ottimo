@@ -123,14 +123,48 @@ export function AuditOverview() {
   const topIssues = openIssues.slice().sort((a, b) => b.priority - a.priority).slice(0, 3)
   const screenshotUrl = stats?.screenshotUrl ?? screenshotFor(audit.url)
   return <div className="stack audit-overview">
-    <div className="page-heading"><div><span className="eyebrow">Audit result · {stats?.source === 'live' ? 'Live page inspection' : 'Saved local audit'}</span><h1>{website?.name ?? audit.url}</h1><p className="audit-url">{audit.url}</p><p>{formatDate(audit.createdAt)} · {audit.durationMs}ms analysis · {audit.issues.length} findings</p></div><div className="audit-actions"><AuditModeSwitch mode={mode} setMode={setMode} /><Button variant="secondary" onClick={() => downloadAuditReport(audit, website?.name)}>Export report</Button><Button variant="ghost" onClick={() => window.print()}>Print report</Button><Button onClick={() => navigate(`/app/audits/new?url=${encodeURIComponent(audit.url)}`)}>Run again</Button></div></div>
-    <Card className="standards-card"><div><span className="eyebrow">Audit basis</span><h2>Standards applied</h2></div><div className="standards-list">{(audit.standards ?? auditStandards.map(standard => standard.name)).map(standard => <span className="standard-tag" key={standard}>{standard}</span>)}</div></Card>
-    <Card className="audit-interpretation"><div className="section-head"><div><span className="eyebrow">Start with the meaning</span><h2>What should you take away?</h2></div><span className="muted">{openIssues.length} open issue{openIssues.length === 1 ? '' : 's'}</span></div><div className="interpretation-grid">
-      <div className="interpretation-item"><span className="interpretation-number">{openIssues.length}</span><div><strong>Things that need action</strong><p>Findings Ottimo has enough evidence to turn into a concrete task.</p></div></div>
-      <div className="interpretation-item"><span className="interpretation-number">{topIssues.length}</span><div><strong>Priority actions surfaced</strong><p>Start with the actions that combine meaningful impact with available evidence.</p></div></div>
-      <div className="interpretation-item"><span className="interpretation-number">{audit.issues.filter(issue => issue.evidence?.status === 'measured').length}</span><div><strong>Findings backed by evidence</strong><p>Measured observations stay separate from assumptions so the report does not invent certainty.</p></div></div>
-    </div></Card>
-    <div className="audit-summary-grid"><Card className="audit-health"><div><span className="muted">Overall health</span>{audit.health?.score === undefined ? <div className="score"><strong>—</strong><span>Not measured</span></div> : <Score value={audit.health.score} label={audit.health.status === 'good' ? 'Good' : audit.health.status === 'needs-improvement' ? 'Needs improvement' : 'Needs attention'} />} {audit.health?.score !== undefined && <small className="muted">{audit.health.checks} measured checks · {audit.health.passed} passed · {audit.health.failed} failed</small>} {audit.health?.excludedCategories.length ? <small className="muted">Not scored: {audit.health.excludedCategories.join(', ')}</small> : null}</div><div><span className="eyebrow">How the score works</span><p>{audit.health?.methodology ?? 'Health is shown only when the audit has enough measured evidence.'}</p><span className="eyebrow">Priority focus</span><p>{openIssues.length ? openIssues.length + ' open issues need a decision.' : 'All recorded issues are resolved.'}</p><Link to="/app/recommendations">Open action queue →</Link></div></Card><Card><span className="muted">Open issues</span><strong className="big-number">{openIssues.length}</strong><div className="severity-list">{Object.entries(severityCounts).map(([severity, count]) => <span key={severity}><Badge tone={severity}>{severity}</Badge> {count}</span>)}</div></Card></div>
+    <header className="audit-hero">
+      <div className="audit-breadcrumb"><Link to="/app/audits">Audits</Link><span aria-hidden="true">/</span><span>Result</span></div>
+      <div className="audit-hero-main">
+        <div className="audit-title-block">
+          <span className="eyebrow">Audit result · {stats?.source === 'live' ? 'Live page inspection' : 'Saved local audit'}</span>
+          <h1>{website?.name ?? audit.url}</h1>
+          <a className="audit-url" href={audit.url} target="_blank" rel="noreferrer">{audit.url}<span aria-hidden="true"> ↗</span></a>
+          <div className="audit-meta" aria-label="Audit details"><span>{formatDate(audit.createdAt)}</span><span>{audit.durationMs}ms analysis</span><span>{audit.issues.length} finding{audit.issues.length === 1 ? '' : 's'}</span></div>
+        </div>
+        <div className="audit-actions">
+          <AuditModeSwitch mode={mode} setMode={setMode} />
+          <Button onClick={() => navigate(`/app/audits/new?url=${encodeURIComponent(audit.url)}`)}>Run again</Button>
+          <Button variant="secondary" onClick={() => downloadAuditReport(audit, website?.name)}>Export report</Button>
+          <Button variant="ghost" onClick={() => window.print()}>Print</Button>
+        </div>
+      </div>
+    </header>
+
+    <Card className="standards-card audit-standards">
+      <div><span className="eyebrow">Audit basis</span><h2>Standards applied</h2><p>These are the lenses used to interpret this audit.</p></div>
+      <div className="standards-list">{(audit.standards ?? auditStandards.map(standard => standard.name)).map(standard => <span className="standard-tag" key={standard}>{standard}</span>)}</div>
+    </Card>
+
+    <section className="audit-interpretation" aria-labelledby="takeaway-heading">
+      <div className="section-head">
+        <div><span className="eyebrow">Start with the meaning</span><h2 id="takeaway-heading">What should you take away?</h2><p className="section-subtitle">A quick reading of this audit before you dive into the technical detail.</p></div>
+        <span className="audit-open-count">{openIssues.length} open issue{openIssues.length === 1 ? '' : 's'}</span>
+      </div>
+      <div className="interpretation-grid">
+        <article className="interpretation-item"><span className="interpretation-number" aria-hidden="true">{openIssues.length}</span><div><span className="interpretation-label">Open issues</span><strong>{openIssues.length ? 'Things that need action' : 'Nothing currently needs action'}</strong><p>{openIssues.length ? 'Findings Ottimo has enough evidence to turn into a concrete task.' : 'No unresolved findings were recorded in this audit.'}</p></div></article>
+        <article className="interpretation-item"><span className="interpretation-number" aria-hidden="true">{topIssues.length}</span><div><span className="interpretation-label">Priority actions</span><strong>{topIssues.length ? 'Actions surfaced' : 'No priority actions'}</strong><p>{topIssues.length ? 'Start with the actions that combine meaningful impact with available evidence.' : 'There is no open action to prioritise right now.'}</p></div></article>
+        <article className="interpretation-item"><span className="interpretation-number" aria-hidden="true">{audit.issues.filter(issue => issue.evidence?.status === 'measured').length}</span><div><span className="interpretation-label">Measured findings</span><strong>Backed by evidence</strong><p>Measured observations stay separate from assumptions so the report does not invent certainty.</p></div></article>
+      </div>
+    </section>
+
+    <div className="audit-summary-grid audit-health-row">
+      <Card className="audit-health">
+        <div className="health-score-block"><span className="muted">Overall health</span>{audit.health?.score === undefined ? <div className="score"><strong>—</strong><span>Not measured</span></div> : <Score value={audit.health.score} label={audit.health.status === 'good' ? 'Good' : audit.health.status === 'needs-improvement' ? 'Needs improvement' : 'Needs attention'} />} {audit.health?.score !== undefined && <small className="muted">{audit.health.checks} measured checks · {audit.health.passed} passed · {audit.health.failed} failed</small>} {audit.health?.excludedCategories.length ? <small className="muted">Not scored: {audit.health.excludedCategories.join(', ')}</small> : null}</div>
+        <div className="health-explanation"><span className="eyebrow">How the score works</span><p>{audit.health?.methodology ?? 'Health is shown only when the audit has enough measured evidence.'}</p><span className="eyebrow">Priority focus</span><p>{openIssues.length ? `${openIssues.length} open issue${openIssues.length === 1 ? '' : 's'} need a decision.` : 'All recorded issues are resolved.'}</p><Link className="inline-action" to="/app/recommendations">Open action queue <span aria-hidden="true">→</span></Link></div>
+      </Card>
+      <Card className="open-issues-card"><span className="muted">Open issues</span><strong className="big-number">{openIssues.length}</strong><div className="severity-list">{Object.entries(severityCounts).map(([severity, count]) => <span key={severity}><Badge tone={severity}>{severity}</Badge> {count}</span>)}</div></Card>
+    </div>
     <PerformancePanel metrics={stats?.performance} />
     <IntelligencePanel stats={stats} />
     <HealthModelPanel audit={audit} />
