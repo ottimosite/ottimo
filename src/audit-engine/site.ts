@@ -115,16 +115,6 @@ export class SiteAuditEngine {
       const firstUrl = target.href
       const timeoutMs = Math.min(request.timeoutMs ?? 10_000, 15_000)
 
-      const { robots, sitemap } = await this.discoveryLoader(firstUrl)
-      const discovery: SiteAuditDiscovery = {
-        robotsFound: robots.found,
-        robots,
-        sitemapFound: sitemap.found,
-        sitemapDocuments: sitemap.documents,
-        sitemapUrls: sitemap.urls,
-        sitemapPageCount: sitemap.urls.length,
-      }
-
       const first = await this.pageEngine.audit({ ...request, url: firstUrl, timeoutMs })
       if (first.run.status === 'failed' || !first.page) {
         return {
@@ -135,10 +125,21 @@ export class SiteAuditEngine {
           pages: [{ url: firstUrl, report: first }],
           discoveredUrls: [firstUrl],
           truncated: false,
-          discovery,
+          discovery: emptyDiscovery(),
           error: first.error,
         }
       }
+
+      const { robots, sitemap } = await this.discoveryLoader(first.page.finalUrl)
+      const discovery: SiteAuditDiscovery = {
+        robotsFound: robots.found,
+        robots,
+        sitemapFound: sitemap.found,
+        sitemapDocuments: sitemap.documents,
+        sitemapUrls: sitemap.urls,
+        sitemapPageCount: sitemap.urls.length,
+      }
+
 
       const sitemapQueue = sitemap.urls
         .filter(url => url !== first.page!.finalUrl)
