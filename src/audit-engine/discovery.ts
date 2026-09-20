@@ -34,38 +34,42 @@ const sameOrigin = (candidate: string, origin: string) => {
 }
 
 const fetchText = async (rawUrl: string) => {
-  const target = await assertPublicTarget(rawUrl)
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
-  try {
-    const response = await fetch(target.href, {
-      redirect: 'manual',
-      signal: controller.signal,
-      headers: {
-        accept: 'text/plain,application/xml,text/xml;q=0.9,*/*;q=0.1',
-        'user-agent': 'OttimoAuditEngine/0.1 (+https://ottimo-site.netlify.app/)',
-      },
-    })
+  let current = rawUrl
+  for (let redirects = 0; redirects <= 5; redirects += 1) {
+    const target = await assertPublicTarget(current)
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
+    try {
+      const response = await fetch(target.href, {
+        redirect: 'manual',
+        signal: controller.signal,
+        headers: {
+          accept: 'text/plain,application/xml,text/xml;q=0.9,*/*;q=0.1',
+          'user-agent': 'OttimoAuditEngine/0.1 (+https://ottimo-site.netlify.app/)',
+        },
+      })
 
-    if ([301, 302, 303, 307, 308].includes(response.status)) {
-      const location = response.headers.get('location')
-      if (!location) return undefined
-      const redirected = normaliseUrl(location, target.href)
-      const safeRedirect = await assertPublicTarget(redirected)
-      if (!sameOrigin(safeRedirect.href, target.href)) return undefined
-      return fetchText(safeRedirect.href)
+      if ([301, 302, 303, 307, 308].includes(response.status)) {
+        const location = response.headers.get('location')
+        if (!location || redirects === 5) return undefined
+        const redirected = normaliseUrl(location, target.href)
+        const safeRedirect = await assertPublicTarget(redirected)
+        if (!sameOrigin(safeRedirect.href, target.href)) return undefined
+        current = safeRedirect.href
+        continue
+      }
+
+      if (!response.ok) return undefined
+      const buffer = await response.arrayBuffer()
+      if (buffer.byteLength > MAX_BODY_BYTES) return undefined
+      return new TextDecoder().decode(buffer)
+    } catch {
+      return undefined
+    } finally {
+      clearTimeout(timer)
     }
-
-    if (!response.ok) return undefined
-
-    const buffer = await response.arrayBuffer()
-    if (buffer.byteLength > MAX_BODY_BYTES) return undefined
-    return new TextDecoder().decode(buffer)
-  } catch {
-    return undefined
-  } finally {
-    clearTimeout(timer)
   }
+  return undefined
 }
 
 const directivePath = (value: string) => {
