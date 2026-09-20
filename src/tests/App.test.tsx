@@ -57,4 +57,13 @@ describe('app', () => {
     expect(screen.getByRole('heading', { name: /what changed since the last audit/i })).toBeInTheDocument()
   })
 
+  it('exposes an evidence explorer with page and resource scope filters', () => {
+    render(<MemoryRouter initialEntries={['/app/audits/audit-3']}><App /></MemoryRouter>)
+    expect(screen.getByRole('heading', { name: /why was this finding reported/i })).toBeInTheDocument()
+    expect(screen.getByRole('group', { name: /evidence scope/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /resource-scoped/i })).toBeInTheDocument()
+    expect(screen.getAllByText(/measured findings/i).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/inspect supporting evidence/i).length).toBeGreaterThan(0)
+  })
+
 })
