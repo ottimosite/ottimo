@@ -52,6 +52,7 @@ describe('InsightsPage', () => {
 
     expect(screen.getAllByText('Unavailable').length).toBeGreaterThan(0)
     expect(screen.getByText(/do not establish rankings or organic acquisition/i)).toBeInTheDocument()
+    expect(screen.getByLabelText('Insight decision brief')).toBeInTheDocument()
 
     const performance = screen.getByText('Slow resource').closest('article')
     expect(performance).not.toBeNull()
