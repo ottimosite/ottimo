@@ -148,15 +148,15 @@ function LeadCapture() {
   return <form className="lead-form" id="start" onSubmit={submit}>
     <div className="lead-form-heading">
       <span className="eyebrow">Start with your website</span>
-      <h2>Get to the first useful answer.</h2>
-      <p>Enter a URL and move directly into the audit experience. No account or sales conversation is required to explore the product.</p>
+      <h2>See what needs attention first.</h2>
+      <p>Enter your website address. Ottimo will take you straight into the audit setup so you can choose the scope before anything runs.</p>
     </div>
     <div className="lead-fields">
       <label>Website URL<input required value={url} onChange={event => { setUrl(event.target.value); setError('') }} placeholder="yourbusiness.co.uk" /></label>
       <button className="btn btn-primary" type="submit">Analyse my website <span aria-hidden="true">↗</span></button>
     </div>
     {error && <p className="error" role="alert">{error}</p>}
-    <small>Ottimo will tell you what it can actually observe. Unavailable measurements stay unavailable.</small>
+    <small>No account is required to start. Ottimo only presents evidence it can support; unavailable measurements stay unavailable.</small>
   </form>
 }
 
@@ -170,27 +170,27 @@ function TrustRow() {
 }
 
 export function Home() {
-  usePublicMetadata('Website optimisation without the guesswork', 'Ottimo helps teams understand and improve website performance, search visibility, accessibility, usability and technical quality.')
+  usePublicMetadata('Find what is holding your website back.', 'Ottimo audits the technical foundations of your website and turns the evidence into a prioritised improvement plan.')
 
   return <div className="public-home lead-home">
     <section className="hero lead-hero">
-      <div className="hero-kicker">Performance · visibility · accessibility · experience · technical quality · AI readiness</div>
+      <div className="hero-kicker">Website performance · search · accessibility · UX · technical quality · AI readiness</div>
       <div className="lead-hero-grid">
         <div>
-          <span className="eyebrow">The website improvement platform</span>
-          <h1>Make your website easier to find, use and improve.</h1>
-          <p className="hero-copy">Ottimo turns website evidence into a clear improvement loop. Discover what is happening, understand why it matters, prioritise the work and verify what changed.</p>
+          <span className="eyebrow">Website optimisation, without the guesswork</span>
+          <h1>Find what is holding your website back.</h1>
+          <p className="hero-copy">Ottimo checks the parts of your website that affect speed, discoverability, accessibility, usability and technical quality — then turns the evidence into a clear list of what to fix next.</p>
           <div className="hero-actions">
             <a className="btn btn-primary" href="#start">Analyse my website <span aria-hidden="true">↗</span></a>
-            <a className="text-link" href="#coverage">See how Ottimo works ↓</a>
+            <a className="text-link" href="#method">See how it works ↓</a>
           </div>
-          <div className="ethos"><strong>Discover.</strong><strong>Understand.</strong><strong>Act.</strong><strong>Verify.</strong></div>
+          <div className="ethos"><strong>Find the problems.</strong><strong>Understand the impact.</strong><strong>Fix what matters.</strong><strong>Verify the change.</strong></div>
         </div>
         <div className="audit-preview" aria-label="Illustrative Ottimo audit summary">
           <div className="audit-preview-top"><span className="eyebrow">Illustrative audit view</span><span className="preview-status">Evidence first</span></div>
-          <div className="preview-score"><strong>—</strong><span>no invented health score</span></div>
+          <div className="preview-score"><strong>Evidence</strong><span>before scores, promises or recommendations</span></div>
           <div className="preview-lines"><div><span>Performance</span><b>Measured</b></div><div><span>Accessibility</span><b>Measured</b></div><div><span>Search visibility</span><b>Evidence</b></div></div>
-          <p className="preview-note">The live product distinguishes measured findings from inferred and unavailable evidence.</p>
+          <p className="preview-note">Every finding is labelled as measured, inferred or unavailable. Unknown is a valid result.</p>
           <Link className="preview-link" to="/methodology">Read the methodology →</Link>
         </div>
       </div>
