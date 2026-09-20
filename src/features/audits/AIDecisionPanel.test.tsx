@@ -40,6 +40,6 @@ describe('AIDecisionPanel', () => {
 describe('AIDecisionPanel context', () => {
   it('honours a finding query parameter so hand-offs keep decision context', () => {
     render(<MemoryRouter initialEntries={['/app/audits/audit-ai?finding=issue-ai#ai-decision']}><AIDecisionPanel audit={audit} /></MemoryRouter>)
-    expect(screen.getByText(/selected finding:/i)).toHaveTextContent('Slow LCP')
+    expect(screen.getByText('Selected finding:').parentElement!).toHaveTextContent('Slow LCP')
   })
 })
