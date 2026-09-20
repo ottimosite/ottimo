@@ -21,7 +21,7 @@ describe('AIDecisionPanel', () => {
     render(<AIDecisionPanel audit={audit} />)
     await user.click(screen.getByRole('button', { name: /explain with evidence/i }))
     expect(await screen.findByText(/evidence-backed explanation/i)).toBeInTheDocument()
-    expect(screen.getByText(/proposal/i)).toBeInTheDocument()
+    expect(screen.getByText('Proposal', { exact: true })).toBeInTheDocument()
     expect(screen.getByText(/evidence reference supplied/i)).toBeInTheDocument()
   })
 
