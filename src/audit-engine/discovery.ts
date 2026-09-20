@@ -155,8 +155,8 @@ export async function discoverSitemaps(baseUrl: string, robots: RobotsPolicy): P
     if (documents.has(normalised)) continue
 
     const body = await fetchText(normalised)
-    documents.add(normalised)
     if (!body) continue
+    documents.add(normalised)
 
     const indexLocs = xmlValues(body, 'sitemap').flatMap(value => xmlValues(value, 'loc'))
     const pageLocs = xmlValues(body, 'url').flatMap(value => xmlValues(value, 'loc'))
