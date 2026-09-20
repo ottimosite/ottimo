@@ -62,9 +62,9 @@ describe('app', () => {
     expect(screen.getByRole('navigation', { name: /audit workflow/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /review action queue/i })).toBeInTheDocument()
     expect(screen.getAllByText(/measured findings/i).length).toBeGreaterThan(0)
-    expect(screen.getByRole('heading', { name: /what did ottimo actually observe/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /did the fix work/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /what changed since the last audit/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /know what ottimo actually observed/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /did anything change/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /did anything change/i })).toBeInTheDocument()
   })
 
   it('exposes an evidence explorer with page and resource scope filters', () => {
