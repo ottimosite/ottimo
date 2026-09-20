@@ -46,7 +46,7 @@ export function buildOptimizationActions(issues: AuditIssue[], options: { regres
       const confidence = issue.confidence ?? 'low'
       const effort = issue.effort
       const evidenceCount = issue.evidenceCount ?? (issue.evidence ? 1 : 0)
-      const priority = priorityFor(issue, impact, confidence, effort, evidenceCount)
+      const priority = prioritiseAction(issue, { regressionRisk: options.regressionRiskByIssueId?.[issue.id] })
       const priorityScore = priority.score
 
       return {
