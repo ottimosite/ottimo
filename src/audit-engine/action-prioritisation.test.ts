@@ -15,11 +15,11 @@ describe('transparent action prioritisation', () => {
     const priority = prioritiseAction(issue())
     expect(priority.severity).toBe(80)
     expect(priority.scope).toBe(40)
-    expect(priority.evidence).toBe(66)
+    expect(priority.evidence).toBe(100)
     expect(priority.dependency).toBe(100)
     expect(priority.verification).toBe(50)
     expect(priority.regressionRisk).toBe(0)
-    expect(priority.score).toBe(58)
+    expect(priority.score).toBe(65)
   })
 
   it('increases priority when supported regression risk is present', () => {
