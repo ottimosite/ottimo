@@ -16,6 +16,8 @@ const categoryCopy: Record<Category, { title: string; body: string; next: string
 
 function currentAudits() { return storage.audits().length ? storage.audits() : seedAudits }
 
+function evidenceLabel(status: string) { return status === 'partial' ? 'Inferred' : titleCase(status) }
+
 export function CategoryPage({ category }: { category: Category }) {
   const location = useLocation()
   const websiteId = new URLSearchParams(location.search).get('website')
@@ -69,6 +71,7 @@ export function WebsiteDetail() {
           <div><strong>{latestAudit.issues.filter(issue => issue.status !== 'resolved').length}</strong><span>open findings</span><small>{formatDate(latestAudit.createdAt)}</small></div>
         </div>
         <p className="performance-intro">This is the latest observed state of the website. It is not a measure of traffic, search acquisition, revenue or conversion performance.</p>
+        <div className="decision-brief" aria-label="Current website decision"><div><span className="eyebrow">What is happening</span><strong>{latestAudit.issues.filter(issue => issue.status !== 'resolved').length ? 'Open findings need attention.' : 'No unresolved findings are recorded.'}</strong></div><div><span className="eyebrow">Why it matters</span><strong>{changes?.regressed || changes?.newFindings ? 'New or regressed findings need review.' : 'The latest audit is the current evidence baseline.'}</strong></div><div><span className="eyebrow">Next decision</span><strong>{activeActions.length ? 'Review the action queue and move the next ready action forward.' : 'Review the latest audit evidence and decide what to address next.'}</strong></div></div>
         <div className="hero-actions"><Link className="btn btn-primary" to={`/app/audits/${latestAudit.id}`}>Open latest audit</Link><Link className="text-link" to="/app/recommendations">View action queue →</Link></div>
       </Card>
 
@@ -95,10 +98,11 @@ export function WebsiteDetail() {
             return <div className="health-domain" key={category}>
               <div className="health-domain__head"><span>{categoryLabels[category]}</span><strong>{scoreLabel}</strong></div>
               <div className="progress" aria-label={`${categoryLabels[category]} score`}><span style={{ width: `${categoryScore?.score ?? 0}%` }} /></div>
-              <div className="health-domain__foot"><span className={`evidence-status evidence-status--${coverage}`}>{titleCase(coverage)}</span><Link to={href}>Open →</Link></div>
+              <div className="health-domain__foot"><span className={`evidence-status evidence-status--${coverage}`}>{evidenceLabel(coverage)}</span><Link to={href}>Open →</Link></div>
             </div>
           })}
         </div>
+        <div className="evidence-legend" aria-label="Evidence status legend"><span><strong>Measured</strong> directly observed</span><span><strong>Inferred</strong> interpreted from evidence</span><span><strong>Unavailable</strong> not established by this audit</span></div>
         <p className="muted">Scores and coverage describe observed audit evidence. Unavailable domains are not treated as zero.</p>
       </Card>
 
@@ -175,10 +179,11 @@ export function InsightsPage() {
       <div className="section-head"><div><span className="eyebrow">Decision context</span><h2>What Ottimo knows right now</h2></div><span className="standard-tag">{formatDate(audit.createdAt)}</span></div>
       <div className="insights-evidence-summary">
         <div><strong>{measured}</strong><span>measured domains</span></div>
-        <div><strong>{inferred}</strong><span>partially inferred</span></div>
+        <div><strong>{inferred}</strong><span>inferred domains</span></div>
         <div><strong>{unavailable}</strong><span>unavailable</span></div>
         <div><strong>{openIssues.length}</strong><span>open findings</span></div>
       </div>
+      <div className="decision-brief" aria-label="Insight decision brief"><div><span className="eyebrow">What is happening</span><strong>{openIssues.length ? 'Unresolved findings are recorded.' : 'No unresolved findings are recorded.'}</strong></div><div><span className="eyebrow">Why it matters</span><strong>{unavailable ? 'Some domains are not established by the current evidence.' : 'The current audit provides coverage across the available domains.'}</strong></div><div><span className="eyebrow">Next decision</span><strong>Inspect the highest-priority finding before moving into implementation.</strong></div></div>
       <p className="muted">Measured observations are evidence. Partially inferred signals describe structure or interpretation. Unavailable domains are not treated as zero.</p>
     </Card>
 
