@@ -6,37 +6,6 @@
   --surface-2: var(--mint);
 }
 
-.stack { display:grid; gap:18px; }
-.narrow { max-width:860px; margin-inline:auto; }
-.page-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:28px; margin-bottom:4px; }
-.page-heading h1 { max-width:900px; margin:10px 0 10px; color:var(--forest); font:normal clamp(2.7rem,5vw,5.6rem)/.94 Georgia,serif; letter-spacing:-.06em; }
-.page-heading p { margin:0; max-width:760px; color:var(--ink-soft); }
-.page-heading > .btn { flex:0 0 auto; }
-
-.grid-2,.grid-3 { display:grid; gap:18px; }
-.grid-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
-.grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); }
-
-.card {
-  min-width:0;
-  padding:26px;
-  border:1px solid var(--line);
-  border-radius:18px;
-  background:var(--surface);
-  box-shadow:0 1px 0 rgba(18,61,46,.03);
-}
-.card > h2 { margin:0 0 16px; color:var(--forest); font:normal 1.9rem/1.05 Georgia,serif; letter-spacing:-.04em; }
-.card p:last-child { margin-bottom:0; }
-.muted { color:var(--muted); }
-.big-number { display:block; margin:12px 0 7px; color:var(--forest); font:normal clamp(2.6rem,5vw,4.5rem)/.9 Georgia,serif; letter-spacing:-.06em; }
-.section-head { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; }
-.section-head h2 { margin:7px 0 0; color:var(--forest); font:normal 1.9rem/1.05 Georgia,serif; letter-spacing:-.04em; }
-.section-head > a { color:var(--green-dark); font-weight:850; white-space:nowrap; }
-.section-head > .progress { width:min(180px,35%); margin-top:8px; }
-
-.btn:focus-visible { position:relative; z-index:1; }
-.btn-secondary { background:var(--lime); color:var(--forest); border-color:var(--lime); }
-
 .score-card { display:grid; grid-template-columns:minmax(170px,.7fr) minmax(0,1.3fr); align-items:center; gap:30px; background:var(--lime); }
 .score { display:grid; justify-items:center; gap:8px; color:var(--forest); }
 .score-ring { width:116px; aspect-ratio:1; display:grid; place-items:center; border-radius:50%; background:conic-gradient(var(--forest) var(--score), rgba(18,61,46,.15) 0); position:relative; }
