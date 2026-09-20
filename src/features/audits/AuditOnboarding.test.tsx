@@ -12,7 +12,7 @@ describe('AuditOnboarding', () => {
     renderOnboarding()
     expect(screen.getByRole('heading', { name: 'Start with your website.' })).toBeInTheDocument()
     expect(screen.getByLabelText('Website URL')).toHaveFocus()
-    expect(screen.getByRole('button', { name: 'Run audit' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Continue to audit/ })).toBeInTheDocument()
   })
 
   it('rejects invalid URLs before starting the audit', () => {
@@ -29,6 +29,6 @@ describe('AuditOnboarding', () => {
     expect(speed).toHaveAttribute('aria-pressed', 'false')
     fireEvent.click(speed)
     expect(speed).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByText('1 audit area selected')).toBeInTheDocument()
+    expect(screen.getByText('1 focus area')).toBeInTheDocument()
   })
 })
