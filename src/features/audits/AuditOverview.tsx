@@ -5,13 +5,9 @@ import { storage } from '../../services/storage'
 import { auditStandards } from '../../services/audit'
 import { Badge, Button, Card, Progress, Score } from '../../components/ui'
 import { formatDate } from '../../lib/format'
-import { downloadAuditReport } from '../../lib/audit-report'
 import { IssueTable } from './Audits'
-import type { Audit, OptimizationAction } from '../../types/domain'
-import { buildOptimizationActions } from '../../audit-engine/actions'
-import { blockingDependencies } from '../../audit-engine/action-dependencies'
-import { AuditCommandCentre2 } from './AuditCommandCentre2'
-import { EvidenceExplorer } from './EvidenceExplorer'
+import { ResourcePerformancePanel } from './ResourcePerformancePanel'
+import type { Audit } from '../../types/domain'
 
 type MetricState = 'good' | 'needs-improvement' | 'poor' | 'unavailable'
 
@@ -75,73 +71,11 @@ function IntelligencePanel({ stats }: { stats: Audit['stats'] }) {
   const technologies = stats?.discovery?.technologySignals ?? []
   const search = stats?.discovery?.searchVisibility
   const social = stats?.discovery?.socialPresence
-  const searchSummary = stats?.discovery?.searchSummary
-  const socialSummary = stats?.discovery?.socialSummary
-  const technologySummary = stats?.discovery?.technologySummary
   return <div className="audit-intelligence-grid">
-    <Card><span className="eyebrow">Technology fingerprint</span><h2>What powers this site</h2>{technologies.length ? <div className="signal-list">{technologies.map(t => <span key={t.name}><strong>{t.name}</strong><small>{t.category} · {t.confidence} confidence · {t.evidence}</small></span>)}</div> : <p className="muted">No technology could be identified confidently from the rendered pages.</p>}{technologySummary && <small className="muted">{technologySummary.signals.length} unique signals across the audited pages.</small>}</Card>
-    <Card><span className="eyebrow">Search visibility</span><h2>Can search engines understand it?</h2>{searchSummary ? <div className="profile-list"><span><strong>{searchSummary.titleCoverage}%</strong> pages with titles</span><span><strong>{searchSummary.metaDescriptionCoverage}%</strong> pages with meta descriptions</span><span><strong>{searchSummary.canonicalCoverage}%</strong> pages with canonicals</span><span><strong>{searchSummary.openGraphCoverage}%</strong> pages with Open Graph</span><span><strong>{searchSummary.structuredDataPages}</strong> pages with structured data</span><span><strong>{searchSummary.pagesWithMultipleH1}</strong> pages with multiple H1s</span></div> : search ? <div className="profile-list"><span><strong>{search.titlePresent ? 'Present' : 'Missing'}</strong> title</span><span><strong>{search.metaDescriptionPresent ? 'Present' : 'Missing'}</strong> meta description</span><span><strong>{search.canonicalPresent ? 'Present' : 'Missing'}</strong> canonical</span><span><strong>{search.h1Count}</strong> H1 headings</span></div> : <p className="muted">Search visibility signals were not collected.</p>}</Card>
-    <Card><span className="eyebrow">Social discovery</span><h2>How visitors can share it</h2>{socialSummary ? <div className="profile-list"><span><strong>{socialSummary.profileCount}</strong> social profiles detected</span><span><strong>{socialSummary.shareMetadataPages}</strong> pages with share metadata</span><span><strong>{socialSummary.socialScriptPages}</strong> pages with social scripts</span></div> : social ? <div className="profile-list"><span><strong>{social.profiles.length}</strong> social profiles detected</span><span><strong>{social.shareMetadata.length}</strong> share metadata signals</span><span><strong>{social.socialScripts.length}</strong> social scripts</span></div> : <p className="muted">Social signals were not collected.</p>}</Card>
+    <Card><span className="eyebrow">Technology fingerprint</span><h2>What powers this site</h2>{technologies.length ? <div className="signal-list">{technologies.map(t => <span key={t.name}><strong>{t.name}</strong><small>{t.category} · {t.confidence} confidence · {t.evidence}</small></span>)}</div> : <p className="muted">No technology could be identified confidently from the rendered page.</p>}</Card>
+    <Card><span className="eyebrow">Search visibility</span><h2>Can search engines understand it?</h2>{search ? <div className="profile-list"><span><strong>{search.titlePresent ? 'Present' : 'Missing'}</strong> title</span><span><strong>{search.metaDescriptionPresent ? 'Present' : 'Missing'}</strong> meta description</span><span><strong>{search.canonicalPresent ? 'Present' : 'Missing'}</strong> canonical</span><span><strong>{search.h1Count}</strong> H1 headings</span><span><strong>{search.structuredDataCount}</strong> structured-data blocks</span><span><strong>{search.openGraphPresent ? 'Present' : 'Missing'}</strong> Open Graph</span></div> : <p className="muted">Search visibility signals were not collected.</p>}</Card>
+    <Card><span className="eyebrow">Social discovery</span><h2>How visitors can share it</h2>{social ? <div className="profile-list"><span><strong>{social.profiles.length}</strong> social profiles detected</span><span><strong>{social.shareMetadata.length}</strong> share metadata signals</span><span><strong>{social.socialScripts.length}</strong> social scripts</span>{social.profiles.length > 0 && <span><strong>{social.profiles.slice(0,3).join(', ')}</strong> detected profiles</span>}</div> : <p className="muted">Social signals were not collected.</p>}</Card>
   </div>
-}
-
-function EvidenceCoveragePanel({ audit }: { audit: Audit }) {
-  const issues = audit.issues
-  const measured = issues.filter(issue => issue.evidence?.status === 'measured').length
-  const inferred = issues.filter(issue => issue.evidence?.status === 'inferred').length
-  const unavailable = issues.filter(issue => issue.evidence?.status === 'unavailable').length
-  const pages = audit.healthModel?.pages.length ?? 0
-  const coverage = audit.healthModel?.categoryCoverage
-  return <Card className="audit-evidence-coverage">
-    <div className="section-head"><div><span className="eyebrow">Evidence coverage</span><h2>Know what Ottimo actually observed</h2></div><span className="standard-tag">{measured} measured</span></div>
-    <p className="performance-intro">Ottimo keeps measured observations separate from inference and unavailable data. This is the evidence boundary behind the audit.</p>
-    <div className="audit-command-stats">
-      <div><strong>{measured}</strong><span>Measured findings</span></div>
-      <div><strong>{inferred}</strong><span>Inferred findings</span></div>
-      <div><strong>{unavailable}</strong><span>Unavailable</span></div>
-      <div><strong>{pages || '—'}</strong><span>Pages modelled</span></div>
-    </div>
-    {coverage && <div className="coverage-list" aria-label="Audit category evidence coverage">{Object.entries(coverage).map(([category, status]) => <span key={category}><strong>{categoryLabels[category as keyof typeof categoryLabels]}</strong><em className={`coverage-${status}`}>{status}</em></span>)}</div>}
-  </Card>
-}
-
-function ActionPreview({ audit, actions }: { audit: Audit; actions: OptimizationAction[] }) {
-  const visible = actions.slice().sort((a, b) => b.priorityScore - a.priorityScore || a.title.localeCompare(b.title)).slice(0, 4)
-  const blocked = (action: OptimizationAction) => blockingDependencies(actions, action).some(item => item.lifecycleStatus !== 'resolved')
-  const ready = actions.filter(action => action.lifecycleStatus === 'planned' && !blocked(action)).length
-  const active = actions.filter(action => action.lifecycleStatus === 'in_progress' || action.lifecycleStatus === 'verification').length
-  const verified = audit.verifications?.filter(item => item.status === 'verified').length ?? 0
-  return <Card className="audit-action-centre">
-    <div className="section-head"><div><span className="eyebrow">Act</span><h2>Your optimisation queue</h2></div><Link className="inline-action" to="/app/recommendations">Open full queue <span aria-hidden="true">→</span></Link></div>
-    <div className="audit-command-stats">
-      <div><strong>{ready}</strong><span>Ready to act</span></div>
-      <div><strong>{active}</strong><span>In progress</span></div>
-      <div><strong>{actions.filter(action => blocked(action)).length}</strong><span>Blocked</span></div>
-      <div><strong>{verified}</strong><span>Verified</span></div>
-    </div>
-    <div className="audit-action-list">{visible.length ? visible.map(action => <Link className="audit-action-item" to="/app/recommendations" key={action.id}>
-      <span><Badge tone={action.severity}>{action.severity}</Badge><strong>{action.title}</strong><small>{action.priorityScore}/100 · {action.effort} effort · {blocked(action) ? 'Blocked by prerequisite' : action.lifecycleStatus.replace('_', ' ')}</small></span><span aria-hidden="true">→</span>
-    </Link>) : <p className="muted">No optimisation actions were generated for this audit.</p>}</div>
-  </Card>
-}
-
-function AuditCommandCentre({ audit, openIssues, actions }: { audit: Audit; openIssues: Audit['issues']; actions: OptimizationAction[] }) {
-  const health = audit.health?.score
-  const changed = audit.comparison ? audit.comparison.newFindings + audit.comparison.regressed : 0
-  const verified = audit.verifications?.filter(item => item.status === 'verified').length ?? 0
-  return <section className="audit-command-centre" aria-labelledby="audit-command-heading">
-    <div className="audit-command-lead">
-      <div><span className="eyebrow">Audit command centre</span><h2 id="audit-command-heading">From evidence to action.</h2><p>Ottimo turns what it observed into a clear sequence: understand the site, decide what matters, make the change, then verify it.</p></div>
-      <div className="audit-command-actions"><Link className="primary-action" to="/app/recommendations">Start with actions <span aria-hidden="true">→</span></Link><a className="secondary-action" href="#findings">Explore findings</a></div>
-    </div>
-    <div className="audit-command-grid">
-      <article><span>Health</span><strong>{health === undefined ? '—' : `${health}/100`}</strong><small>{audit.health?.status === 'not-measured' ? 'Not measured' : audit.health?.status ?? 'Evidence available'}</small></article>
-      <article><span>Open issues</span><strong>{openIssues.length}</strong><small>{openIssues.length ? 'Need a decision' : 'No unresolved findings'}</small></article>
-      <article><span>Priority actions</span><strong>{actions.length}</strong><small>{actions.length ? 'Evidence-led work' : 'No actions generated'}</small></article>
-      <article><span>Changed</span><strong>{audit.comparison ? changed : '—'}</strong><small>{audit.comparison ? 'New or regressed' : 'No comparison available'}</small></article>
-      <article><span>Verified</span><strong>{verified}</strong><small>{audit.verifications?.length ? 'Post-fix results' : 'No verification history'}</small></article>
-    </div>
-  </section>
 }
 
 function EngineerDiagnostics({ audit }: { audit: Audit }) {
@@ -152,13 +86,13 @@ function EngineerDiagnostics({ audit }: { audit: Audit }) {
 function HealthModelPanel({ audit }: { audit: Audit }) {
   const model = audit.healthModel
   if (!model) return null
-  const archetypes = model.pages.reduce<Record<string, number>>((counts: Record<string, number>, page: { archetype: string }) => ({ ...counts, [page.archetype]: (counts[page.archetype] ?? 0) + 1 }), {})
+  const archetypes = model.pages.reduce<Record<string, number>>((counts, page) => ({ ...counts, [page.archetype]: (counts[page.archetype] ?? 0) + 1 }), {})
   return <Card className="health-model-panel">
     <div className="section-head"><div><span className="eyebrow">Website intelligence</span><h2>How Ottimo understands this site</h2></div><span className="standard-tag">{model.pages.length} pages modelled</span></div>
     <p className="performance-intro">This is the persistent interpretation layer behind the audit: page types, evidence and inferred journeys. Journey data describes structure only; traffic and conversion data require an external integration.</p>
     <div className="audit-summary-grid">
-      <div><span className="muted">Page types</span><div className="profile-list">{Object.entries(archetypes).map(([type, count]: [string, number]) => <span key={type}><strong>{count}</strong> {type}</span>)}</div></div>
-      <div><span className="muted">Journeys</span><div className="profile-list">{model.journeys.map((journey: Audit['healthModel'] extends infer M ? M extends { journeys: (infer J)[] } ? J : never : never) => <span key={journey.id}><strong>{journey.name}</strong> · {journey.pageUrls.length} pages · {journey.issueIds.length} findings</span>)}</div></div>
+      <div><span className="muted">Page types</span><div className="profile-list">{Object.entries(archetypes).map(([type, count]) => <span key={type}><strong>{count}</strong> {type}</span>)}</div></div>
+      <div><span className="muted">Journeys</span><div className="profile-list">{model.journeys.map(journey => <span key={journey.id}><strong>{journey.name}</strong> · {journey.pageUrls.length} pages · {journey.issueIds.length} findings</span>)}</div></div>
     </div>
   </Card>
 }
@@ -172,8 +106,8 @@ function ChangePanel({ audit }: { audit: Audit }) {
   return <Card className="change-panel">
     <div className="section-head"><div><span className="eyebrow">Since the previous audit</span><h2>What changed?</h2></div><span className="muted">Compared with {formatDate(comparison.previousCreatedAt)}</span></div>
     <div className="interpretation-grid"><div className="interpretation-item"><span className="interpretation-number">{comparison.resolved}</span><div><strong>Resolved</strong><p>Findings no longer present in the latest audit.</p></div></div><div className="interpretation-item"><span className="interpretation-number">{comparison.newFindings}</span><div><strong>New</strong><p>Findings that were not present in the previous audit.</p></div></div><div className="interpretation-item"><span className="interpretation-number">{comparison.improved}</span><div><strong>Improved</strong><p>Findings or measured category scores that moved in a positive direction.</p></div></div><div className="interpretation-item"><span className="interpretation-number">{comparison.regressed}</span><div><strong>Regressed</strong><p>Findings or measured category scores that moved in a negative direction.</p></div></div></div>
-    {changes.length ? <div className="issue-list">{changes.map((change: NonNullable<Audit['comparison']>['changes'][number]) => <article className="issue issue-explained" key={change.fingerprint}><div className="issue-top"><div><Badge tone={change.type === 'regressed' ? 'high' : change.type === 'new' ? 'medium' : 'low'}>{labels[change.type as keyof typeof labels]}</Badge><span className="muted"> {categoryLabels[change.category]}</span><h3>{change.title}</h3></div></div><p>{change.previousSeverity && change.currentSeverity ? `Severity changed from ${change.previousSeverity} to ${change.currentSeverity}.` : change.previousScore !== undefined && change.currentScore !== undefined ? `Score changed from ${change.previousScore} to ${change.currentScore}.` : `This change affects ${change.affectedPages.length} page${change.affectedPages.length === 1 ? '' : 's'}.`}</p></article>)}</div> : <p className="muted">No material changes were detected between these audits.</p>}
-    {audit.verifications?.length ? <div className="profile-list"><span><strong>{audit.verifications.filter((item: NonNullable<Audit['verifications']>[number]) => item.status === 'verified').length}</strong> actions verified</span><span><strong>{audit.verifications.filter(item => item.status === 'failed').length}</strong> actions still failing</span><span><strong>{audit.verifications.filter(item => item.status === 'inconclusive').length}</strong> inconclusive</span></div> : null}
+    {changes.length ? <div className="issue-list">{changes.map(change => <article className="issue issue-explained" key={change.fingerprint}><div className="issue-top"><div><Badge tone={change.type === 'regressed' ? 'high' : change.type === 'new' ? 'medium' : 'low'}>{labels[change.type as keyof typeof labels]}</Badge><span className="muted"> {categoryLabels[change.category]}</span><h3>{change.title}</h3></div></div><p>{change.previousSeverity && change.currentSeverity ? `Severity changed from ${change.previousSeverity} to ${change.currentSeverity}.` : change.previousScore !== undefined && change.currentScore !== undefined ? `Score changed from ${change.previousScore} to ${change.currentScore}.` : `This change affects ${change.affectedPages.length} page${change.affectedPages.length === 1 ? '' : 's'}.`}</p></article>)}</div> : <p className="muted">No material changes were detected between these audits.</p>}
+    {audit.verifications?.length ? <div className="profile-list"><span><strong>{audit.verifications.filter(item => item.status === 'verified').length}</strong> actions verified</span><span><strong>{audit.verifications.filter(item => item.status === 'failed').length}</strong> actions still failing</span><span><strong>{audit.verifications.filter(item => item.status === 'inconclusive').length}</strong> inconclusive</span></div> : null}
   </Card>
 }
 
@@ -184,55 +118,18 @@ export function AuditOverview() {
   const stats = audit.stats; const openIssues = audit.issues.filter(issue => issue.status !== 'resolved')
   const severityCounts = audit.issues.reduce<Record<string, number>>((counts, issue) => ({ ...counts, [issue.severity]: (counts[issue.severity] ?? 0) + 1 }), {})
   const topIssues = openIssues.slice().sort((a, b) => b.priority - a.priority).slice(0, 3)
-  const actions = audit.actions?.length ? audit.actions : buildOptimizationActions(audit.issues)
   const screenshotUrl = stats?.screenshotUrl ?? screenshotFor(audit.url)
   return <div className="stack audit-overview">
-    <header className="audit-hero">
-      <div className="audit-breadcrumb"><Link to="/app/audits">Audits</Link><span aria-hidden="true">/</span><span>Result</span></div>
-      <div className="audit-hero-main">
-        <div className="audit-title-block">
-          <span className="eyebrow">Audit result · {stats?.source === 'live' ? 'Live page inspection' : 'Saved local audit'}</span>
-          <h1>{website?.name ?? audit.url}</h1>
-          <a className="audit-url" href={audit.url} target="_blank" rel="noreferrer">{audit.url}<span aria-hidden="true"> ↗</span></a>
-          <div className="audit-meta" aria-label="Audit details"><span>{formatDate(audit.createdAt)}</span><span>{audit.durationMs}ms analysis</span><span>{audit.issues.length} finding{audit.issues.length === 1 ? '' : 's'}</span></div>
-        </div>
-        <div className="audit-actions">
-          <AuditModeSwitch mode={mode} setMode={setMode} />
-          <Button onClick={() => navigate(`/app/audits/new?url=${encodeURIComponent(audit.url)}`)}>Run again</Button>
-          <Button variant="secondary" onClick={() => downloadAuditReport(audit, website?.name)}>Export report</Button>
-          <Button variant="ghost" onClick={() => window.print()}>Print</Button>
-        </div>
-      </div>
-    </header>
-
-    <AuditCommandCentre2 audit={audit} openIssues={openIssues} actions={actions} />
-    <EvidenceExplorer audit={audit} />
-    <Card className="standards-card audit-standards">
-      <div><span className="eyebrow">Audit basis</span><h2>Standards applied</h2><p>These are the lenses used to interpret this audit.</p></div>
-      <div className="standards-list">{(audit.standards ?? auditStandards.map(standard => standard.name)).map(standard => <span className="standard-tag" key={standard}>{standard}</span>)}</div>
-    </Card>
-
-    <section className="audit-interpretation" aria-labelledby="takeaway-heading">
-      <div className="section-head">
-        <div><span className="eyebrow">Start with the meaning</span><h2 id="takeaway-heading">What should you take away?</h2><p className="section-subtitle">A quick reading of this audit before you dive into the technical detail.</p></div>
-        <span className="audit-open-count">{openIssues.length} open issue{openIssues.length === 1 ? '' : 's'}</span>
-      </div>
-      <div className="interpretation-grid">
-        <article className="interpretation-item"><span className="interpretation-number" aria-hidden="true">{openIssues.length}</span><div><span className="interpretation-label">Open issues</span><strong>{openIssues.length ? 'Things that need action' : 'Nothing currently needs action'}</strong><p>{openIssues.length ? 'Findings Ottimo has enough evidence to turn into a concrete task.' : 'No unresolved findings were recorded in this audit.'}</p></div></article>
-        <article className="interpretation-item"><span className="interpretation-number" aria-hidden="true">{topIssues.length}</span><div><span className="interpretation-label">Priority actions</span><strong>{topIssues.length ? 'Actions surfaced' : 'No priority actions'}</strong><p>{topIssues.length ? 'Start with the actions that combine meaningful impact with available evidence.' : 'There is no open action to prioritise right now.'}</p></div></article>
-        <article className="interpretation-item"><span className="interpretation-number" aria-hidden="true">{audit.issues.filter(issue => issue.evidence?.status === 'measured').length}</span><div><span className="interpretation-label">Measured findings</span><strong>Backed by evidence</strong><p>Measured observations stay separate from assumptions so the report does not invent certainty.</p></div></article>
-      </div>
-    </section>
-
-    <div className="audit-summary-grid audit-health-row">
-      <Card className="audit-health">
-        <div className="health-score-block"><span className="muted">Overall health</span>{audit.health?.score === undefined ? <div className="score"><strong>—</strong><span>Not measured</span></div> : <Score value={audit.health.score} label={audit.health.status === 'good' ? 'Good' : audit.health.status === 'needs-improvement' ? 'Needs improvement' : 'Needs attention'} />} {audit.health?.score !== undefined && <small className="muted">{audit.health.checks} measured checks · {audit.health.passed} passed · {audit.health.failed} failed</small>} {audit.health?.excludedCategories.length ? <small className="muted">Not scored: {audit.health.excludedCategories.join(', ')}</small> : null}</div>
-        <div className="health-explanation"><span className="eyebrow">How the score works</span><p>{audit.health?.methodology ?? 'Health is shown only when the audit has enough measured evidence.'}</p><span className="eyebrow">Priority focus</span><p>{openIssues.length ? `${openIssues.length} open issue${openIssues.length === 1 ? '' : 's'} need a decision.` : 'All recorded issues are resolved.'}</p><Link className="inline-action" to="/app/recommendations">Open action queue <span aria-hidden="true">→</span></Link></div>
-      </Card>
-      <Card className="open-issues-card"><span className="muted">Open issues</span><strong className="big-number">{openIssues.length}</strong><div className="severity-list">{Object.entries(severityCounts).map(([severity, count]) => <span key={severity}><Badge tone={severity}>{severity}</Badge> {count}</span>)}</div></Card>
-    </div>
-    <div className="audit-insight-grid"><EvidenceCoveragePanel audit={audit} /><ActionPreview audit={audit} actions={actions} /></div>
+    <div className="page-heading"><div><span className="eyebrow">Audit result · {stats?.source === 'live' ? 'Live page inspection' : 'Saved local audit'}</span><h1>{website?.name ?? audit.url}</h1><p className="audit-url">{audit.url}</p><p>{formatDate(audit.createdAt)} · {audit.durationMs}ms analysis · {audit.issues.length} findings</p></div><div className="audit-actions"><AuditModeSwitch mode={mode} setMode={setMode} /><Button variant="secondary" onClick={() => window.print()}>Print report</Button><Button onClick={() => navigate(`/app/audits/new?url=${encodeURIComponent(audit.url)}`)}>Run again</Button></div></div>
+    <Card className="standards-card"><div><span className="eyebrow">Audit basis</span><h2>Standards applied</h2></div><div className="standards-list">{(audit.standards ?? auditStandards.map(standard => standard.name)).map(standard => <span className="standard-tag" key={standard}>{standard}</span>)}</div></Card>
+    <Card className="audit-interpretation"><div className="section-head"><div><span className="eyebrow">Start with the meaning</span><h2>What should you take away?</h2></div><span className="muted">{openIssues.length} open issue{openIssues.length === 1 ? '' : 's'}</span></div><div className="interpretation-grid">
+      <div className="interpretation-item"><span className="interpretation-number">{openIssues.length}</span><div><strong>Things that need action</strong><p>Findings Ottimo has enough evidence to turn into a concrete task.</p></div></div>
+      <div className="interpretation-item"><span className="interpretation-number">{topIssues.length}</span><div><strong>Priority actions surfaced</strong><p>Start with the actions that combine meaningful impact with available evidence.</p></div></div>
+      <div className="interpretation-item"><span className="interpretation-number">{audit.issues.filter(issue => issue.evidence?.status === 'measured').length}</span><div><strong>Findings backed by evidence</strong><p>Measured observations stay separate from assumptions so the report does not invent certainty.</p></div></div>
+    </div></Card>
+    <div className="audit-summary-grid"><Card className="audit-health"><div><span className="muted">Overall health</span>{audit.health?.score === undefined ? <div className="score"><strong>—</strong><span>Not measured</span></div> : <Score value={audit.health.score} label={audit.health.status === 'good' ? 'Good' : audit.health.status === 'needs-improvement' ? 'Needs improvement' : 'Needs attention'} />} {audit.health?.score !== undefined && <small className="muted">{audit.health.checks} measured checks · {audit.health.passed} passed · {audit.health.failed} failed</small>} {audit.health?.excludedCategories.length ? <small className="muted">Not scored: {audit.health.excludedCategories.join(', ')}</small> : null}</div><div><span className="eyebrow">How the score works</span><p>{audit.health?.methodology ?? 'Health is shown only when the audit has enough measured evidence.'}</p><span className="eyebrow">Priority focus</span><p>{openIssues.length ? openIssues.length + ' open issues need a decision.' : 'All recorded issues are resolved.'}</p><Link to="/app/recommendations">Open action queue →</Link></div></Card><Card><span className="muted">Open issues</span><strong className="big-number">{openIssues.length}</strong><div className="severity-list">{Object.entries(severityCounts).map(([severity, count]) => <span key={severity}><Badge tone={severity}>{severity}</Badge> {count}</span>)}</div></Card></div>
     <PerformancePanel metrics={stats?.performance} />
+    <ResourcePerformancePanel audit={audit} />
     <IntelligencePanel stats={stats} />
     <HealthModelPanel audit={audit} />
     <ChangePanel audit={audit} />
@@ -240,6 +137,6 @@ export function AuditOverview() {
     <div className="audit-evidence-grid"><Card className="screenshot-card"><div className="section-head"><div><span className="eyebrow">Visual evidence</span><h2>Page snapshot</h2></div><a href={screenshotUrl} target="_blank" rel="noreferrer">Open full image ↗</a></div><div className="screenshot-frame"><img src={screenshotUrl} alt={`Screenshot preview of ${audit.url}`} loading="lazy" /></div><small>Generated through the optional screenshot adapter. It may take a moment to appear.</small></Card><Card><span className="eyebrow">Page profile</span><h2>What we found</h2><div className="profile-list"><span><strong>{stats?.language || '—'}</strong> document language</span><span><strong>{formatStat(stats?.wordCount)}</strong> visible words</span><span><strong>{stats?.title ? 'Present' : '—'}</strong> page title</span><span><strong>{stats?.source === 'live' ? 'Fetched' : 'Fixture'}</strong> evidence source</span></div></Card></div>
     <section className="audit-stat-grid" aria-label="Website statistics"><Card><span className="stat-icon">Aa</span><strong>{formatStat(stats?.htmlBytes, ' bytes')}</strong><small>Fetched HTML size</small></Card><Card><span className="stat-icon">◈</span><strong>{formatStat(stats?.imageCount)}</strong><small>Images detected</small></Card><Card><span className="stat-icon">↗</span><strong>{formatStat(stats?.linkCount)}</strong><small>Links detected</small></Card><Card><span className="stat-icon">↗</span><strong>{formatStat(stats?.externalLinkCount)}</strong><small>External links</small></Card><Card><span className="stat-icon">H</span><strong>{formatStat(stats?.headingCount)}</strong><small>Headings detected</small></Card><Card><span className="stat-icon">JS</span><strong>{formatStat(stats?.scriptCount)}</strong><small>Scripts detected</small></Card><Card><span className="stat-icon">▣</span><strong>{formatStat(stats?.formCount)}</strong><small>Forms detected</small></Card><Card><span className="stat-icon">✓</span><strong>{formatStat(stats?.buttonCount)}</strong><small>Buttons detected</small></Card></section>
     <div className="grid-2"><Card><div className="section-head"><div><span className="eyebrow">Health by domain</span><h2>Where the experience stands</h2></div><span className="muted">/100</span></div><div className="score-list">{audit.scores.map(score => <div className="score-row" key={score.category}><span>{categoryLabels[score.category]}</span>{score.score === undefined ? <span className="muted">Not measured</span> : <><Progress value={score.score} /><strong>{score.score}</strong></>}</div>)}</div></Card><Card><div className="section-head"><div><span className="eyebrow">Start here</span><h2>Highest-impact actions</h2></div></div><div className="action-list">{topIssues.map(issue => <Link className="action" to="/app/recommendations" key={issue.id}><span><strong>{issue.title}</strong><small>{issue.effort} effort · {categoryLabels[issue.category]}</small></span><span>→</span></Link>)}</div></Card></div>
-    <section id="findings"><Card><div className="section-head"><div><span className="eyebrow">Full findings</span><h2>Evidence, meaning and recommendations</h2></div><span className="muted">Search, filter and sort the audit</span></div><IssueTable issues={audit.issues} /></Card></section>
+    <Card><div className="section-head"><div><span className="eyebrow">Full findings</span><h2>Evidence, meaning and recommendations</h2></div><span className="muted">Search, filter and sort the audit</span></div><IssueTable issues={audit.issues} /></Card>
   </div>
 }
