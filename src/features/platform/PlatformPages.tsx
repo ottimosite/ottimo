@@ -32,11 +32,82 @@ export function WebsiteDetail() {
   const { id } = useParams()
   const websites = storage.websites().length ? storage.websites() : seedWebsites
   const website = websites.find(item => item.id === id)
-  const audits = currentAudits().filter(audit => audit.websiteId === id)
+  const audits = currentAudits().filter(audit => audit.websiteId === id).sort((a, b) => a.createdAt.localeCompare(b.createdAt))
   if (!website) return <Card><h1>Website not found</h1><p>The local demo could not find that property.</p><Link to="/app/websites">Back to websites</Link></Card>
-  return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Website</span><h1>{website.name}</h1><p>{website.url}</p></div><Link className="btn btn-primary" to={`/app/audits/new/run?url=${encodeURIComponent(website.url)}`}>Run audit</Link></div><div className="grid-2"><Card><span className="muted">Audits recorded</span><strong className="big-number">{audits.length}</strong><p>Local history for this website.</p></Card><Card><span className="muted">Latest health</span><strong className="big-number">{audits.at(-1)?.score ?? '—'}</strong><p>{audits.at(-1) ? formatDate(audits.at(-1)!.createdAt) : 'Not audited yet'}</p></Card></div>{website.healthModel && <Card className="health-model-panel"><div className="section-head"><div><span className="eyebrow">Persistent website model</span><h2>How Ottimo understands this website</h2></div><span className="standard-tag">{website.healthModel.pages.length} pages</span></div><p className="performance-intro">The latest model persists page types, evidence-backed observations and inferred journeys. Journey structure is not traffic or conversion data.</p><div className="audit-summary-grid"><div><span className="muted">Page archetypes</span><div className="profile-list">{Object.entries(website.healthModel.pages.reduce<Record<string, number>>((counts, page) => ({ ...counts, [page.archetype]: (counts[page.archetype] ?? 0) + 1 }), {})).map(([type, count]) => <span key={type}><strong>{count}</strong> {type}</span>)}</div></div><div><span className="muted">Inferred journeys</span><div className="profile-list">{website.healthModel.journeys.map(journey => <span key={journey.id}><strong>{journey.name}</strong> · {journey.pageUrls.length} pages</span>)}</div></div></div><div className="profile-list">{Object.entries(website.healthModel.categoryCoverage).map(([category, status]) => <span key={category}><strong>{category}</strong> · {status}</span>)}</div></Card>}<Card><div className="section-head"><h2>Audit history</h2><Link to="/app/history">Compare all history →</Link></div>{audits.length ? <div className="audit-list">{audits.map(audit => <Link className="audit-item" to={`/app/audits/${audit.id}`} key={audit.id}><span className="audit-score">{audit.score}</span><span><strong>{formatDate(audit.createdAt)}</strong><small>{audit.issues.length} findings · {audit.durationMs}ms</small></span><span>→</span></Link>)}</div> : <p className="muted">Run the first audit to create a baseline.</p>}</Card></div>
-}
 
+  const latestAudit = audits.at(-1)
+  const previousAudit = audits.at(-2)
+  const health = latestAudit?.health
+  const actions = latestAudit?.actions ?? []
+  const activeActions = actions.filter(action => !['resolved', 'failed'].includes(action.lifecycleStatus))
+  const blockedActions = actions.filter(action => action.dependencies.some(dependency => dependency.blocking && !actions.some(candidate => candidate.id === dependency.id && candidate.lifecycleStatus === 'resolved')))
+  const verified = latestAudit?.verifications?.filter(item => item.status === 'verified').length ?? 0
+  const changes = latestAudit?.comparison
+  const model = website.healthModel
+  const intelligence = model?.siteIntelligence
+
+  return <div className="stack website-workspace">
+    <div className="page-heading">
+      <div><span className="eyebrow">Website workspace</span><h1>{website.name}</h1><p>{website.url}</p></div>
+      <Link className="btn btn-primary" to={`/app/audits/new/run?url=${encodeURIComponent(website.url)}`}>Run audit</Link>
+    </div>
+
+    {!latestAudit ? <Card className="empty-state">
+      <span className="eyebrow">Baseline needed</span>
+      <h2>Start with an audit of this website.</h2>
+      <p>Ottimo will build the persistent health model from observed evidence. Until then, traffic, acquisition and outcome data remain unavailable.</p>
+      <Link className="btn btn-primary" to={`/app/audits/new/run?url=${encodeURIComponent(website.url)}`}>Create baseline</Link>
+    </Card> : <>
+      <Card className="website-health-primary">
+        <div className="section-head"><div><span className="eyebrow">Current health</span><h2 id="website-health-heading">What needs attention now</h2></div><span className="standard-tag">{health?.status?.replace('-', ' ') ?? 'Not measured'}</span></div>
+        <div className="website-health-score">
+          <div className="result-score"><strong>{health?.score ?? '—'}</strong><span>{health?.score === undefined ? 'not measured' : '/ 100'}</span></div>
+          <div><strong>{activeActions.length}</strong><span>active actions</span><small>{blockedActions.length} blocked · {verified} verified</small></div>
+          <div><strong>{latestAudit.issues.filter(issue => issue.status !== 'resolved').length}</strong><span>open findings</span><small>{formatDate(latestAudit.createdAt)}</small></div>
+        </div>
+        <p className="performance-intro">This is the latest observed state of the website. It is not a measure of traffic, search acquisition, revenue or conversion performance.</p>
+        <div className="hero-actions"><Link className="btn btn-primary" to={`/app/audits/${latestAudit.id}`}>Open latest audit</Link><Link className="text-link" to="/app/recommendations">View action queue →</Link></div>
+      </Card>
+
+      <div className="grid-2">
+        <Card>
+          <div className="section-head"><div><span className="eyebrow">Change</span><h2>What changed</h2></div>{changes && <Link to={`/app/audits/${latestAudit.id}`}>See audit detail →</Link>}</div>
+          {changes ? <div className="website-change-grid"><div><strong>{changes.resolved}</strong><span>resolved</span></div><div><strong>{changes.improved}</strong><span>improved</span></div><div><strong>{changes.regressed}</strong><span>regressed</span></div><div><strong>{changes.newFindings}</strong><span>new findings</span></div></div> : <p className="muted">{previousAudit ? 'No comparison was recorded for the latest audit.' : 'This is the baseline audit. Future audits will show what changed.'}</p>}
+        </Card>
+        <Card>
+          <div className="section-head"><div><span className="eyebrow">Evidence</span><h2>What Ottimo knows</h2></div><span className="standard-tag">{model?.pages.length ?? 0} pages</span></div>
+          <div className="audit-command-stats"><div><strong>{latestAudit.issues.filter(issue => issue.evidence?.status === 'measured').length}</strong><span>measured findings</span></div><div><strong>{latestAudit.issues.filter(issue => issue.evidence?.status === 'inferred').length}</strong><span>inferred findings</span></div><div><strong>{latestAudit.issues.filter(issue => issue.evidence?.status === 'unavailable').length}</strong><span>unavailable</span></div></div>
+          <p className="muted">Observed website readiness is kept separate from acquisition and business outcomes.</p>
+        </Card>
+      </div>
+
+      <Card>
+        <div className="section-head"><div><span className="eyebrow">Optimisation</span><h2>Work that can move the website forward</h2></div><Link to="/app/recommendations">Open all actions →</Link></div>
+        {actions.length ? <div className="action-list">{actions.slice().sort((a, b) => b.priorityScore - a.priorityScore).slice(0, 6).map(action => <Link className="action" to="/app/recommendations" key={action.id}><span><strong>{action.title}</strong><small>{action.affectedPages.length} affected page{action.affectedPages.length === 1 ? '' : 's'} · {action.effort} effort · {action.confidence} confidence</small></span><Badge tone={action.lifecycleStatus === 'resolved' ? 'resolved' : action.lifecycleStatus === 'in_progress' ? 'in_progress' : 'open'}>{titleCase(action.lifecycleStatus.replace('_', ' '))}</Badge></Link>)}</div> : <p className="muted">No optimisation actions have been generated by the latest audit.</p>}
+      </Card>
+
+      {model && <Card className="health-model-panel">
+        <div className="section-head"><div><span className="eyebrow">Website model</span><h2>How Ottimo understands this website</h2></div><span className="standard-tag">v{model.version}</span></div>
+        <p className="performance-intro">Page structure and journeys are inferred from observable site evidence. They are not claims about actual user behaviour.</p>
+        <div className="audit-summary-grid">
+          <div><span className="muted">Page types</span><div className="profile-list">{Object.entries(model.pages.reduce<Record<string, number>>((counts, page) => ({ ...counts, [page.archetype]: (counts[page.archetype] ?? 0) + 1 }), {})).map(([type, count]) => <span key={type}><strong>{count}</strong> {type}</span>)}</div></div>
+          <div><span className="muted">Journeys</span><div className="profile-list">{model.journeys.length ? model.journeys.map(journey => <span key={journey.id}><strong>{journey.name}</strong> · {journey.pageUrls.length} pages · {journey.confidence} confidence</span>) : <span>No journeys inferred</span>}</div></div>
+        </div>
+        <div className="profile-list">{Object.entries(model.categoryCoverage).map(([category, status]) => <span key={category}><strong>{categoryLabels[category as Category] ?? titleCase(category)}</strong> · {status}</span>)}</div>
+      </Card>}
+
+      {intelligence && <div className="grid-2">
+        <Card><span className="eyebrow">Search visibility</span><h2>Observed search readiness</h2><div className="profile-list"><span><strong>{Math.round(intelligence.search.titleCoverage * 100)}%</strong> title coverage</span><span><strong>{Math.round(intelligence.search.metaDescriptionCoverage * 100)}%</strong> meta description coverage</span><span><strong>{Math.round(intelligence.search.canonicalCoverage * 100)}%</strong> canonical coverage</span><span><strong>{intelligence.search.structuredDataPages}</strong> pages with structured data</span></div><p className="muted">These are technical observations, not search rankings or organic traffic.</p></Card>
+        <Card><span className="eyebrow">Technology</span><h2>Observed technology signals</h2><div className="profile-list">{intelligence.technology.signals.length ? intelligence.technology.signals.slice(0, 8).map(signal => <span key={signal.name}><strong>{signal.name}</strong> · {signal.confidence} confidence</span>) : <span>No technology signals observed</span>}</div></Card>
+      </div>}
+
+      <Card>
+        <div className="section-head"><div><span className="eyebrow">History</span><h2>Audit timeline</h2></div><Link to="/app/history">Compare all history →</Link></div>
+        <div className="audit-list">{audits.slice().reverse().map(audit => <Link className="audit-item" to={`/app/audits/${audit.id}`} key={audit.id}><span className="audit-score">{audit.score ?? '—'}</span><span><strong>{formatDate(audit.createdAt)}</strong><small>{audit.issues.filter(issue => issue.status !== 'resolved').length} open findings · {audit.durationMs}ms</small></span><span>{audit.id === latestAudit.id ? 'Latest →' : 'Open →'}</span></Link>)}</div>
+      </Card>
+    </>}
+  </div>
+}
 export function ReportsPage() {
   const audit = currentAudits().at(-1) ?? seedAudits.at(-1)!
   return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Reports</span><h1>A clear briefing for the next decision.</h1><p>Summarise the latest audit for a business owner, product team or developer.</p></div><Button variant="secondary" onClick={() => window.print()}>Print report</Button></div><Card className="report-header"><div><span className="eyebrow">Ottimo audit report</span><h2>{audit.url}</h2><p>Generated {formatDate(audit.createdAt)} from deterministic local demo data.</p></div>{audit.score === undefined ? <div className="score"><strong>—</strong><span>Not measured</span></div> : <Score value={audit.score} label="Overall health" />}</Card><div className="grid-3">{audit.scores.map(item => <Card key={item.category}><span className="muted">{categoryLabels[item.category]}</span><strong className="big-number">{item.score ?? "—"}</strong>{item.score === undefined ? <small>Not measured</small> : <Progress value={item.score} />}</Card>)}</div><Card><span className="eyebrow">Priority queue</span><h2>Three actions to take next</h2><div className="action-list">{audit.issues.filter(issue => issue.status !== 'resolved').sort((a, b) => b.priority - a.priority).slice(0, 3).map(issue => <Link className="action" to="/app/recommendations" key={issue.id}><span><strong>{issue.title}</strong><small>{issue.solution}</small></span><span>#{issue.priority} →</span></Link>)}</div></Card></div>
