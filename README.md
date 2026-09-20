@@ -32,6 +32,8 @@ npm run lint
 - Local repositories via `localStorage`
 - Server-side authenticated tenant repository
 - Provider-independent durable storage contract with a Netlify production adapter
+- Authenticated tenant repository boundary via `SessionVerifier`
+- Durable server storage through the `ServerStorageAdapter` contract
 - Native SVG/CSS-style data presentation; no charting library
 - Vitest + Testing Library for automated tests
 
@@ -46,6 +48,8 @@ src/
   pages/            public website pages
   services/         audit, authentication, persistence and runtime integrations
   styles/           global responsive design system
+  services/         audit provider, authentication and persistence boundaries
+  styles/            global responsive design system
   tests/             unit/component tests
   types/             domain models
 ```
@@ -74,6 +78,14 @@ The server-side persistence path is provider-independent at the repository bound
 Netlify production uses a site-wide strongly consistent store. Preview and branch deployments use deploy-scoped storage so non-production data is isolated from production. The runtime receives Netlify storage configuration from the platform; no storage credentials are committed to the repository.
 
 Set `OTTIMO_SESSION_SECRET` as a server-side environment variable with at least 32 characters. Local tests inject their own secret and never require Netlify credentials.
+## Persistence boundary
+
+Production-facing tenant persistence is split into two provider-independent layers:
+
+1. `AuthenticatedTenantRepository` verifies the server session before accessing tenant data.
+2. `DurableServerStorageAdapter` validates and persists versioned envelopes through an injected durable object store.
+
+A platform-specific server integration can provide the durable object store without leaking vendor types into the domain or repository layer. Local tests and development can continue to use deterministic in-memory adapters. Production secrets and storage credentials must remain environment-managed.
 
 ## Future integrations
 
@@ -95,7 +107,7 @@ The current service boundaries are designed so real Lighthouse/PageSpeed/crawler
 ## Environment
 
 Production secrets and platform configuration must be managed through the deployment environment rather than committed to source control.
-
+Copy `.env.example` only when adding environment-specific integrations. The local demo does not need environment variables. Production storage credentials, when required by the selected server platform, must be configured through the platform environment rather than committed to the repository.
 ## Real-site acceptance scenarios
 
 The audit engine has deterministic acceptance contracts under `src/audit-engine/acceptance/`. These remain synthetic structural fixtures for edge-case coverage, while the default product/demo snapshot uses the captured real Wikipedia site described above.
