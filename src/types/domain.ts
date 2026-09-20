@@ -21,7 +21,7 @@ export interface PerformanceMetrics {
 }
 
 export interface TechnologySignal { name: string; category: 'cms' | 'framework' | 'analytics' | 'hosting' | 'cdn' | 'library' | 'commerce'; confidence: 'high' | 'medium' | 'low'; evidence: string }
-export interface SearchVisibilityProfile { titlePresent: boolean; titleLength?: number; metaDescriptionPresent: boolean; metaDescriptionLength?: number; canonicalPresent: boolean; h1Count: number; structuredDataCount: number; openGraphPresent: boolean; twitterCardPresent: boolean; sitemapLinked: boolean }
+export interface SearchVisibilityProfile { titlePresent: boolean; titleLength?: number; metaDescriptionPresent: boolean; metaDescriptionLength?: number; canonicalPresent: boolean; canonicalUrl?: string; canonicalSameOrigin?: boolean; canonicalNormalised?: boolean; h1Count: number; structuredDataCount: number; openGraphPresent: boolean; twitterCardPresent: boolean; sitemapLinked: boolean }
 export interface SocialPresenceProfile { profiles: string[]; shareMetadata: string[]; socialScripts: string[] }
 
 export interface PerformanceSiteSummary {
