@@ -164,7 +164,7 @@ export class PlaywrightPageCollector implements PageCollector {
         }
         return {
           technology,
-          searchVisibility: { titlePresent: !!document.title.trim(), titleLength: document.title.trim().length || undefined, metaDescriptionPresent: !!meta('description'), metaDescriptionLength: meta('description')?.length || undefined, canonicalPresent: !!canonicalUrl, canonicalUrl, canonicalSameOrigin, canonicalNormalised, h1Count: document.querySelectorAll('h1').length, structuredDataCount: jsonLd, openGraphPresent: !!property('og:title'), twitterCardPresent: !!meta('twitter:card'), sitemapLinked: links.some(l => /sitemap/i.test(l.href)) },
+          searchVisibility: { titlePresent: !!document.title.trim(), titleLength: document.title.trim().length || undefined, metaDescriptionPresent: !!meta('description'), metaDescriptionLength: meta('description')?.length || undefined, canonicalPresent: !!canonical, canonicalUrl, canonicalSameOrigin, canonicalNormalised, h1Count: document.querySelectorAll('h1').length, structuredDataCount: jsonLd, openGraphPresent: !!property('og:title'), twitterCardPresent: !!meta('twitter:card'), sitemapLinked: links.some(l => /sitemap/i.test(l.href)) },
           socialPresence: { profiles: [...document.querySelectorAll('a[href]')].map(a => (a as HTMLAnchorElement).href).filter(h => /facebook\\.com|instagram\\.com|linkedin\\.com|x\\.com|twitter\\.com|youtube\\.com|tiktok\\.com/i.test(h)).slice(0,20), shareMetadata: ['og:title','og:description','og:image','twitter:card'].filter(p => p.startsWith('og:') ? !!property(p) : !!meta(p)), socialScripts: scripts.filter(s => /facebook|instagram|linkedin|twitter|tiktok|pinterest/i.test(s)).slice(0,20) }
         }
       })
