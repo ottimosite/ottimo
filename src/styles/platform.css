@@ -277,3 +277,20 @@ td a { color:var(--green-dark); font-weight:850; }
 @media(prefers-reduced-motion:reduce) {
   .ai-decision-panel * { scroll-behavior:auto; }
 }
+
+/* UX-04 responsive decision-surface hardening */
+@media (max-width:760px) {
+  .section-head { flex-direction:column; }
+  .section-head > a { white-space:normal; }
+  .website-health-score > div,
+  .insight-card,
+  .health-domain { overflow-wrap:anywhere; }
+}
+@media (max-width:520px) {
+  .website-change-grid,
+  .verification-summary,
+  .insights-evidence-summary,
+  .audit-command-stats { grid-template-columns:1fr; }
+  .insight-stat-list span,
+  .insight-signal-list span { align-items:flex-start; flex-direction:column; }
+}
