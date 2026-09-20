@@ -1,1 +1,33 @@
 .audit-evidence-grid{display:grid;grid-template-columns:1.35fr .65fr;gap:18px}.screenshot-card{min-width:0}.screenshot-frame{background:#e7eee3;border:1px solid var(--line);border-radius:14px;overflow:auto;max-height:720px;margin:20px 0 10px;display:grid;place-items:start center}.screenshot-frame img{display:block;width:100%;height:auto;min-height:220px;object-fit:contain}.screenshot-card small{color:var(--muted)}.profile-list{display:grid;gap:16px;margin-top:24px}.profile-list span{display:flex;justify-content:space-between;gap:16px;border-bottom:1px solid var(--line);padding-bottom:12px;color:var(--muted)}.profile-list strong{color:var(--green-dark);font-size:1.15rem}.audit-stat-grid{grid-template-columns:repeat(4,1fr)}@media(max-width:900px){.audit-evidence-grid{grid-template-columns:1fr}.audit-stat-grid{grid-template-columns:repeat(4,1fr)}}@media(max-width:700px){.audit-stat-grid{grid-template-columns:repeat(2,1fr)}.profile-list span{align-items:flex-start;flex-direction:column;gap:4px}}
+
+/* Audit command centre 2.0 */
+.audit-centre-v2{border:1px solid var(--line);border-radius:20px;background:#fff;overflow:hidden}
+.audit-centre-v2__hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;padding:30px;background:linear-gradient(135deg,var(--mint),#fff)}
+.audit-centre-v2__hero h2{margin:8px 0 10px;color:var(--forest);font:normal clamp(1.8rem,3vw,2.6rem)/1 Georgia,serif;letter-spacing:-.04em}
+.audit-centre-v2__hero p{max-width:760px;margin:0;color:var(--ink-soft)}
+.audit-centre-v2__health{min-width:150px;padding:18px;border:1px solid var(--line);border-radius:14px;background:#fff;text-align:right}
+.audit-centre-v2__health span,.audit-centre-v2__health small{display:block;color:var(--muted);font-size:.72rem;font-weight:800}
+.audit-centre-v2__health strong{display:block;margin:4px 0;color:var(--forest);font-size:2rem;line-height:1}
+.audit-centre-v2__steps{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.audit-centre-v2__steps a{display:flex;align-items:center;gap:9px;padding:13px 15px;color:var(--ink-soft);font-size:.76rem;font-weight:850}
+.audit-centre-v2__steps a:hover,.audit-centre-v2__steps a:focus-visible{background:var(--lime);color:var(--forest)}
+.audit-centre-v2__steps span{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--mint);color:var(--forest);font-size:.68rem}
+.audit-centre-v2__summary{display:grid;grid-template-columns:repeat(6,1fr);border-bottom:1px solid var(--line)}
+.audit-centre-v2__summary article{padding:16px;border-right:1px solid var(--line)}
+.audit-centre-v2__summary article:last-child{border-right:0}
+.audit-centre-v2__summary span,.audit-centre-v2__summary small{display:block;color:var(--muted);font-size:.68rem;font-weight:800}
+.audit-centre-v2__summary strong{display:block;margin:4px 0;color:var(--forest);font-size:1.45rem;line-height:1}
+.audit-centre-v2__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:14px;background:var(--cream)}
+.audit-centre-v2__grid .card{border-radius:14px}
+.audit-centre-v2__grid h3{margin:8px 0;color:var(--forest);font:normal 1.45rem/1.05 Georgia,serif}
+.audit-centre-v2__grid p{font-size:.84rem}
+.audit-centre-v2__facts{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.audit-centre-v2__facts span,.audit-centre-v2__status span{padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--cream);color:var(--muted);font-size:.72rem;font-weight:750}
+.audit-centre-v2__facts strong,.audit-centre-v2__status strong{color:var(--forest);font-size:1rem}
+.audit-centre-v2__status{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.audit-centre-v2__link{display:inline-flex;min-height:44px;align-items:center;color:var(--forest);font-size:.76rem;font-weight:900;text-decoration:underline;text-underline-offset:3px}
+.audit-centre-v2__link:focus-visible,.audit-centre-v2__steps a:focus-visible{outline:3px solid var(--lime);outline-offset:2px}
+@media(max-width:1000px){.audit-centre-v2__summary{grid-template-columns:repeat(3,1fr)}.audit-centre-v2__summary article:nth-child(3n){border-right:0}}
+@media(max-width:760px){.audit-centre-v2__hero{grid-template-columns:1fr;padding:22px}.audit-centre-v2__health{text-align:left}.audit-centre-v2__steps{grid-template-columns:1fr 1fr}.audit-centre-v2__summary{grid-template-columns:repeat(2,1fr)}.audit-centre-v2__summary article:nth-child(3n){border-right:1px solid var(--line)}.audit-centre-v2__summary article:nth-child(2n){border-right:0}.audit-centre-v2__grid{grid-template-columns:1fr;padding:10px}}
+@media(max-width:480px){.audit-centre-v2__steps{grid-template-columns:1fr}.audit-centre-v2__summary{grid-template-columns:1fr}.audit-centre-v2__summary article{border-right:0;border-bottom:1px solid var(--line)}.audit-centre-v2__summary article:last-child{border-bottom:0}}
+@media(prefers-reduced-motion:reduce){.audit-centre-v2 *{scroll-behavior:auto}}

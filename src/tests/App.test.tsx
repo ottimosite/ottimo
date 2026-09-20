@@ -46,4 +46,15 @@ describe('app', () => {
     render(<MemoryRouter initialEntries={['/app/dashboard']}><App /></MemoryRouter>)
     expect(screen.getByRole('heading', { name: /your digital presence at a glance/i })).toBeInTheDocument()
   })
+  it('presents the audit as an evidence-to-verification workflow', () => {
+    render(<MemoryRouter initialEntries={['/app/audits/audit-3']}><App /></MemoryRouter>)
+    expect(screen.getByRole('heading', { name: /know what matters\. know what to do next/i })).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: /audit workflow/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /open decision queue/i })).toBeInTheDocument()
+    expect(screen.getAllByText(/measured findings/i).length).toBeGreaterThan(0)
+    expect(screen.getByRole('heading', { name: /what did ottimo actually observe/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /did the fix work/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /what changed since the last audit/i })).toBeInTheDocument()
+  })
+
 })
