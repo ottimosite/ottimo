@@ -50,7 +50,7 @@ describe('app', () => {
     render(<MemoryRouter initialEntries={['/app/audits/audit-wikipedia']}><App /></MemoryRouter>)
     expect(screen.getByRole('heading', { name: /know what matters\. know what to do next/i })).toBeInTheDocument()
     expect(screen.getByRole('navigation', { name: /audit workflow/i })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /open decision queue/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /review action queue/i })).toBeInTheDocument()
     expect(screen.getAllByText(/measured findings/i).length).toBeGreaterThan(0)
     expect(screen.getByRole('heading', { name: /what did ottimo actually observe/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /did the fix work/i })).toBeInTheDocument()
