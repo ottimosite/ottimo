@@ -14,7 +14,10 @@ const page: PageSnapshot = {
   language: 'en',
   secureContext: true,
   timing: { ttfbMs: 120 },
-  resources: [\n    { url: 'https://example.test/missing.js', type: 'script', status: 404 },\n    { url: 'https://example.test/hero.webp', type: 'image', status: 200, transferSize: 700_000, durationMs: 450 },\n  ],
+  resources: [
+    { url: 'https://example.test/missing.js', type: 'script', status: 404 },
+    { url: 'https://example.test/hero.webp', type: 'image', status: 200, transferSize: 700_000, durationMs: 450 },
+  ],
   requestFailures: [],
   accessibility: { violations: [{ id: 'image-alt', impact: 'serious', help: 'Images must have alternate text', description: 'Images must have alternate text', nodes: [{ target: ['img'] }] }] },
 }
@@ -25,7 +28,8 @@ describe('audit engine rules', () => {
     runAuditRules(context, ['performance', 'accessibility', 'seo', 'technical'])
     expect(context.measurements.some(item => item.metric === 'ttfb')).toBe(true)
     expect(context.findings.some(item => item.category === 'accessibility')).toBe(true)
-    expect(context.findings.some(item => item.category === 'technical')).toBe(true)\n    expect(context.findings.some(item => item.category === 'performance' && item.scope === 'resource')).toBe(true)
+    expect(context.findings.some(item => item.category === 'technical')).toBe(true)
+    expect(context.findings.some(item => item.category === 'performance' && item.scope === 'resource')).toBe(true)
     expect(context.checks.some(item => item.criterion === 'title' && item.status === 'pass')).toBe(true)
     expect(context.evidence.every(item => item.id)).toBe(true)
   })
