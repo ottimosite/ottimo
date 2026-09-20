@@ -226,9 +226,9 @@ export function Recommendations() {
               </div>
 
               <h3>{action.title}</h3>
-              <p className="recommendation-priority"><strong>{priorityLabel(action.priorityScore)}</strong> · {action.priorityScore}/100 · {action.severity} severity · {action.affectedPages.length} affected pages</p>
+              <p className="recommendation-priority"><strong>{priorityLabel(action.priorityScore)}</strong> · {action.priorityScore}/100 · {action.severity} severity · {action.affectedPages.length} affected pages</p><div className="action-next-step" aria-label={`Next step for ${action.title}`}><strong>Next step</strong><span>{blocked ? 'Complete the prerequisite before implementation.' : action.lifecycleStatus === 'planned' ? 'Assign ownership and move into implementation.' : action.lifecycleStatus === 'in_progress' ? 'Complete implementation, then request verification.' : action.lifecycleStatus === 'verification' ? 'Run a verification audit and inspect the observed evidence.' : action.lifecycleStatus === 'failed' ? 'Review the failed evidence and return to implementation.' : action.lifecycleStatus === 'inconclusive' ? 'Collect stronger evidence before treating the change as verified.' : 'Review the verification evidence and decide what to address next.'}</span></div>
               <p>{action.implementationSteps[1]}</p>
-              <p><strong>Why it matters:</strong> {action.expectedOutcome}</p>
+              <p><strong>Why it matters:</strong> {action.expectedOutcome}</p><div className="action-evidence-chain" aria-label={`Evidence chain for ${action.title}`}><span>Finding</span><span>→</span><span>Action</span><span>→</span><span>Verification</span></div>
 
               {blocked && <div className="dependency-warning" role="status">
                 <strong>Blocked by prerequisite{dependencies.length === 1 ? '' : 's'}:</strong>
