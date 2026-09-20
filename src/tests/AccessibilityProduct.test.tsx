@@ -35,7 +35,7 @@ describe('critical product accessibility', () => {
 
   it('keeps actions free of critical accessibility violations and exposes workflow controls', async () => {
     render(<MemoryRouter initialEntries={['/app/recommendations?website=site-wikipedia']}><App /></MemoryRouter>)
-    expect(screen.getByRole('region', { name: /action queue summary/i })).toBeInTheDocument()
+    expect(screen.getByLabelText(/action queue summary/i)).toBeInTheDocument()
     expect(screen.getAllByRole('combobox', { name: /lifecycle status/i }).length).toBeGreaterThan(0)
     await expectNoCriticalA11yViolations()
   })
