@@ -87,3 +87,4 @@ describe('notification event architecture', () => {
     expect(events.map(({ type }) => type)).toEqual(['audit.completed', 'audit.changed'])
   })
 })
+
