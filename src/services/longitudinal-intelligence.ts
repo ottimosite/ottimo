@@ -220,3 +220,105 @@ export function compareAudits(previous: Audit, current: Audit, comparedAt = new 
     inconclusive: changes.filter(change => change.type === 'inconclusive').length,
   }
 }
+
+
+export type HealthTrendDirection = 'improving' | 'stable' | 'regressing' | 'insufficient-evidence'
+
+export interface WebsiteHealthTrend {
+  direction: HealthTrendDirection
+  previousAuditId?: string
+  currentAuditId?: string
+  previousScore?: number
+  currentScore?: number
+  scoreDelta?: number
+  evidence: MeasurementStatus
+  rationale: string
+}
+
+export interface WebsiteHealthTrends {
+  websiteId: string
+  overall: WebsiteHealthTrend
+  categories: Array<{
+    category: Category
+    trend: WebsiteHealthTrend
+  }>
+}
+
+function trendForScores(
+  previousScore: number | undefined,
+  currentScore: number | undefined,
+  previousMeasurement: MeasurementStatus | undefined,
+  currentMeasurement: MeasurementStatus | undefined,
+  previousAuditId?: string,
+  currentAuditId?: string,
+): WebsiteHealthTrend {
+  const evidence = currentMeasurement ?? previousMeasurement ?? 'unavailable'
+
+  if (previousScore === undefined || currentScore === undefined || evidence === 'unavailable') {
+    return {
+      direction: 'insufficient-evidence',
+      previousAuditId,
+      currentAuditId,
+      previousScore,
+      currentScore,
+      scoreDelta: previousScore !== undefined && currentScore !== undefined ? currentScore - previousScore : undefined,
+      evidence,
+      rationale: 'Comparable measured or inferred scores are not available for both audits.',
+    }
+  }
+
+  const scoreDelta = currentScore - previousScore
+  return {
+    direction: scoreDelta > 0 ? 'improving' : scoreDelta < 0 ? 'regressing' : 'stable',
+    previousAuditId,
+    currentAuditId,
+    previousScore,
+    currentScore,
+    scoreDelta,
+    evidence,
+    rationale: scoreDelta > 0
+      ? 'The current comparable score is higher than the previous audit.'
+      : scoreDelta < 0
+        ? 'The current comparable score is lower than the previous audit.'
+        : 'The current comparable score is unchanged from the previous audit.',
+  }
+}
+
+export function buildWebsiteHealthTrends(history: LongitudinalWebsiteHistory): WebsiteHealthTrends {
+  const previous = history.previous
+  const current = history.latest
+
+  const overall = trendForScores(
+    previous?.score,
+    current?.score,
+    current?.score === undefined ? 'unavailable' : 'measured',
+    current?.score === undefined ? 'unavailable' : 'measured',
+    previous?.auditId,
+    current?.auditId,
+  )
+
+  const categories = Array.from(new Set([
+    ...(previous?.categories.map(category => category.category) ?? []),
+    ...(current?.categories.map(category => category.category) ?? []),
+  ])).sort()
+
+  return {
+    websiteId: history.websiteId,
+    overall,
+    categories: categories.map(category => {
+      const previousCategory = previous?.categories.find(item => item.category === category)
+      const currentCategory = current?.categories.find(item => item.category === category)
+      return {
+        category,
+        trend: trendForScores(
+          previousCategory?.score,
+          currentCategory?.score,
+          previousCategory?.measurement,
+          currentCategory?.measurement,
+          previous?.auditId,
+          current?.auditId,
+        ),
+      }
+    }),
+  }
+}
