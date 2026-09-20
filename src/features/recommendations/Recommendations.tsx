@@ -4,6 +4,7 @@ import { seedAudits, seedWebsites, categoryLabels } from '../../data/mock'
 import { storage } from '../../services/storage'
 import type { ActionLifecycleStatus, Audit, OptimizationAction } from '../../types/domain'
 import { buildOptimizationActions } from '../../audit-engine/actions'
+import { prioritiseAction, type RegressionRisk } from '../../audit-engine/action-prioritisation'
 import { buildInitialActionLifecycle } from '../../audit-engine/action-lifecycle'
 import { blockingDependencies, canTransitionAction, normaliseActionDependencies } from '../../audit-engine/action-dependencies'
 import { Badge, Card } from '../../components/ui'
@@ -28,19 +29,38 @@ const lifecycleTone: Record<ActionLifecycleStatus, string> = {
   inconclusive: 'medium',
 }
 
-const hydrateAuditActions = (audit: Audit): Audit => ({
-  ...audit,
-  actions: normaliseActionDependencies((audit.actions?.length
+const regressionRiskFor = (audit: Audit, action: OptimizationAction): RegressionRisk => {
+  const change = audit.comparison?.changes.find(item => item.fingerprint === action.fingerprint)
+  if (!change || change.type !== 'regressed') return 'none'
+  if (change.currentSeverity === 'critical' || change.currentSeverity === 'high') return 'high'
+  return 'medium'
+}
+
+const hydrateAuditActions = (audit: Audit): Audit => {
+  const actions = normaliseActionDependencies(audit.actions?.length
     ? buildInitialActionLifecycle(audit.actions)
-    : buildInitialActionLifecycle(buildOptimizationActions(audit.issues))).map(action => ({
+    : buildInitialActionLifecycle(buildOptimizationActions(audit.issues)))
+    .map(action => {
+      const issue = audit.issues.find(item => item.id === action.issueId)
+      if (!issue) return action
+      const priority = prioritiseAction(issue, {
+        dependencies: action.dependencies,
+        lifecycleStatus: action.lifecycleStatus,
+        regressionRisk: regressionRiskFor(audit, action),
+      })
+      return { ...action, priority, priorityScore: priority.score }
+    })
+    .map(action => ({
       ...action,
       work: action.work ?? {
         originatingFindingId: action.issueId,
         originatingAuditId: audit.id,
         evidenceLinks: [{ label: 'Originating finding', href: `/app/audits/${audit.id}#findings`, relation: 'finding' }],
       },
-    }))),
-})
+    }))
+
+  return { ...audit, actions }
+}
 
 const transition = (status: ActionLifecycleStatus, next: ActionLifecycleStatus): boolean => {
   const allowed: Record<ActionLifecycleStatus, ActionLifecycleStatus[]> = {
@@ -206,7 +226,7 @@ export function Recommendations() {
               </div>
 
               <h3>{action.title}</h3>
-              <p className="recommendation-priority"><strong>{priorityLabel(action.priorityScore)}</strong> · {action.priorityScore}/100 · {action.impact} impact · {action.effort} effort</p>
+              <p className="recommendation-priority"><strong>{priorityLabel(action.priorityScore)}</strong> · {action.priorityScore}/100 · {action.severity} severity · {action.affectedPages.length} affected pages</p>
               <p>{action.implementationSteps[1]}</p>
               <p><strong>Why it matters:</strong> {action.expectedOutcome}</p>
 
@@ -247,11 +267,12 @@ export function Recommendations() {
                   <p><strong>Implementation:</strong> {action.implementationSteps.join(' → ')}</p>
                   <p><strong>Scope:</strong> {action.affectedPages.length} affected page{action.affectedPages.length === 1 ? '' : 's'} · {action.affectedResources.length} resource{action.affectedResources.length === 1 ? '' : 's'} · {action.evidenceCount} evidence item{action.evidenceCount === 1 ? '' : 's'}</p>
                   <dl>
-                    <div><dt>Impact</dt><dd>{action.priority.impact}</dd></div>
-                    <div><dt>Severity</dt><dd>{action.priority.severity}</dd></div>
-                    <div><dt>Confidence</dt><dd>{action.confidence}</dd></div>
-                    <div><dt>Effort factor</dt><dd>{action.priority.effort}</dd></div>
+                    <div><dt>Severity factor</dt><dd>{action.priority.severity}</dd></div>
+                    <div><dt>Scope factor</dt><dd>{action.priority.scope}</dd></div>
                     <div><dt>Evidence factor</dt><dd>{action.priority.evidence}</dd></div>
+                    <div><dt>Dependency factor</dt><dd>{action.priority.dependency}</dd></div>
+                    <div><dt>Verification factor</dt><dd>{action.priority.verification}</dd></div>
+                    <div><dt>Regression-risk factor</dt><dd>{action.priority.regressionRisk}</dd></div>
                   </dl>
                 </div>
               </details>

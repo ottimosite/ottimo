@@ -31,14 +31,15 @@ describe('optimization action engine', () => {
     expect(action.verification[0].description).toContain('non-empty document title')
     expect(action.implementationSteps).toHaveLength(3)
     expect(action.priority.score).toBe(action.priorityScore)
-    expect(action.priority.evidence).toBe(4)
+    expect(action.priority.evidence).toBe(44)
   })
 
-  it('accounts for confidence and effort when calculating action priority', () => {
-    const [lowEffort] = buildOptimizationActions([issue({ effort: 'low' })])
-    const [highEffort] = buildOptimizationActions([issue({ effort: 'high' })])
+  it('uses supported evidence rather than effort as a priority factor', () => {
+    const [measured] = buildOptimizationActions([issue({ evidence: { status: 'measured', value: 1 }, confidence: 'high' })])
+    const [unavailable] = buildOptimizationActions([issue({ evidence: { status: 'unavailable' }, confidence: 'high' })])
 
-    expect(lowEffort.priorityScore).toBeGreaterThan(highEffort.priorityScore)
+    expect(measured.priorityScore).toBeGreaterThan(unavailable.priorityScore)
+    expect(measured.priority.evidence).toBeGreaterThan(unavailable.priority.evidence)
   })
 
   it('uses the same deterministic inputs to order actions', () => {

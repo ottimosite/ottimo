@@ -1,4 +1,5 @@
-import type { AuditIssue, Effort, Severity, OptimizationAction, ActionPriorityBreakdown, ActionDependency, VerificationCriterion } from '../types/domain'
+import type { AuditIssue, OptimizationAction, ActionDependency, VerificationCriterion } from '../types/domain'
+import { prioritiseAction, type RegressionRisk } from './action-prioritisation'
 
 export type ActionImpact = 'critical' | 'high' | 'medium' | 'low'
 
@@ -11,18 +12,6 @@ const impactFor = (issue: AuditIssue): ActionImpact => {
   if (issue.severity === 'high' || (issue.severity === 'medium' && occurrences >= 5)) return 'high'
   if (issue.severity === 'medium') return 'medium'
   return 'low'
-}
-
-const impactWeight: Record<ActionImpact, number> = { critical: 100, high: 80, medium: 55, low: 30 }
-const severityWeight: Record<Severity, number> = { critical: 100, high: 80, medium: 55, low: 30 }
-const confidenceWeight: Record<NonNullable<AuditIssue['confidence']>, number> = { high: 1, medium: 0.85, low: 0.7 }
-const effortWeight: Record<Effort, number> = { low: 1, medium: 0.85, high: 0.7 }
-
-const priorityFor = (issue: AuditIssue, impact: ActionImpact, confidence: NonNullable<AuditIssue['confidence']>, effort: Effort, evidenceCount: number): ActionPriorityBreakdown => {
-  const evidence = Math.min(10, evidenceCount) * 2
-  const base = impactWeight[impact] * 0.35 + severityWeight[issue.severity] * 0.25 + evidence * 0.1
-  const score = Math.round(Math.min(100, base * confidenceWeight[confidence] * effortWeight[effort]))
-  return { impact: impactWeight[impact], severity: severityWeight[issue.severity], confidence: confidenceWeight[confidence], effort: effortWeight[effort], evidence, score }
 }
 
 const verificationFor = (issue: AuditIssue): VerificationCriterion[] => {
@@ -50,14 +39,14 @@ const stepsFor = (issue: AuditIssue): string[] => [
   'Re-run the audit after the change and compare the result with the verification criteria.',
 ]
 
-export function buildOptimizationActions(issues: AuditIssue[]): OptimizationAction[] {
+export function buildOptimizationActions(issues: AuditIssue[], options: { regressionRiskByIssueId?: Record<string, RegressionRisk> } = {}): OptimizationAction[] {
   return issues
     .map((issue): OptimizationAction => {
       const impact = impactFor(issue)
       const confidence = issue.confidence ?? 'low'
       const effort = issue.effort
       const evidenceCount = issue.evidenceCount ?? (issue.evidence ? 1 : 0)
-      const priority = priorityFor(issue, impact, confidence, effort, evidenceCount)
+      const priority = prioritiseAction(issue, { regressionRisk: options.regressionRiskByIssueId?.[issue.id] })
       const priorityScore = priority.score
 
       return {
