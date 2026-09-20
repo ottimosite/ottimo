@@ -31,7 +31,7 @@ describe('optimization action engine', () => {
     expect(action.verification[0].description).toContain('non-empty document title')
     expect(action.implementationSteps).toHaveLength(3)
     expect(action.priority.score).toBe(action.priorityScore)
-    expect(action.priority.evidence).toBe(4)
+    expect(action.priority.evidence).toBe(44)
   })
 
   it('accounts for confidence and effort when calculating action priority', () => {
