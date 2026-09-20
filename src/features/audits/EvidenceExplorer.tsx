@@ -7,7 +7,7 @@ function EvidenceItem({ issue, audit }: { issue: AuditIssue; audit: Audit }) {
   const pages = issue.affectedPages ?? []
   const resources = issue.affectedResources ?? []
   const evidence = issue.evidence
-  const observations = audit.healthModel?.observations.filter(observation => observation.pageUrl && pages.includes(observation.pageUrl)).slice(0, 6) ?? []
+  const observations = audit.healthModel?.observations.filter(observation => typeof observation.pageUrl === 'string' && pages.includes(observation.pageUrl)).slice(0, 6) ?? []
   return <article className="evidence-explorer__item">
     <div className="evidence-explorer__item-head">
       <div>
