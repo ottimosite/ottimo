@@ -22,7 +22,7 @@ async function expectNoCriticalA11yViolations() {
 describe('critical product accessibility', () => {
   it('keeps the website health workspace free of critical accessibility violations', async () => {
     render(<MemoryRouter initialEntries={['/app/websites/site-wikipedia']}><App /></MemoryRouter>)
-    expect(screen.getByRole('heading', { name: /current website decision/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /what needs attention now/i })).toBeInTheDocument()
     await expectNoCriticalA11yViolations()
   })
 
