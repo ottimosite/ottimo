@@ -46,3 +46,9 @@ The token layer is considered stable enough for later migration when:
 The first shared primitive layer is `src/styles/shared-components.css`. It owns reusable controls and surfaces including `.btn`, button variants, `.card`, `.eyebrow`, `.muted` and `.section-head`.
 
 Feature styles may extend these primitives, but must not redefine their base contract. Feature-specific visual variants remain local to the feature. New shared primitives should be added here only when they are genuinely reused across public and application surfaces.
+
+## Public-site ownership
+
+The shared public-site structure is owned by `src/styles/public-site.css`. It contains generic marketing/content-page structure such as hero framing, content pages, callouts and footer structure. Landing-page composition remains in `lead-home.css`; service-page composition remains in `public-services.css`; the newer marketing refinement layer remains in `public-refresh.css` until those feature-specific slices are independently consolidated.
+
+Application-only selectors must not be introduced into this layer. Public pages should remain renderable without application feature styles.
