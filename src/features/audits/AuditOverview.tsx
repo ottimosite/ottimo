@@ -5,6 +5,7 @@ import { storage } from '../../services/storage'
 import { auditStandards } from '../../services/audit'
 import { Badge, Button, Card, Progress, Score } from '../../components/ui'
 import { formatDate } from '../../lib/format'
+import { downloadAuditReport } from '../../lib/audit-report'
 import { IssueTable } from './Audits'
 import type { Audit } from '../../types/domain'
 
@@ -122,7 +123,7 @@ export function AuditOverview() {
   const topIssues = openIssues.slice().sort((a, b) => b.priority - a.priority).slice(0, 3)
   const screenshotUrl = stats?.screenshotUrl ?? screenshotFor(audit.url)
   return <div className="stack audit-overview">
-    <div className="page-heading"><div><span className="eyebrow">Audit result · {stats?.source === 'live' ? 'Live page inspection' : 'Saved local audit'}</span><h1>{website?.name ?? audit.url}</h1><p className="audit-url">{audit.url}</p><p>{formatDate(audit.createdAt)} · {audit.durationMs}ms analysis · {audit.issues.length} findings</p></div><div className="audit-actions"><AuditModeSwitch mode={mode} setMode={setMode} /><Button variant="secondary" onClick={() => window.print()}>Print report</Button><Button onClick={() => navigate(`/app/audits/new?url=${encodeURIComponent(audit.url)}`)}>Run again</Button></div></div>
+    <div className="page-heading"><div><span className="eyebrow">Audit result · {stats?.source === 'live' ? 'Live page inspection' : 'Saved local audit'}</span><h1>{website?.name ?? audit.url}</h1><p className="audit-url">{audit.url}</p><p>{formatDate(audit.createdAt)} · {audit.durationMs}ms analysis · {audit.issues.length} findings</p></div><div className="audit-actions"><AuditModeSwitch mode={mode} setMode={setMode} /><Button variant="secondary" onClick={() => downloadAuditReport(audit, website?.name)}>Export report</Button><Button variant="ghost" onClick={() => window.print()}>Print report</Button><Button onClick={() => navigate(`/app/audits/new?url=${encodeURIComponent(audit.url)}`)}>Run again</Button></div></div>
     <Card className="standards-card"><div><span className="eyebrow">Audit basis</span><h2>Standards applied</h2></div><div className="standards-list">{(audit.standards ?? auditStandards.map(standard => standard.name)).map(standard => <span className="standard-tag" key={standard}>{standard}</span>)}</div></Card>
     <Card className="audit-interpretation"><div className="section-head"><div><span className="eyebrow">Start with the meaning</span><h2>What should you take away?</h2></div><span className="muted">{openIssues.length} open issue{openIssues.length === 1 ? '' : 's'}</span></div><div className="interpretation-grid">
       <div className="interpretation-item"><span className="interpretation-number">{openIssues.length}</span><div><strong>Things that need action</strong><p>Findings Ottimo has enough evidence to turn into a concrete task.</p></div></div>
