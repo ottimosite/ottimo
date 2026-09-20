@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import { seedAudits, categoryLabels } from '../../data/mock'
+import { Link, useLocation } from 'react-router-dom'
+import { seedAudits, seedWebsites, categoryLabels } from '../../data/mock'
 import { storage } from '../../services/storage'
 import type { ActionLifecycleStatus, Audit, OptimizationAction } from '../../types/domain'
 import { buildOptimizationActions } from '../../audit-engine/actions'
@@ -53,6 +53,17 @@ const isBlocked = (action: OptimizationAction, actions: OptimizationAction[]) =>
 
 const priorityLabel = (score: number) => score >= 80 ? 'High priority' : score >= 55 ? 'Medium priority' : 'Lower priority'
 
+const verificationLabels = { observed: 'Verified by later audit', pending: 'Not yet observed', failed: 'Finding still present', inconclusive: 'Evidence inconclusive' } as const
+const verificationTone = { observed: 'low', pending: 'neutral', failed: 'critical', inconclusive: 'medium' } as const
+type VerificationViewState = keyof typeof verificationLabels
+const verificationState = (audit: Audit | undefined, action: OptimizationAction): VerificationViewState => {
+  const verification = audit?.verifications?.find(item => item.actionId === action.id)
+  if (verification?.status === 'verified') return 'observed'
+  if (verification?.status === 'failed') return 'failed'
+  if (verification?.status === 'inconclusive') return 'inconclusive'
+  return 'pending'
+}
+
 export function Recommendations() {
   const [audits, setAudits] = useState(() => {
     const stored = storage.audits()
@@ -60,6 +71,8 @@ export function Recommendations() {
     return source.map(hydrateAuditActions)
   })
   const websiteId = new URLSearchParams(useLocation().search).get('website') ?? undefined
+  const websites = storage.websites().length ? storage.websites() : seedWebsites
+  const website = websiteId ? websites.find(item => item.id === websiteId) : undefined
   const scopedAudits = websiteId ? audits.filter(audit => audit.websiteId === websiteId) : audits
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
@@ -70,6 +83,8 @@ export function Recommendations() {
   const blockedCount = all.filter(action => isBlocked(action, scopedAudits.find(audit => audit.id === action.auditId)?.actions ?? [])).length
   const readyCount = all.filter(action => action.lifecycleStatus === 'planned' && !isBlocked(action, scopedAudits.find(audit => audit.id === action.auditId)?.actions ?? [])).length
   const inProgressCount = all.filter(action => action.lifecycleStatus === 'in_progress' || action.lifecycleStatus === 'verification').length
+  const verifiedCount = all.filter(action => verificationState(scopedAudits.find(audit => audit.id === action.auditId), action) === 'observed').length
+  const pendingVerificationCount = all.filter(action => verificationState(scopedAudits.find(audit => audit.id === action.auditId), action) === 'pending').length
 
   const shown = useMemo(() => [...all]
     .filter(action =>
@@ -105,9 +120,9 @@ export function Recommendations() {
   return <div className="stack">
     <div className="page-heading">
       <div>
-        <span className="eyebrow">Recommendations</span>
+        <span className="eyebrow">{website ? `Actions · ${website.name}` : 'Actions'}</span>
         <h1>Fix the things that matter most.</h1>
-        <p>Prioritised actions turn evidence into a practical execution queue. Work is ordered by deterministic priority, while dependencies prevent unsafe transitions.</p>
+        <p>{website ? 'A website-specific execution queue keeps each recommendation connected to the evidence that created it and the verification needed to prove the change.' : 'Prioritised actions turn evidence into a practical execution queue. Work is ordered by deterministic priority, while dependencies prevent unsafe transitions.'}</p>
       </div>
     </div>
 
@@ -116,7 +131,20 @@ export function Recommendations() {
       <Card className="action-summary-card"><strong>{readyCount}</strong><span>Ready to act</span></Card>
       <Card className="action-summary-card"><strong>{blockedCount}</strong><span>Blocked</span></Card>
       <Card className="action-summary-card"><strong>{inProgressCount}</strong><span>In progress</span></Card>
+      <Card className="action-summary-card"><strong>{verifiedCount}</strong><span>Verified</span></Card>
     </div>
+
+    <Card className="action-verification-brief">
+      <div>
+        <span className="eyebrow">Action → verification</span>
+        <h2>Implementation is not proof.</h2>
+        <p>Changing a lifecycle state records workflow progress. Verification becomes observed only when a later audit supplies evidence that the associated finding changed.</p>
+      </div>
+      <div className="action-verification-status" aria-label="Verification summary">
+        <span><strong>{verifiedCount}</strong> observed</span>
+        <span><strong>{pendingVerificationCount}</strong> awaiting evidence</span>
+      </div>
+    </Card>
 
     <Card>
       <div className="queue-intro">
@@ -139,6 +167,9 @@ export function Recommendations() {
           const audit = audits.find(item => item.id === action.auditId)
           const dependencies = blockingDependencies(audit?.actions ?? [], action)
           const blocked = isBlocked(action, audit?.actions ?? [])
+          const verification = audit?.verifications?.find(item => item.actionId === action.id)
+          const verificationView = verificationState(audit, action)
+          const evidenceHref = audit ? `/app/audits/${audit.id}#findings` : '/app/audits'
 
           return <article className={`recommendation ${blocked ? 'recommendation-blocked' : ''}`} key={`${action.auditId}-${action.id}`}>
             <div className="recommendation-main">
@@ -163,10 +194,17 @@ export function Recommendations() {
                 </ul>
               </div>}
 
+              <div className="action-proof">
+                <div className="action-proof__head"><div><span className="eyebrow">Proof of change</span><strong>{verificationLabels[verificationView]}</strong></div><Badge tone={verificationTone[verificationView]}>{verificationLabels[verificationView]}</Badge></div>
+                <p><strong>Verify:</strong> {action.verification[0]?.description ?? 'A later audit must provide enough evidence to confirm the intended change.'}</p>
+                {verification ? <p className="muted"><strong>Observed evidence:</strong> {verification.evidence}</p> : <p className="muted">No later-audit verification evidence is recorded yet. This is not treated as success or failure.</p>}
+                <div className="action-proof__links"><Link to={evidenceHref}>Review originating evidence →</Link><Link to={`/app/audits/new/run?audit=${encodeURIComponent(action.auditId)}`}>Run verification audit →</Link></div>
+              </div>
+
               <details>
-                <summary>Evidence, priority and verification</summary>
+                <summary>Priority and implementation detail</summary>
                 <div className="action-details">
-                  <p><strong>Verification:</strong> {action.verification[0]?.description}</p>
+                  <p><strong>Implementation:</strong> {action.implementationSteps.join(' → ')}</p>
                   <p><strong>Scope:</strong> {action.affectedPages.length} affected page{action.affectedPages.length === 1 ? '' : 's'} · {action.affectedResources.length} resource{action.affectedResources.length === 1 ? '' : 's'} · {action.evidenceCount} evidence item{action.evidenceCount === 1 ? '' : 's'}</p>
                   <dl>
                     <div><dt>Impact</dt><dd>{action.priority.impact}</dd></div>

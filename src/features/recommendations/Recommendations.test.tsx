@@ -6,6 +6,7 @@ import { Recommendations } from './Recommendations'
 const { saveAudits } = vi.hoisted(() => ({ saveAudits: vi.fn() }))
 vi.mock('../../services/storage', () => ({
   storage: {
+    websites: () => [{ id: 'site-1', name: 'Example site', url: 'https://example.com', createdAt: '2026-09-20T07:00:00Z' }],
     audits: () => [{
       id: 'audit-1',
       websiteId: 'site-1',
@@ -43,9 +44,14 @@ vi.mock('../../services/storage', () => ({
 
 describe('Recommendations lifecycle UX', () => {
   it('exposes lifecycle state and only offers valid next states', () => {
-    render(<MemoryRouter><Recommendations /></MemoryRouter>)
+    render(<MemoryRouter initialEntries={['/app/recommendations?website=site-1']}><Recommendations /></MemoryRouter>)
 
     const select = screen.getByRole('combobox', { name: /lifecycle status for improve test performance/i })
+    expect(screen.getByText('Actions · Example site')).toBeInTheDocument()
+    expect(screen.getByText('Implementation is not proof.')).toBeInTheDocument()
+    expect(screen.getByText('Not yet observed', { selector: '.badge' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /review originating evidence/i })).toHaveAttribute('href', '/app/audits/audit-1#findings')
+    expect(screen.getByRole('link', { name: /run verification audit/i })).toHaveAttribute('href', '/app/audits/new/run?audit=audit-1')
     expect(screen.getByText('Planned', { selector: '.badge' })).toBeInTheDocument()
     expect(select).toHaveValue('planned')
 
