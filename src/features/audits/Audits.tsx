@@ -14,8 +14,11 @@ export function AuditList() { const [audits] = useState(() => storage.audits().l
 
 export function NewAudit() {
   const location = useLocation()
-  const initialUrl = new URLSearchParams(location.search).get('url') ?? 'https://example.com'
-  const categories = new URLSearchParams(location.search).get('categories')?.split(',').filter(Boolean) ?? []
+  const search = new URLSearchParams(location.search)
+  const requestedAuditId = search.get('audit')
+  const requestedAudit = requestedAuditId ? [...seedAudits, ...storage.audits()].find(item => item.id === requestedAuditId) : undefined
+  const initialUrl = search.get('url') ?? requestedAudit?.url ?? 'https://example.com'
+  const categories = search.get('categories')?.split(',').filter(Boolean) ?? []
   const [url] = useState(normaliseUrl(initialUrl))
   const [error, setError] = useState('')
   const navigate = useNavigate()
