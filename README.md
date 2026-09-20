@@ -30,6 +30,8 @@ npm run lint
 - Replaceable audit boundary: `AuditProvider`
 - Deterministic local `MockAuditProvider` backed by a captured real-site fixture
 - Local repositories via `localStorage`
+- Authenticated tenant repository boundary via `SessionVerifier`
+- Durable server storage through the `ServerStorageAdapter` contract
 - Native SVG/CSS-style data presentation; no charting library
 - Vitest + Testing Library for automated tests
 
@@ -42,8 +44,8 @@ src/
   features/         dashboard, websites, audits, recommendations, platform views
   lib/              validation and formatting utilities
   pages/            public website pages
-  services/         audit provider and local storage
-  styles/           global responsive design system
+  services/         audit provider, authentication and persistence boundaries
+  styles/            global responsive design system
   tests/             unit/component tests
   types/             domain models
 ```
@@ -60,10 +62,18 @@ The deterministic fixture lives in `src/data/fixtures/wikipedia.ts`. It records 
 
 To refresh it, capture the public `https://www.wikipedia.org/` portal again, record the new capture date and source revision/observations, update the fixture, and update its tests. Do not make CI fetch Wikipedia directly.
 
+## Persistence boundary
+
+Production-facing tenant persistence is split into two provider-independent layers:
+
+1. `AuthenticatedTenantRepository` verifies the server session before accessing tenant data.
+2. `DurableServerStorageAdapter` validates and persists versioned envelopes through an injected durable object store.
+
+A platform-specific server integration can provide the durable object store without leaking vendor types into the domain or repository layer. Local tests and development can continue to use deterministic in-memory adapters. Production secrets and storage credentials must remain environment-managed.
 
 ## Future integrations
 
-The current service boundaries are designed so real Lighthouse/PageSpeed/crawler, authentication, billing, AI, reporting and monitoring providers can replace the local providers without rewriting the UI.
+The current service boundaries are designed so real Lighthouse/PageSpeed/crawler, authentication, durable storage, billing, AI, reporting and monitoring providers can replace the local providers without rewriting the UI.
 
 ## Performance and accessibility checklist
 
@@ -80,7 +90,7 @@ The current service boundaries are designed so real Lighthouse/PageSpeed/crawler
 
 ## Environment
 
-Copy `.env.example` only when adding environment-specific integrations. The local demo does not need environment variables.
+Copy `.env.example` only when adding environment-specific integrations. The local demo does not need environment variables. Production storage credentials, when required by the selected server platform, must be configured through the platform environment rather than committed to the repository.
 
 ## Real-site acceptance scenarios
 
