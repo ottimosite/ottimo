@@ -6,7 +6,7 @@ import App from '../App'
 describe('app', () => {
   it('renders the product landing page around a clear improvement proposition', () => {
     render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>)
-    expect(screen.getByRole('heading', { name: /make your website easier to find, use and improve/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /find what is holding your website back/i })).toBeInTheDocument()
     expect(screen.getAllByRole('link', { name: /analyse my website/i }).length).toBeGreaterThan(0)
     expect(screen.getByRole('heading', { name: /six lenses\. one digital experience/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /from website signal to verified improvement/i })).toBeInTheDocument()
@@ -37,9 +37,9 @@ describe('app', () => {
     expect(within(applicationNavigation).getByRole('link', { name: 'Insights' })).toBeInTheDocument()
     expect(within(applicationNavigation).getByText('Reporting')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /start with your website/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /run audit/i })).toBeInTheDocument()
-    expect(screen.queryByText(/step 1 of 2/i)).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /continue/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /continue to audit/i })).toBeInTheDocument()
+    expect(screen.getByText(/1 of 2/)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /run audit/i })).not.toBeInTheDocument()
   })
 
   it('prepares a saved website for a direct audit action', () => {
