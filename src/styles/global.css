@@ -548,3 +548,21 @@ main:focus {
   max-width: 58ch;
   color: var(--muted);
 }
+
+/* UX-04 responsive and touch-target hardening */
+@media (max-width:700px) {
+  .sidebar nav a,
+  .website-context nav a,
+  .audit-context nav a,
+  .side-cta { min-height:44px; }
+  .sidebar.menu-open { max-height:100vh; overflow-y:auto; }
+  .website-context { padding-bottom:10px; }
+  .website-context nav { max-height:45vh; overflow-y:auto; }
+  .app-top strong { overflow-wrap:anywhere; }
+}
+@media (max-width:520px) {
+  .app-top { gap:12px; }
+  .app-content { padding-inline:16px; }
+  .card { padding:18px; }
+  .page-heading h1 { font-size:clamp(2.5rem,14vw,4rem); }
+}
