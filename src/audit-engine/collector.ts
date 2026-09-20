@@ -135,6 +135,23 @@ export class PlaywrightPageCollector implements PageCollector {
         }
       })
 
+      const resourceMetrics = await page.evaluate(() => {
+        const entries = performance.getEntriesByType('resource') as Array<PerformanceResourceTiming & { initiatorType?: string }>
+        return entries.map(entry => ({
+          url: entry.name,
+          durationMs: entry.duration,
+          transferSize: entry.transferSize,
+          encodedBodySize: entry.encodedBodySize,
+          decodedBodySize: entry.decodedBodySize,
+          initiatorType: entry.initiatorType,
+        }))
+      })
+
+      for (const metric of resourceMetrics.slice(0, 500)) {
+        const resource = resources.get(metric.url)
+        if (resource) Object.assign(resource, metric)
+      }
+
       const intelligence = await page.evaluate(() => {
         const text = document.documentElement.innerHTML
         const scripts = [...document.scripts].map(s => s.src).filter(Boolean)

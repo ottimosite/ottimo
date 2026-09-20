@@ -211,6 +211,72 @@ export function runAuditRules(
       .sort((a, b) => (b.size ?? 0) - (a.size ?? 0))
       .slice(0, 20)
 
+    const totalTransfer = page.resources.reduce((sum, resource) => sum + (resource.transferSize ?? resource.encodedBodySize ?? 0), 0)
+    const resourceCount = page.resources.length
+    const failedResourceCount = page.resources.filter(resource => resource.failed || (resource.status !== undefined && resource.status >= 400)).length
+    const scriptResources = page.resources.filter(resource => resource.type.toLowerCase() === 'script')
+    const imageResources = page.resources.filter(resource => resource.type.toLowerCase() === 'image')
+    const stylesheetResources = page.resources.filter(resource => resource.type.toLowerCase() === 'stylesheet')
+    const scriptBytes = scriptResources.reduce((sum, resource) => sum + (resource.transferSize ?? resource.encodedBodySize ?? 0), 0)
+    const imageBytes = imageResources.reduce((sum, resource) => sum + (resource.transferSize ?? resource.encodedBodySize ?? 0), 0)
+    const stylesheetBytes = stylesheetResources.reduce((sum, resource) => sum + (resource.transferSize ?? resource.encodedBodySize ?? 0), 0)
+
+    for (const metric of [
+      ['page-transfer-size', totalTransfer, 'bytes', 'Total browser-observed resource transfer size'],
+      ['resource-count', resourceCount, 'resources', 'Browser-observed resource count'],
+      ['failed-resource-count', failedResourceCount, 'resources', 'Browser-observed resources returning errors or failing'],
+      ['script-transfer-size', scriptBytes, 'bytes', 'Browser-observed JavaScript transfer size'],
+      ['image-transfer-size', imageBytes, 'bytes', 'Browser-observed image transfer size'],
+      ['stylesheet-transfer-size', stylesheetBytes, 'bytes', 'Browser-observed stylesheet transfer size'],
+    ] as const) {
+      const item = evidence(context, {
+        category: 'performance',
+        kind: 'resource',
+        description: metric[3],
+        value: metric[1],
+        unit: metric[2],
+        source: 'playwright',
+        url: page.finalUrl,
+      })
+      measurement(context, {
+        category: 'performance',
+        metric: metric[0],
+        value: metric[1],
+        unit: metric[2],
+        status: 'measured',
+        source: 'browser-resource-timing',
+        evidenceIds: [item.id],
+      })
+    }
+
+    const slowResources = page.resources
+      .filter(resource => !resource.failed && resource.durationMs !== undefined && resource.durationMs > 1000)
+      .sort((a, b) => (b.durationMs ?? 0) - (a.durationMs ?? 0))
+      .slice(0, 20)
+
+    for (const resource of slowResources) {
+      const item = evidence(context, {
+        category: 'performance',
+        kind: 'resource',
+        description: 'Slow browser resource',
+        value: resource.durationMs,
+        unit: 'ms',
+        source: 'playwright',
+        url: resource.url,
+      })
+      finding(context, {
+        category: 'performance',
+        severity: (resource.durationMs ?? 0) > 3000 ? 'high' : 'medium',
+        title: 'Resource has a long load duration',
+        summary: `${resource.type} resource at ${resource.url} took ${Math.round(resource.durationMs ?? 0)} ms to complete.`,
+        impact: 'Slow resources can delay the work needed for rendering and interaction.',
+        recommendation: 'Inspect the resource waterfall, reduce payload or server latency, and defer non-critical requests where appropriate.',
+        scope: 'resource',
+        resourceUrl: resource.url,
+        evidenceIds: [item.id],
+      })
+    }
+
     for (const item of expensiveResources) {
       const resourceEvidence = evidence(context, {
         category: 'performance',
