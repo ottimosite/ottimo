@@ -140,6 +140,85 @@ export function WebsiteDetail() {
     </>}
   </div>
 }
+export function InsightsPage() {
+  const location = useLocation()
+  const websiteId = new URLSearchParams(location.search).get('website')
+  const audits = websiteId ? currentAudits().filter(item => item.websiteId === websiteId) : currentAudits()
+  const audit = audits.at(-1)
+  const website = websiteId ? (storage.websites().length ? storage.websites() : seedWebsites).find(item => item.id === websiteId) : undefined
+
+  if (!audit) return <div className="stack">
+    <div className="page-heading"><div><span className="eyebrow">Insights</span><h1>Understand what matters.</h1><p>Insights need an audit baseline. Ottimo will keep observed evidence separate from inference and unavailable data.</p></div></div>
+    <Card className="insights-empty"><h2>Start with a website audit.</h2><p>No audit evidence is available for this context yet.</p><Link className="btn btn-primary" to="/app/audits/new">Create an audit</Link></Card>
+  </div>
+
+  const model = audit.healthModel ?? website?.healthModel
+  const intelligence = model?.siteIntelligence
+  const openIssues = audit.issues.filter(issue => issue.status !== 'resolved')
+  const categories = (['performance', 'accessibility', 'seo', 'usability', 'technical', 'ai'] as Category[]).map(category => {
+    const score = audit.scores.find(item => item.category === category)?.score
+    const coverage = model?.categoryCoverage?.[category] ?? (score === undefined ? 'unavailable' : 'measured')
+    const issue = openIssues.filter(item => item.category === category).sort((a, b) => b.priority - a.priority)[0]
+    return { category, score, coverage, issue }
+  })
+  const measured = categories.filter(item => item.coverage === 'measured').length
+  const inferred = categories.filter(item => item.coverage === 'partial').length
+  const unavailable = categories.filter(item => item.coverage === 'unavailable').length
+
+  return <div className="stack insights-workspace">
+    <div className="page-heading">
+      <div><span className="eyebrow">Insights{website ? ` · ${website.name}` : ''}</span><h1>Turn audit evidence into useful understanding.</h1><p>One website context, one evidence boundary. These insights interpret the latest audit without pretending to know traffic, rankings, conversions or user behaviour.</p></div>
+      <Link className="btn btn-primary" to={`/app/audits/${audit.id}`}>Open latest audit</Link>
+    </div>
+
+    <Card className="insights-hero">
+      <div className="section-head"><div><span className="eyebrow">Decision context</span><h2>What Ottimo knows right now</h2></div><span className="standard-tag">{formatDate(audit.createdAt)}</span></div>
+      <div className="insights-evidence-summary">
+        <div><strong>{measured}</strong><span>measured domains</span></div>
+        <div><strong>{inferred}</strong><span>partially inferred</span></div>
+        <div><strong>{unavailable}</strong><span>unavailable</span></div>
+        <div><strong>{openIssues.length}</strong><span>open findings</span></div>
+      </div>
+      <p className="muted">Measured observations are evidence. Partially inferred signals describe structure or interpretation. Unavailable domains are not treated as zero.</p>
+    </Card>
+
+    <Card>
+      <div className="section-head"><div><span className="eyebrow">Website insights</span><h2>Where attention is concentrated</h2></div><Link to={`/app/audits/${audit.id}#audit-evidence`}>Inspect evidence →</Link></div>
+      <div className="insight-grid">
+        {categories.map(({ category, score, coverage, issue }) => <article className="insight-card" key={category}>
+          <div className="insight-card__top"><span className="eyebrow">{categoryLabels[category]}</span><span className={`evidence-status evidence-status--${coverage}`}>{titleCase(coverage)}</span></div>
+          <strong className="insight-score">{score === undefined ? '—' : score}<small>{score === undefined ? 'not measured' : '/100'}</small></strong>
+          <p>{issue ? issue.summary : categoryCopy[category].body}</p>
+          {issue && <div className="insight-card__finding"><Badge tone={issue.severity}>{issue.severity}</Badge><span>{issue.title}</span></div>}
+          <Link to={`/app/${category === 'seo' ? 'seo' : category === 'ai' ? 'ai' : category}?website=${encodeURIComponent(audit.websiteId ?? websiteId ?? '')}`}>Explore {categoryLabels[category]} →</Link>
+        </article>)}
+      </div>
+    </Card>
+
+    <div className="grid-2">
+      <Card>
+        <div className="section-head"><div><span className="eyebrow">Search</span><h2>Can search systems understand the site?</h2></div><Link to={`/app/seo?website=${encodeURIComponent(audit.websiteId ?? websiteId ?? '')}`}>Open search insight →</Link></div>
+        {intelligence?.search ? <div className="insight-stat-list">
+          <span><strong>{Math.round(intelligence.search.titleCoverage * 100)}%</strong> title coverage</span>
+          <span><strong>{Math.round(intelligence.search.metaDescriptionCoverage * 100)}%</strong> meta description coverage</span>
+          <span><strong>{Math.round(intelligence.search.canonicalCoverage * 100)}%</strong> canonical coverage</span>
+          <span><strong>{intelligence.search.structuredDataPages}</strong> pages with structured data</span>
+        </div> : <p className="muted">Search intelligence was not measured in this audit.</p>}
+        <p className="muted">Technical search signals describe page readiness; they do not establish rankings or organic acquisition.</p>
+      </Card>
+      <Card>
+        <div className="section-head"><div><span className="eyebrow">Technology</span><h2>What implementation signals were observed?</h2></div><Link to={`/app/technical?website=${encodeURIComponent(audit.websiteId ?? websiteId ?? '')}`}>Open technical insight →</Link></div>
+        {intelligence?.technology?.signals?.length ? <div className="insight-signal-list">{intelligence.technology.signals.slice(0, 8).map(signal => <span key={signal.name}><strong>{signal.name}</strong><small>{signal.category} · {signal.confidence} confidence</small></span>)}</div> : <p className="muted">No technology signals were confidently observed.</p>}
+      </Card>
+    </div>
+
+    <Card className="insight-handoff">
+      <div><span className="eyebrow">From insight to action</span><h2>Keep the evidence attached to the decision.</h2><p>Insights are interpretation, not a second source of truth. Use the audit for canonical evidence and the action queue for implementation and verification.</p></div>
+      <div className="hero-actions"><Link className="btn btn-primary" to={`/app/audits/${audit.id}#findings`}>Review findings</Link><Link className="text-link" to="/app/recommendations">Open action queue →</Link></div>
+    </Card>
+  </div>
+}
+
 export function ReportsPage() {
   const audit = currentAudits().at(-1) ?? seedAudits.at(-1)!
   return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Reports</span><h1>A clear briefing for the next decision.</h1><p>Summarise the latest audit for a business owner, product team or developer.</p></div><Button variant="secondary" onClick={() => window.print()}>Print report</Button></div><Card className="report-header"><div><span className="eyebrow">Ottimo audit report</span><h2>{audit.url}</h2><p>Generated {formatDate(audit.createdAt)} from deterministic local demo data.</p></div>{audit.score === undefined ? <div className="score"><strong>—</strong><span>Not measured</span></div> : <Score value={audit.score} label="Overall health" />}</Card><div className="grid-3">{audit.scores.map(item => <Card key={item.category}><span className="muted">{categoryLabels[item.category]}</span><strong className="big-number">{item.score ?? "—"}</strong>{item.score === undefined ? <small>Not measured</small> : <Progress value={item.score} />}</Card>)}</div><Card><span className="eyebrow">Priority queue</span><h2>Three actions to take next</h2><div className="action-list">{audit.issues.filter(issue => issue.status !== 'resolved').sort((a, b) => b.priority - a.priority).slice(0, 3).map(issue => <Link className="action" to="/app/recommendations" key={issue.id}><span><strong>{issue.title}</strong><small>{issue.solution}</small></span><span>#{issue.priority} →</span></Link>)}</div></Card></div>
