@@ -76,3 +76,15 @@ The current service boundaries are designed so real Lighthouse/PageSpeed/crawler
 ## Environment
 
 Copy `.env.example` only when adding environment-specific integrations. The local demo does not need environment variables.
+
+## Real-site acceptance scenarios
+
+The audit engine has deterministic acceptance contracts under `src/audit-engine/acceptance/`. These are fixture-based representatives of real-world structures rather than live third-party dependencies, so CI remains reproducible.
+
+When adding a scenario:
+1. Model the smallest representative page/crawl structure that exercises the regression.
+2. Keep observed values explicit; use `undefined` for unavailable browser measurements.
+3. Assert the evidence contract (URL, status, redirect chain, resource data, discovery state) rather than presentation markup.
+4. Include the failure mode and audit stage in the test name.
+5. Do not add fabricated traffic, conversion, acquisition or other business telemetry.
+6. Keep external origins represented only as fixture data; acceptance tests must not require third-party network access.
