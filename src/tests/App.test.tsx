@@ -58,6 +58,21 @@ describe('app', () => {
     expect(within(websiteNavigation).getByRole('link', { name: 'Performance' })).toHaveAttribute('href', '/app/performance?website=site-wikipedia')
   })
 
+  it('keeps the website context when entering a website-scoped insight', () => {
+    render(<MemoryRouter initialEntries={['/app/performance?website=site-wikipedia']}><App /></MemoryRouter>)
+    const websiteNavigation = screen.getByRole('navigation', { name: /website navigation/i })
+    expect(within(websiteNavigation).getByText('site-wikipedia')).toBeInTheDocument()
+    expect(within(websiteNavigation).getByRole('link', { name: 'Health' })).toHaveAttribute('href', '/app/websites/site-wikipedia')
+    expect(screen.getByRole('heading', { name: /performance you can feel/i })).toBeInTheDocument()
+  })
+
+  it('keeps website context alongside the audit workflow', () => {
+    render(<MemoryRouter initialEntries={['/app/audits/audit-wikipedia']}><App /></MemoryRouter>)
+    expect(screen.getByRole('navigation', { name: /website navigation/i })).toBeInTheDocument()
+    expect(screen.getByRole('navigation', { name: /audit workflow/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /know what matters\. know what to do next/i })).toBeInTheDocument()
+  })
+
   it('renders dashboard route', () => {
     render(<MemoryRouter initialEntries={['/app/dashboard']}><App /></MemoryRouter>)
     expect(screen.getByRole('heading', { name: /your digital presence at a glance/i })).toBeInTheDocument()
