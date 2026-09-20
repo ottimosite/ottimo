@@ -4,6 +4,7 @@ import { storage } from '../../services/storage'
 import type { ActionLifecycleStatus, Audit, OptimizationAction } from '../../types/domain'
 import { buildOptimizationActions } from '../../audit-engine/actions'
 import { buildInitialActionLifecycle } from '../../audit-engine/action-lifecycle'
+import { canTransitionAction, normaliseActionDependencies } from '../../audit-engine/action-dependencies'
 import { Badge, Card } from '../../components/ui'
 
 const lifecycleOrder: ActionLifecycleStatus[] = ['planned', 'in_progress', 'verification', 'resolved', 'failed', 'inconclusive']
@@ -28,7 +29,9 @@ const lifecycleTone: Record<ActionLifecycleStatus, string> = {
 
 const hydrateAuditActions = (audit: Audit): Audit => ({
   ...audit,
-  actions: audit.actions?.length ? buildInitialActionLifecycle(audit.actions) : buildInitialActionLifecycle(buildOptimizationActions(audit.issues)),
+  actions: normaliseActionDependencies(audit.actions?.length
+    ? buildInitialActionLifecycle(audit.actions)
+    : buildInitialActionLifecycle(buildOptimizationActions(audit.issues))),
 })
 
 const transition = (status: ActionLifecycleStatus, next: ActionLifecycleStatus): boolean => {
@@ -68,7 +71,7 @@ export function Recommendations() {
     const next = audits.map(audit => {
       if (audit.id !== auditId) return audit
       const action = audit.actions?.find(item => item.id === actionId)
-      if (!action || !transition(action.lifecycleStatus, nextStatus)) return audit
+      if (!action || !transition(action.lifecycleStatus, nextStatus) || !canTransitionAction(action, nextStatus, audit.actions ?? [])) return audit
       return {
         ...audit,
         actions: audit.actions?.map(item => item.id === actionId
