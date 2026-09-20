@@ -62,7 +62,7 @@ describe('app', () => {
     expect(screen.getByRole('heading', { name: /why was this finding reported/i })).toBeInTheDocument()
     expect(screen.getByRole('group', { name: /evidence scope/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /resource-scoped/i })).toBeInTheDocument()
-    expect(screen.getByText(/measured findings/i)).toBeInTheDocument()
+    expect(screen.getAllByText(/measured findings/i).length).toBeGreaterThan(0)
     expect(screen.getAllByText(/inspect supporting evidence/i).length).toBeGreaterThan(0)
   })
 
