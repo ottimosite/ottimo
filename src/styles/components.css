@@ -50,23 +50,6 @@
 .rec-meta span { color:var(--muted); font-size:.76rem; }
 .rec-meta select { grid-column:1 / -1; padding:9px 10px; font-size:.78rem; }
 
-.audit-overview > .page-heading { margin-bottom:12px; }
-.audit-overview .page-heading p { margin:5px 0 0; }
-.audit-overview .page-heading .audit-url { color:var(--green-dark); }
-.audit-overview .standards-card { margin-top:0; }
-.audit-overview .audit-health .score { margin-top:10px; }
-.audit-health > div:first-child { min-width:150px; }
-.audit-health > div:last-child { flex:1; }
-.audit-health > div:last-child p { max-width:560px; color:var(--ink-soft); }
-.audit-evidence-grid { align-items:start; }
-.screenshot-card .section-head a { color:var(--green-dark); font-size:.78rem; font-weight:850; }
-.screenshot-frame { background:#edf2ea; }
-.audit-stat-grid { margin-top:0; }
-.audit-stat-grid .card { min-height:132px; }
-.audit-stat-grid .stat-icon { flex:none; }
-.audit-stat-grid strong { font-variant-numeric:tabular-nums; }
-.audit-overview .issue-list { margin-top:20px; }
-
 .standards-card { box-shadow:0 1px 0 rgba(18,61,46,.03); }
 .standard-tag { white-space:nowrap; }
 .criterion strong { color:var(--green-dark); }

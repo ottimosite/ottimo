@@ -40,3 +40,9 @@ The token layer is considered stable enough for later migration when:
 - shared components can consume it without contextual overrides;
 - responsive/container values have explicit ownership;
 - later CSS consolidation can remove compatibility aliases safely.
+
+## Shared component ownership
+
+The first shared primitive layer is `src/styles/shared-components.css`. It owns reusable controls and surfaces including `.btn`, button variants, `.card`, `.eyebrow`, `.muted` and `.section-head`.
+
+Feature styles may extend these primitives, but must not redefine their base contract. Feature-specific visual variants remain local to the feature. New shared primitives should be added here only when they are genuinely reused across public and application surfaces.
