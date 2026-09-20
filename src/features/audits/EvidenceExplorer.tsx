@@ -44,7 +44,7 @@ export function EvidenceExplorer({ audit }: { audit: Audit }) {
   const measured = issues.filter(issue => issue.evidence?.status === 'measured').length
   const inferred = issues.filter(issue => issue.evidence?.status === 'inferred').length
   const unavailable = issues.filter(issue => !issue.evidence || issue.evidence.status === 'unavailable').length
-  return <Card className="evidence-explorer" id="evidence-explorer">
+  return <section className="card evidence-explorer" id="evidence-explorer">
     <div className="section-head">
       <div><span className="eyebrow">Evidence explorer</span><h2>Why was this finding reported?</h2><p className="section-subtitle">Trace a finding to its recorded evidence, affected pages and resources. Ottimo only shows what the audit actually retained.</p></div>
       <span className="standard-tag">{measured} measured</span>
@@ -57,5 +57,5 @@ export function EvidenceExplorer({ audit }: { audit: Audit }) {
       {issues.length ? issues.slice(0, 10).map(issue => <EvidenceItem key={issue.id} issue={issue} audit={audit} />) : <p className="muted">No findings match this evidence scope.</p>}
     </div>
     {issues.length > 10 && <small className="muted">Showing the first 10 findings. Use Full findings below for the complete audit list.</small>}
-  </Card>
+  </section>
 }
