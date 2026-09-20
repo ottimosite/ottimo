@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import type { Audit, OptimizationAction } from '../../types/domain'
 import { blockingDependencies } from '../../audit-engine/action-dependencies'
 
