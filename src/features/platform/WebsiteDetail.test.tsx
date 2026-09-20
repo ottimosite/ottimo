@@ -78,7 +78,7 @@ describe('WebsiteDetail', () => {
     const healthDomains = screen.getByRole('heading', { name: 'Where attention is concentrated' }).closest('.card')
     expect(healthDomains).not.toBeNull()
     expect(within(healthDomains as HTMLElement).getByText('Performance', { selector: 'span' })).toBeInTheDocument()
-    expect(screen.getByText('Inferred')).toBeInTheDocument()
+    expect(within(healthDomains as HTMLElement).getByText('Inferred', { selector: 'span' })).toBeInTheDocument()
     expect(screen.getByLabelText('Current website decision')).toBeInTheDocument()
     expect(screen.getByText('Is the work proving itself?')).toBeInTheDocument()
     const verification = screen.getByRole('heading', { name: 'Is the work proving itself?' }).closest('.card')
