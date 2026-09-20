@@ -6,6 +6,7 @@ import { Recommendations } from './Recommendations'
 const { saveAudits } = vi.hoisted(() => ({ saveAudits: vi.fn() }))
 vi.mock('../../services/storage', () => ({
   storage: {
+    websites: () => [{ id: 'site-1', name: 'Example site', url: 'https://example.com', createdAt: '2026-09-20T07:00:00Z' }],
     audits: () => [{
       id: 'audit-1',
       websiteId: 'site-1',
