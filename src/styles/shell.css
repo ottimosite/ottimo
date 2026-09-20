@@ -1,0 +1,112 @@
+/* Ottimo shell layer.
+   Owns public navigation, authenticated navigation, responsive menus,
+   skip/focus behaviour and the application page frame. */
+
+.skip-link{position:fixed;top:12px;left:12px;z-index:1000;transform:translateY(-160%);padding:10px 14px;border-radius:var(--radius-md);background:var(--forest);color:#fff;font-weight:850;box-shadow:0 4px 18px rgba(18,61,46,.2)}
+.skip-link:focus{transform:translateY(0);outline:var(--focus-width) solid var(--focus-color);outline-offset:var(--focus-offset)}
+
+.site-header{position:relative;z-index:20;min-height:var(--header-height);padding:16px max(var(--page-gutter),calc((100vw - 1560px)/2));display:flex;align-items:center;gap:28px;background:var(--cream);border-bottom:1px solid var(--line)}
+.site-header .brand{flex:0 0 auto;color:var(--forest);font-weight:950;font-size:1.05rem;letter-spacing:.12em;line-height:1;transition:color var(--motion-fast) var(--ease-standard),transform var(--motion-fast) var(--ease-standard)}
+.site-header .brand span{color:var(--coral)}
+.site-header .brand:hover{color:var(--green-dark);transform:translateY(-1px)}
+.site-header nav{display:flex;align-items:center;justify-content:center;gap:4px;flex:1 1 auto}
+.site-header nav a{padding:9px 10px;border-radius:var(--radius-md);color:var(--ink-soft);font-size:var(--text-md);font-weight:800;white-space:nowrap}
+.site-header nav a:hover,.site-header nav a[aria-current="page"],.site-header nav a:focus-visible{color:var(--forest);background:var(--lime)}
+.header-actions{display:flex;align-items:center;gap:9px;flex:0 0 auto}
+.menu-toggle{display:none;width:42px;height:42px;padding:10px;border:1px solid var(--line);border-radius:13px;background:#fff;align-items:center;justify-content:center;flex-direction:column;gap:4px}
+.menu-toggle span{display:block;width:19px;height:2px;border-radius:99px;background:var(--forest);transition:transform var(--motion-fast) var(--ease-standard),opacity var(--motion-fast) var(--ease-standard)}
+.menu-open>.menu-toggle span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.menu-open>.menu-toggle span:nth-child(2){opacity:0}
+.menu-open>.menu-toggle span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+
+.app-shell{min-height:100vh;background:var(--cream)}
+.sidebar{position:fixed;inset:0 auto 0 0;z-index:40;width:var(--sidebar-width);min-height:100vh;padding:25px 16px 20px;display:flex;flex-direction:column;gap:20px;background:var(--forest);color:#fff}
+.sidebar-top{display:flex;align-items:center;justify-content:space-between}
+.sidebar .brand{display:block;padding:5px 12px;color:var(--lime)}
+.sidebar .brand span{color:var(--coral)}
+.sidebar nav{display:grid;gap:3px}
+.sidebar nav a{display:flex;align-items:center;min-height:40px;padding:9px 12px;border-radius:var(--radius-md);color:#c8d9cf;font-size:var(--text-md);font-weight:800}
+.sidebar nav a:hover{background:rgba(216,243,107,.1);color:#fff}
+.sidebar nav a[aria-current="page"]{background:var(--lime);color:var(--forest)}
+.sidebar .side-cta{margin-top:auto;padding:11px 12px;border-top:1px solid rgba(255,255,255,.14);color:#c8d9cf;font-size:var(--text-md);font-weight:800}
+.sidebar .side-cta:hover{color:var(--lime)}
+.sidebar .menu-toggle{display:none}
+.sidebar nav .nav-group{display:grid;gap:3px}
+.sidebar nav .nav-group+.nav-group{margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1)}
+.nav-group-label{display:block;padding:0 12px 5px;color:rgba(255,255,255,.52);font-size:.62rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.nav-group-settings{margin-top:12px!important}
+.website-context{margin-top:-4px;padding:14px 8px 4px;border-top:1px solid rgba(255,255,255,.12)}
+.website-context-heading{display:grid;gap:3px;padding:0 8px 8px}
+.website-context-heading .nav-group-label{color:#8eaaa0}
+.website-context-heading strong{overflow:hidden;color:#fff;font-size:.78rem;text-overflow:ellipsis;white-space:nowrap}
+.website-context nav{display:grid;gap:2px}
+.website-context nav a{min-height:34px;padding:7px 10px;border-radius:8px;color:#b9ccc2;font-size:.72rem}
+.website-context nav a:hover{color:#fff;background:rgba(216,243,107,.08)}
+.website-context nav a[aria-current="page"]{color:var(--forest);background:var(--lime)}
+.audit-context{display:grid;gap:7px;margin-top:4px;padding:13px 10px;border:1px solid rgba(216,243,107,.2);border-radius:12px;background:rgba(0,0,0,.1)}
+.audit-context-back a,.audit-context nav a{color:#c8d9cf;font-size:.72rem;font-weight:800}
+.audit-context-back a:hover,.audit-context nav a:hover{color:var(--lime)}
+.audit-context-label{color:rgba(255,255,255,.52);font-size:.6rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}
+.audit-context-title{color:#fff;font-size:.78rem}
+.audit-context nav{display:grid;gap:2px;margin-top:3px}
+.audit-context nav a{padding:7px 8px;border-radius:7px}
+.audit-context nav a:hover,.audit-context nav a[aria-current="page"]{background:rgba(216,243,107,.1);color:var(--lime)}
+.app-main{min-width:0;min-height:100vh;margin-left:var(--sidebar-width)}
+.app-top{min-height:var(--app-header-height);padding:14px 42px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid var(--line);background:rgba(245,247,239,.94)}
+.app-top>div:first-child{display:flex;align-items:baseline;gap:7px;min-width:0}
+.app-top .eyebrow{color:var(--coral);white-space:nowrap}
+.app-top strong{color:var(--forest);font-size:.88rem}
+.app-content{width:100%;max-width:var(--container-application);margin:0 auto;padding:48px 42px 90px}
+.app-content #main{min-height:0}
+.auth-account{display:flex;align-items:center;gap:12px}
+.auth-account span{color:var(--muted);font-size:.72rem;font-weight:800}
+.auth-account button{min-height:40px;padding:8px 12px;border:1px solid var(--line);border-radius:var(--radius-md);background:#fff;color:var(--forest);font-size:.72rem;font-weight:800}
+
+:where(a,button,input,select,textarea,summary):focus-visible{outline:var(--focus-width) solid var(--focus-color);outline-offset:var(--focus-offset)}
+main:focus{outline:none}
+
+@media(max-width:1100px){.site-header{gap:16px}.site-header nav a{padding-inline:7px;font-size:.72rem}}
+@media(max-width:900px){
+ .site-header{padding-inline:var(--page-gutter-mobile)}
+ .header-actions .btn-ghost{display:none}
+ .sidebar{width:var(--sidebar-width-tablet)}
+ .app-main{margin-left:var(--sidebar-width-tablet)}
+ .app-top{padding-inline:28px}
+ .app-content{padding-inline:28px}
+}
+@media(max-width:700px){
+ .site-header{padding:12px 16px;min-height:68px;flex-wrap:wrap;gap:12px}
+ .site-header>.brand{order:1}
+ .site-header>.menu-toggle{order:2;margin-left:auto}
+ .site-header>.header-actions{order:3;display:none;width:100%;padding-top:10px;border-top:1px solid var(--line)}
+ .site-header.menu-open>.header-actions{display:flex}
+ .site-header>.header-actions .btn-primary{flex:1}
+ .site-header>nav{order:4;display:none;width:100%;flex-direction:column;align-items:stretch;gap:3px;padding:10px 0 2px;border-top:1px solid var(--line)}
+ .site-header.menu-open>nav{display:flex}
+ .site-header>nav a{min-height:44px;padding:11px 13px;border-radius:12px}
+ .site-header>nav a[aria-current="page"]{background:var(--lime)}
+ .site-header .menu-toggle{display:flex}
+ .sidebar{display:block;position:sticky;top:0;width:100%;height:auto;min-height:66px;padding:12px 16px;z-index:30}
+ .sidebar-top{width:100%;min-height:42px}
+ .sidebar-top>.menu-toggle{display:flex;margin-left:auto;background:var(--lime);border-color:transparent}
+ .sidebar nav{display:none;width:100%;flex-direction:column;align-items:stretch;gap:4px;padding:12px 0 4px;border-top:1px solid rgba(216,243,107,.24);overflow:visible}
+ .sidebar.menu-open{display:block;height:auto}
+ .sidebar.menu-open nav{display:flex}
+ .sidebar nav a{min-height:44px;white-space:normal;padding:11px 13px;border-radius:12px}
+ .sidebar nav .nav-group+.nav-group{margin-top:8px;padding-top:8px}
+ .nav-group-label{padding-top:4px}
+ .audit-context{margin-top:8px}
+ .website-context{display:none}
+ .sidebar.menu-open .website-context{display:block;max-height:55vh;overflow-y:auto}
+ .website-context{padding-bottom:10px}
+ .website-context nav{max-height:45vh;overflow-y:auto}
+ .app-main{margin-left:0}
+ .app-top{min-height:66px;padding:14px 20px;align-items:flex-start;gap:12px}
+ .app-top>div:first-child{display:grid;gap:3px}
+ .app-top strong{overflow-wrap:anywhere}
+ .app-content{padding:30px 16px 70px}
+ .app-top .demo-chip{display:none}
+ .auth-account span{display:none}
+ .auth-account button{min-height:40px}
+}
+@media(prefers-reduced-motion:reduce){.menu-toggle span{transition:none}.site-header .brand{transition:none}}
