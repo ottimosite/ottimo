@@ -4,8 +4,8 @@ export function Button({children,className='',variant='primary',...props}:{child
   return <button className={`btn btn-${variant} ${className}`} {...props}>{children}</button>
 }
 
-export function Card({children,className=''}:{children:ReactNode;className?:string}){
-  return <section className={`card ${className}`}>{children}</section>
+export function Card({children,className='',id}:{children:ReactNode;className?:string;id?:string}){
+  return <section id={id} className={`card ${className}`}>{children}</section>
 }
 
 export function Badge({children,tone='neutral'}:{children:ReactNode;tone?:string}){
