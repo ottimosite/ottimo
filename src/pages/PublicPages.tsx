@@ -239,6 +239,7 @@ export function Home() {
         <article><span>02</span><h3>Priority findings</h3><p>Understand which issues deserve attention and why, instead of working through an undifferentiated list.</p></article>
         <article><span>03</span><h3>Evidence</h3><p>Trace findings back to the pages, resources or signals that support them where evidence is available.</p></article>
         <article><span>04</span><h3>Next actions</h3><p>Turn supported findings into practical work and define how an improvement can be checked later.</p></article>
+        </div>
       </div>
     </section>
 
@@ -249,16 +250,15 @@ export function Home() {
         <article><strong>Accessible</strong><p>Accessibility is part of the engineering, not a final checkbox.</p></article>
         <article><strong>Clear</strong><p>Every important finding should explain what happened, why it matters and what can be done.</p></article>
         <article><strong>Useful</strong><p>Audit output should lead to action, verification and learning.</p></article>
-        </div>
       </div>
     </section>
 
     <section className="faq-section" aria-labelledby="faq-title">
       <div className="landing-section-inner">
-      <div className="section-intro">
+        <div className="section-intro">
         <span className="eyebrow">Frequently asked</span>
         <h2 id="faq-title">Useful answers before you start.</h2>
-      </div>
+        </div>
         <div className="faq-list">
         <details><summary>Does Ottimo need access to my website?</summary><p>The initial audit is designed around publicly accessible website evidence. Ottimo should only request additional access when a later capability genuinely requires it.</p></details>
         <details><summary>Will Ottimo give me a single website score?</summary><p>The primary experience is evidence and prioritisation, not an opaque score. Where a score is useful, its methodology and evidence should be explainable.</p></details>
