@@ -54,7 +54,7 @@ export function AuditCommandCentre2({ audit, openIssues, actions }: Props) {
     </div>
 
     <div className="audit-centre-v2__grid">
-      <Card id="audit-evidence">
+      <section id="audit-evidence" className="card">
         <span className="eyebrow">01 · Understand</span>
         <h3>What did Ottimo actually observe?</h3>
         <p>Measured observations stay separate from inference and unavailable data. This keeps the audit evidence-led rather than implying certainty where none exists.</p>
@@ -65,9 +65,9 @@ export function AuditCommandCentre2({ audit, openIssues, actions }: Props) {
           <span><strong>{audit.healthModel?.pages.length ?? '—'}</strong> pages modelled</span>
         </div>
         <a className="audit-centre-v2__link" href="#findings">Open evidence and findings →</a>
-      </Card>
+      </section>
 
-      <Card id="audit-decisions">
+      <section id="audit-decisions" className="card">
         <span className="eyebrow">02 · Decide</span>
         <h3>What needs attention first?</h3>
         <p>{openIssues.length ? `${openIssues.length} unresolved finding${openIssues.length === 1 ? '' : 's'} are available for a decision. Ottimo's action queue applies impact, severity, confidence, effort and dependencies.` : 'No unresolved findings were recorded for this audit.'}</p>
@@ -77,17 +77,17 @@ export function AuditCommandCentre2({ audit, openIssues, actions }: Props) {
           <span><strong>{blocked}</strong> blocked</span>
         </div>
         <Link className="audit-centre-v2__link" to="/app/recommendations">Open decision queue →</Link>
-      </Card>
+      </section>
 
-      <Card id="audit-actions">
+      <section id="audit-actions" className="card">
         <span className="eyebrow">03 · Act</span>
         <h3>Make the change with the right context.</h3>
         <p>Actions carry lifecycle state and prerequisites so implementation does not stop at a recommendation.</p>
         <div className="audit-centre-v2__status"><span><strong>{ready}</strong> ready to act</span><span><strong>{active}</strong> in progress</span><span><strong>{blocked}</strong> blocked by dependencies</span></div>
         <Link className="audit-centre-v2__link" to="/app/recommendations">Continue to actions →</Link>
-      </Card>
+      </section>
 
-      <Card id="audit-verification">
+      <section id="audit-verification" className="card">
         <span className="eyebrow">04 · Verify</span>
         <h3>Did the fix work?</h3>
         <p>Verification compares later audit evidence against the action's expected outcome instead of treating completion as proof.</p>
@@ -97,9 +97,9 @@ export function AuditCommandCentre2({ audit, openIssues, actions }: Props) {
           <span><strong>{audit.verifications?.filter(item => item.status === 'inconclusive').length ?? 0}</strong> inconclusive</span>
         </div>
         <a className="audit-centre-v2__link" href="#audit-changes">Review verification context →</a>
-      </Card>
+      </section>
 
-      <Card id="audit-changes">
+      <section id="audit-changes" className="card">
         <span className="eyebrow">05 · Compare</span>
         <h3>What changed since the last audit?</h3>
         {audit.comparison ? <div className="audit-centre-v2__facts">
@@ -109,7 +109,7 @@ export function AuditCommandCentre2({ audit, openIssues, actions }: Props) {
           <span><strong>{audit.comparison.regressed}</strong> regressed</span>
         </div> : <p className="muted">A comparison will appear after a subsequent audit of the same website.</p>}
         {audit.comparison && <Link className="audit-centre-v2__link" to="/app/history">Open audit history →</Link>}
-      </Card>
+      </section>
     </div>
   </section>
 }
