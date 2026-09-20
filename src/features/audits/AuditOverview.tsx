@@ -96,7 +96,8 @@ function HealthModelPanel({ audit }: { audit: Audit }) {
     </div>
   </Card>
 }
-\n
+
+
 function ChangePanel({ audit }: { audit: Audit }) {
   const comparison = audit.comparison
   if (!comparison) return null
@@ -109,7 +110,8 @@ function ChangePanel({ audit }: { audit: Audit }) {
     {audit.verifications?.length ? <div className="profile-list"><span><strong>{audit.verifications.filter(item => item.status === 'verified').length}</strong> actions verified</span><span><strong>{audit.verifications.filter(item => item.status === 'failed').length}</strong> actions still failing</span><span><strong>{audit.verifications.filter(item => item.status === 'inconclusive').length}</strong> inconclusive</span></div> : null}
   </Card>
 }
-\nexport function AuditOverview() {
+
+export function AuditOverview() {
   const { id } = useParams(); const navigate = useNavigate(); const [mode, setMode] = useState<'customer' | 'engineer'>('customer'); const audit = [...seedAudits, ...storage.audits()].find(item => item.id === id)
   if (!audit) return <Card><h1>Audit not found</h1><p>This audit may have been cleared from local browser storage.</p><Link to="/app/audits">Back to audits</Link></Card>
   const website = [...seedWebsites, ...storage.websites()].find(item => item.id === audit.websiteId)
@@ -128,7 +130,9 @@ function ChangePanel({ audit }: { audit: Audit }) {
     <div className="audit-summary-grid"><Card className="audit-health"><div><span className="muted">Overall health</span>{audit.health?.score === undefined ? <div className="score"><strong>—</strong><span>Not measured</span></div> : <Score value={audit.health.score} label={audit.health.status === 'good' ? 'Good' : audit.health.status === 'needs-improvement' ? 'Needs improvement' : 'Needs attention'} />} {audit.health?.score !== undefined && <small className="muted">{audit.health.checks} measured checks · {audit.health.passed} passed · {audit.health.failed} failed</small>} {audit.health?.excludedCategories.length ? <small className="muted">Not scored: {audit.health.excludedCategories.join(', ')}</small> : null}</div><div><span className="eyebrow">How the score works</span><p>{audit.health?.methodology ?? 'Health is shown only when the audit has enough measured evidence.'}</p><span className="eyebrow">Priority focus</span><p>{openIssues.length ? openIssues.length + ' open issues need a decision.' : 'All recorded issues are resolved.'}</p><Link to="/app/recommendations">Open action queue →</Link></div></Card><Card><span className="muted">Open issues</span><strong className="big-number">{openIssues.length}</strong><div className="severity-list">{Object.entries(severityCounts).map(([severity, count]) => <span key={severity}><Badge tone={severity}>{severity}</Badge> {count}</span>)}</div></Card></div>
     <PerformancePanel metrics={stats?.performance} />
     <ResourcePerformancePanel audit={audit} />
-    <IntelligencePanel stats={stats} />\n    <HealthModelPanel audit={audit} />\n    <ChangePanel audit={audit} />
+    <IntelligencePanel stats={stats} />
+    <HealthModelPanel audit={audit} />
+    <ChangePanel audit={audit} />
     {mode === 'engineer' && <EngineerDiagnostics audit={audit} />}
     <div className="audit-evidence-grid"><Card className="screenshot-card"><div className="section-head"><div><span className="eyebrow">Visual evidence</span><h2>Page snapshot</h2></div><a href={screenshotUrl} target="_blank" rel="noreferrer">Open full image ↗</a></div><div className="screenshot-frame"><img src={screenshotUrl} alt={`Screenshot preview of ${audit.url}`} loading="lazy" /></div><small>Generated through the optional screenshot adapter. It may take a moment to appear.</small></Card><Card><span className="eyebrow">Page profile</span><h2>What we found</h2><div className="profile-list"><span><strong>{stats?.language || '—'}</strong> document language</span><span><strong>{formatStat(stats?.wordCount)}</strong> visible words</span><span><strong>{stats?.title ? 'Present' : '—'}</strong> page title</span><span><strong>{stats?.source === 'live' ? 'Fetched' : 'Fixture'}</strong> evidence source</span></div></Card></div>
     <section className="audit-stat-grid" aria-label="Website statistics"><Card><span className="stat-icon">Aa</span><strong>{formatStat(stats?.htmlBytes, ' bytes')}</strong><small>Fetched HTML size</small></Card><Card><span className="stat-icon">◈</span><strong>{formatStat(stats?.imageCount)}</strong><small>Images detected</small></Card><Card><span className="stat-icon">↗</span><strong>{formatStat(stats?.linkCount)}</strong><small>Links detected</small></Card><Card><span className="stat-icon">↗</span><strong>{formatStat(stats?.externalLinkCount)}</strong><small>External links</small></Card><Card><span className="stat-icon">H</span><strong>{formatStat(stats?.headingCount)}</strong><small>Headings detected</small></Card><Card><span className="stat-icon">JS</span><strong>{formatStat(stats?.scriptCount)}</strong><small>Scripts detected</small></Card><Card><span className="stat-icon">▣</span><strong>{formatStat(stats?.formCount)}</strong><small>Forms detected</small></Card><Card><span className="stat-icon">✓</span><strong>{formatStat(stats?.buttonCount)}</strong><small>Buttons detected</small></Card></section>
