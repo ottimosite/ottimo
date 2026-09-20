@@ -149,9 +149,22 @@ export class PlaywrightPageCollector implements PageCollector {
         if (scripts.some(s => /shopify/i.test(s)) || /cdn\.shopify\.com/i.test(text)) add('Shopify','commerce','Shopify CDN/script marker detected','high')
         if (links.some(l => /cloudflare/i.test(l.href)) || scripts.some(s => /cloudflare/i.test(s))) add('Cloudflare','cdn','Cloudflare asset marker detected','medium')
         const jsonLd = [...document.querySelectorAll('script[type="application/ld+json"]')].length
+        const canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null
+        let canonicalUrl: string | undefined
+        let canonicalNormalised = false
+        let canonicalSameOrigin: boolean | undefined
+        if (canonical?.getAttribute('href')?.trim()) {
+          try {
+            const resolved = new URL(canonical.getAttribute('href')!.trim(), location.href)
+            resolved.hash = ''
+            canonicalUrl = resolved.href
+            canonicalNormalised = true
+            canonicalSameOrigin = resolved.origin === location.origin
+          } catch { canonicalUrl = undefined }
+        }
         return {
           technology,
-          searchVisibility: { titlePresent: !!document.title.trim(), titleLength: document.title.trim().length || undefined, metaDescriptionPresent: !!meta('description'), metaDescriptionLength: meta('description')?.length || undefined, canonicalPresent: !!document.querySelector('link[rel="canonical"]'), h1Count: document.querySelectorAll('h1').length, structuredDataCount: jsonLd, openGraphPresent: !!property('og:title'), twitterCardPresent: !!meta('twitter:card'), sitemapLinked: links.some(l => /sitemap/i.test(l.href)) },
+          searchVisibility: { titlePresent: !!document.title.trim(), titleLength: document.title.trim().length || undefined, metaDescriptionPresent: !!meta('description'), metaDescriptionLength: meta('description')?.length || undefined, canonicalPresent: !!canonical, canonicalUrl, canonicalSameOrigin, canonicalNormalised, h1Count: document.querySelectorAll('h1').length, structuredDataCount: jsonLd, openGraphPresent: !!property('og:title'), twitterCardPresent: !!meta('twitter:card'), sitemapLinked: links.some(l => /sitemap/i.test(l.href)) },
           socialPresence: { profiles: [...document.querySelectorAll('a[href]')].map(a => (a as HTMLAnchorElement).href).filter(h => /facebook\\.com|instagram\\.com|linkedin\\.com|x\\.com|twitter\\.com|youtube\\.com|tiktok\\.com/i.test(h)).slice(0,20), shareMetadata: ['og:title','og:description','og:image','twitter:card'].filter(p => p.startsWith('og:') ? !!property(p) : !!meta(p)), socialScripts: scripts.filter(s => /facebook|instagram|linkedin|twitter|tiktok|pinterest/i.test(s)).slice(0,20) }
         }
       })

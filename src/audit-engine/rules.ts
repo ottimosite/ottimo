@@ -308,6 +308,56 @@ export function runAuditRules(
     }
   }
 
+    const canonical = page.searchVisibility?.canonicalUrl
+    const canonicalEvidence = evidence(context, {
+      category: 'seo',
+      kind: 'dom',
+      description: 'Canonical URL',
+      value: canonical ?? '',
+      source: 'playwright',
+      url: page.finalUrl,
+    })
+
+    check(context, {
+      category: 'seo',
+      criterion: 'canonical-url',
+      status: !page.searchVisibility?.canonicalPresent
+        ? 'unavailable'
+        : page.searchVisibility.canonicalNormalised
+          ? 'pass'
+          : 'fail',
+      message: !page.searchVisibility?.canonicalPresent
+        ? 'No canonical URL was observed.'
+        : page.searchVisibility.canonicalNormalised
+          ? 'The canonical URL is a valid normalised URL.'
+          : 'The canonical URL could not be normalised.',
+      evidenceIds: [canonicalEvidence.id],
+    })
+
+    if (page.searchVisibility?.canonicalPresent && !page.searchVisibility.canonicalNormalised) {
+      finding(context, {
+        category: 'seo',
+        severity: 'medium',
+        title: 'Canonical URL is invalid',
+        summary: 'The rendered document exposes a canonical link that Ottimo could not normalise into a valid URL.',
+        impact: 'Search engines may not interpret the preferred URL consistently.',
+        recommendation: 'Use a valid absolute or resolvable canonical URL without fragments.',
+        scope: 'page',
+        evidenceIds: [canonicalEvidence.id],
+      })
+    } else if (canonical && page.searchVisibility?.canonicalSameOrigin === false) {
+      finding(context, {
+        category: 'seo',
+        severity: 'low',
+        title: 'Canonical URL points to another origin',
+        summary: 'The canonical URL resolves to a different origin from the audited page.',
+        impact: 'An external canonical can consolidate indexing signals away from this site.',
+        recommendation: 'Confirm that the cross-origin canonical is intentional and points to the authoritative equivalent page.',
+        scope: 'page',
+        evidenceIds: [canonicalEvidence.id],
+      })
+    }
+
   if (categories.includes('accessibility')) {
     for (const violation of page.accessibility.violations) {
       const nodes = violation.nodes.map((node) => node.target.join(' ')).join(', ')
