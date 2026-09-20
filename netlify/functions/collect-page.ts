@@ -50,6 +50,7 @@ interface CollectionResponse {
 const MAX_REDIRECTS = 5
 const MAX_BYTES = 2 * 1024 * 1024
 const TIMEOUT_MS = 15_000
+const MAX_REQUEST_BYTES = 1024 * 1024
 const USER_AGENT = 'OttimoBot/1.0 (+https://ottimo-site.netlify.app/)'
 
 const isPrivateIpv4 = (ip: string) => {
@@ -87,6 +88,7 @@ async function assertPublicHostname(hostname: string) {
 
 async function readBody(response: Response) {
   const contentLength = Number(response.headers.get('content-length') ?? '')
+  if (contentLength > MAX_REQUEST_BYTES) throw { code: 'RESPONSE_TOO_LARGE', message: 'The response is larger than Ottimo allows for collection.' } satisfies CollectionError
   if (Number.isFinite(contentLength) && contentLength > MAX_BYTES) {
     throw { code: 'RESPONSE_TOO_LARGE', message: 'The response is larger than Ottimo allows for collection.' } satisfies CollectionError
   }
