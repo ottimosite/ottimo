@@ -72,3 +72,19 @@
 .resource-list code{overflow-wrap:anywhere;font-size:.68rem;color:var(--forest)}
 .resource-list span{font-size:.68rem;color:var(--muted);font-weight:700}
 @media(max-width:900px){.resource-performance-grid{grid-template-columns:1fr}}
+
+/* Decision-first audit flow */
+.audit-detail-nav{position:sticky;top:12px;z-index:4;display:flex;gap:6px;flex-wrap:wrap;padding:8px;margin:0;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.96);box-shadow:0 4px 18px rgba(20,40,30,.05)}
+.audit-detail-nav a{min-height:40px;display:inline-flex;align-items:center;padding:8px 12px;border-radius:8px;color:var(--ink-soft);font-size:.74rem;font-weight:850}
+.audit-detail-nav a:hover,.audit-detail-nav a:focus-visible{background:var(--lime);color:var(--forest);outline:0}
+.audit-primary-decision{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:22px 24px;border:1px solid var(--line);border-radius:16px;background:var(--mint)}
+.audit-primary-decision h2{margin:5px 0 7px;color:var(--forest);font:normal clamp(1.35rem,2vw,1.8rem)/1.1 Georgia,serif}
+.audit-primary-decision p{max-width:760px;margin:0;color:var(--ink-soft);font-size:.84rem}
+.audit-detail-section{display:grid;gap:14px;scroll-margin-top:82px}
+.audit-detail-section>.section-head{margin-top:8px}
+.audit-secondary-details{border:1px solid var(--line);border-radius:14px;background:var(--cream);scroll-margin-top:82px}
+.audit-secondary-details summary{cursor:pointer;min-height:48px;display:flex;align-items:center;padding:0 16px;color:var(--forest);font-size:.78rem;font-weight:900}
+.audit-secondary-details summary:focus-visible{outline:3px solid var(--lime);outline-offset:-3px}
+.audit-secondary-details__content{display:grid;gap:18px;padding:0 14px 14px}
+@media(max-width:700px){.audit-detail-nav{top:6px;overflow-x:auto;flex-wrap:nowrap}.audit-detail-nav a{white-space:nowrap}.audit-primary-decision{display:grid;padding:18px}.audit-primary-decision .primary-action{width:100%;justify-content:center}}
+@media(prefers-reduced-motion:reduce){.audit-detail-nav{scroll-behavior:auto}}
