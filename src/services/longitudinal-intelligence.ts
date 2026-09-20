@@ -288,14 +288,11 @@ export function buildWebsiteHealthTrends(history: LongitudinalWebsiteHistory): W
   const previous = history.previous
   const current = history.latest
 
-  const previousScoreMeasurement = previous?.categories.find(category => category.score !== undefined)?.measurement
-  const currentScoreMeasurement = current?.categories.find(category => category.score !== undefined)?.measurement
-
   const overall = trendForScores(
     previous?.score,
     current?.score,
-    previousScoreMeasurement,
-    currentScoreMeasurement,
+    previous && current ? 'measured' : 'unavailable',
+    previous && current ? 'measured' : 'unavailable',
     previous?.auditId,
     current?.auditId,
   )
