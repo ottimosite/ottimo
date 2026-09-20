@@ -18,7 +18,7 @@ describe('AuditOnboarding', () => {
   it('rejects invalid URLs before starting the audit', () => {
     renderOnboarding()
     fireEvent.change(screen.getByLabelText('Website URL'), { target: { value: 'not a url' } })
-    fireEvent.click(screen.getByRole('button', { name: 'Run audit' }))
+    fireEvent.click(screen.getByRole('button', { name: /Continue to audit/ }))
     expect(screen.getByRole('alert')).toHaveTextContent('Enter a valid website address')
   })
 
