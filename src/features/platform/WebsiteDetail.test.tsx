@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { WebsiteDetail } from './PlatformPages'
 
@@ -75,7 +75,9 @@ describe('WebsiteDetail', () => {
     expect(screen.getByText('Optimise slow resource')).toBeInTheDocument()
     expect(screen.getByText('What changed')).toBeInTheDocument()
     expect(screen.getByText('Where attention is concentrated')).toBeInTheDocument()
-    expect(screen.getByText('Performance')).toBeInTheDocument()
+    const healthDomains = screen.getByRole('heading', { name: 'Where attention is concentrated' }).closest('.card')
+    expect(healthDomains).not.toBeNull()
+    expect(within(healthDomains as HTMLElement).getByText('Performance')).toBeInTheDocument()
     expect(screen.getByText('Partial')).toBeInTheDocument()
     expect(screen.getByText('Is the work proving itself?')).toBeInTheDocument()
     expect(screen.getByText('1')).toBeInTheDocument()
