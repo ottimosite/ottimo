@@ -6,7 +6,7 @@ const publicLinks = [['/services', 'Services'], ['/performance', 'Performance'],
 
 const navigationGroups = [
   { label: 'Workspace', links: [['/app/dashboard', 'Overview'], ['/app/websites', 'Websites'], ['/app/audits', 'Audits'], ['/app/recommendations', 'Actions']] },
-  { label: 'Insights', links: [['/app/performance', 'Performance'], ['/app/seo', 'Search'], ['/app/accessibility', 'Accessibility'], ['/app/usability', 'Experience'], ['/app/technical', 'Technical'], ['/app/ai', 'AI readiness']] },
+  { label: 'Insights', links: [['/app/insights', 'Insights'], ['/app/performance', 'Performance'], ['/app/seo', 'Search'], ['/app/accessibility', 'Accessibility'], ['/app/usability', 'Experience'], ['/app/technical', 'Technical'], ['/app/ai', 'AI readiness']] },
   { label: 'Reporting', links: [['/app/reports', 'Reports'], ['/app/history', 'History']] },
 ]
 
