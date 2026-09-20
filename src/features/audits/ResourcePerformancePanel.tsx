@@ -8,7 +8,7 @@ export function ResourcePerformancePanel({ audit }: { audit: Audit }) {
   const summary = audit.stats?.resourcePerformance
   if (!summary) return null
   return <Card className="resource-performance-panel">
-    <div className="section-head"><div><span className="eyebrow">Resource intelligence</span><h2>Where the page weight and delay come from</h2><p className="section-subtitle">Ottimo shows the resources it observed. This is attribution evidence, not a claim that one resource alone caused a Core Web Vital.</p></div><span className="standard-tag">{summary.resourceCount} resources</span></div>
+    <div className="section-head"><div><span className="eyebrow">Resource intelligence</span><h2>Where the page weight and delay come from</h2><p className="section-subtitle">Ottimo shows the resources it observed. This is attribution evidence, not a claim that one resource alone caused a Core Web Vital.</p></div><span className="standard-tag">Observed only · {summary.resourceCount} resources</span></div>
     {summary.resourceCount === 0 ? <p className="muted">No browser resource data was retained for this audit.</p> : <>
       <div className="audit-command-stats"><div><strong>{formatBytes(summary.totalTransferBytes)}</strong><span>Observed transfer</span></div><div><strong>{summary.resourceCount}</strong><span>Resources</span></div><div><strong>{summary.largest.length}</strong><span>Largest retained</span></div><div><strong>{summary.slowest.length}</strong><span>Slowest retained</span></div></div>
       <div className="resource-performance-grid">
