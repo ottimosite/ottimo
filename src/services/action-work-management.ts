@@ -1,18 +1,4 @@
-import type { ActionLifecycleStatus, OptimizationAction } from '../types/domain'
-
-export interface ActionEvidenceLink {
-  label: string
-  href: string
-  relation: 'finding' | 'audit' | 'verification' | 'guidance'
-}
-
-export interface ActionWorkContext {
-  owner?: string
-  implementationNotes?: string
-  evidenceLinks: ActionEvidenceLink[]
-  originatingFindingId: string
-  originatingAuditId?: string
-}
+import type { ActionEvidenceLink, ActionLifecycleStatus, ActionWorkContext, OptimizationAction } from '../types/domain'
 
 export interface ActionWorkItem extends OptimizationAction {
   work: ActionWorkContext
