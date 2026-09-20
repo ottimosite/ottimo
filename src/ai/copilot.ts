@@ -59,7 +59,7 @@ export function createCopilotContext(audit: Audit, evidence: AuditEvidence[] = [
 export function validateCopilotProposal(proposal: CopilotProposal, context: CopilotContext): CopilotProposal {
   const allowedEvidence = new Set(context.evidence.map(evidenceKey))
   const validEvidenceIds = proposal.evidenceIds.filter(id =>
-    context.evidence.some(evidence => evidence.id === id && allowedEvidence.has(evidenceKey(evidence))),
+    context.evidence.some(evidence => allowedEvidence.has(evidenceKey(evidence)) && evidenceKey(evidence) === id),
   )
 
   return {
@@ -102,7 +102,7 @@ export class DeterministicCopilotProvider implements CopilotProvider {
       }, context)
     }
 
-    const evidenceIds = context.evidence.map(item => item.id).slice(0, 10)
+    const evidenceIds = context.evidence.map(evidenceKey).slice(0, 10)
     const affectedPages = action?.affectedPages ?? finding?.affectedPages ?? []
     const verification = action?.verification ?? []
 
