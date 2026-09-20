@@ -3,6 +3,7 @@ import type { RefObject } from 'react'
 import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router-dom'
 import { seedAudits } from '../data/mock'
 import { storage } from '../services/storage'
+import { useAuth } from '../features/auth/AuthBoundary'
 
 const publicLinks = [
   ['/services', 'Services'],
@@ -106,6 +107,11 @@ export function PublicLayout() {
   return <><SkipLink /><header className={`site-header ${menuOpen ? 'menu-open' : ''}`}><Link className="brand" to="/" onClick={closeMenu}>OTTIMO<span aria-hidden="true">.</span></Link><MenuToggle buttonRef={toggleRef} open={menuOpen} controls="primary-navigation" onClick={() => setMenuOpen(open => !open)} /><nav id="primary-navigation" aria-label="Primary">{publicLinks.map(([to, label]) => <NavLink key={to} to={to} end onClick={closeMenu}>{label}</NavLink>)}</nav><div className="header-actions"><Link className="btn btn-ghost" to="/contact" onClick={closeMenu}>Contact</Link><Link className="btn btn-primary" to="/#start" onClick={closeMenu}>Analyse website</Link></div></header><main id="main" tabIndex={-1}><Outlet /></main><footer><div className="footer-brand">OTTIMO.</div><p>Fast. Accessible. Clear. Useful.</p><p>Website performance, visibility and experience — connected by evidence.</p><div className="footer-links"><Link to="/services">Services</Link><Link to="/methodology">Methodology</Link><Link to="/case-studies">Evidence</Link><Link to="/contact">Contact</Link><Link to="/concepts">Concept lab</Link></div></footer></>
 }
 
+function AuthAccountControl() {
+  const { session, signOut } = useAuth()
+  return <div className="auth-account" aria-label="Account controls"><span>{session.tenantId === 'demo-tenant' ? 'Demo workspace' : 'Workspace'}</span><button type="button" onClick={() => void signOut()}>Sign out</button></div>
+}
+
 export function AppLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const toggleRef = useRef<HTMLButtonElement>(null)
@@ -114,5 +120,5 @@ export function AppLayout() {
   return <div className={`app-shell`}><SkipLink /><aside className={`sidebar ${menuOpen ? 'menu-open' : ''}`}><div className="sidebar-top"><Link className="brand" to="/" onClick={closeMenu}>OTTIMO<span aria-hidden="true">.</span></Link><MenuToggle buttonRef={toggleRef} open={menuOpen} controls="app-navigation" onClick={() => setMenuOpen(open => !open)} /></div><nav id="app-navigation" aria-label="Application">
     {navigationGroups.map(group => <div className="nav-group" key={group.label}><span className="nav-group-label">{group.label}</span>{group.links.map(([to, label]) => <NavLink key={to} to={to} end onClick={closeMenu}>{label}</NavLink>)}</div>)}
     <div className="nav-group nav-group-settings"><span className="nav-group-label">Settings</span><NavLink to="/app/settings" end onClick={closeMenu}>Settings</NavLink></div>
-  </nav><WebsiteContextNav closeMenu={closeMenu} /><AuditContextNav closeMenu={closeMenu} /><Link className="side-cta" to="/" onClick={closeMenu}>← Public site</Link></aside><div className="app-main"><header className="app-top"><div><span className="eyebrow">Ottimo platform</span><strong>Digital presence, made measurable.</strong></div><div className="demo-chip">Demo mode · local data</div></header><main id="main" tabIndex={-1} className="app-content"><Outlet /></main></div></div>
+  </nav><WebsiteContextNav closeMenu={closeMenu} /><AuditContextNav closeMenu={closeMenu} /><Link className="side-cta" to="/" onClick={closeMenu}>← Public site</Link></aside><div className="app-main"><header className="app-top"><div><span className="eyebrow">Ottimo platform</span><strong>Digital presence, made measurable.</strong></div><AuthAccountControl /></header><main id="main" tabIndex={-1} className="app-content"><Outlet /></main></div></div>
 }

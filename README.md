@@ -78,6 +78,19 @@ The server-side persistence path is provider-independent at the repository bound
 Netlify production uses a site-wide strongly consistent store. Preview and branch deployments use deploy-scoped storage so non-production data is isolated from production. The runtime receives Netlify storage configuration from the platform; no storage credentials are committed to the repository.
 
 Set `OTTIMO_SESSION_SECRET` as a server-side environment variable with at least 32 characters. Local tests inject their own secret and never require Netlify credentials.
+## Authentication boundary
+
+The authenticated application uses a replaceable server-session boundary. Production deployments can enable it with `VITE_AUTH_REQUIRED=true`. The browser never stores session secrets or credentials.
+
+- `OTTIMO_SESSION_SECRET`: server-only HMAC session verification secret (minimum 32 characters).
+- `OTTIMO_AUTH_LOGIN_URL`: server-side identity-provider login URL used by the auth login redirect.
+- `VITE_AUTH_LOGIN_URL`: optional public override for the login entry point; defaults to Ottimo's server auth-login function.
+- The authenticated workspace checks `/.netlify/functions/auth-session` before rendering workspace data.
+- Sign-out clears the `ottimo_session` HttpOnly cookie through the server endpoint.
+- Local/demo development keeps the existing demo workspace when `VITE_AUTH_REQUIRED` is not enabled.
+
+The auth layer intentionally does not choose an identity provider. The provider is responsible for authenticating the user and establishing the signed `ottimo_session` cookie expected by the server verifier.
+
 ## Persistence boundary
 
 Production-facing tenant persistence is split into two provider-independent layers:
