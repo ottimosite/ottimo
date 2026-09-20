@@ -53,6 +53,8 @@ export function downloadAuditReport(audit: Audit, websiteName?: string): void {
   const safeName = (websiteName ?? audit.url).replace(/^https?:\/\//, '').replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '').toLowerCase() || 'ottimo-audit'
   anchor.href = url
   anchor.download = `${safeName}-ottimo-audit.html`
+  document.body.appendChild(anchor)
   anchor.click()
+  anchor.remove()
   URL.revokeObjectURL(url)
 }
