@@ -52,3 +52,7 @@ Feature styles may extend these primitives, but must not redefine their base con
 The shared public-site structure is owned by `src/styles/public-site.css`. It contains generic marketing/content-page structure such as hero framing, content pages, callouts and footer structure. Landing-page composition remains in `lead-home.css`; service-page composition remains in `public-services.css`; the newer marketing refinement layer remains in `public-refresh.css` until those feature-specific slices are independently consolidated.
 
 Application-only selectors must not be introduced into this layer. Public pages should remain renderable without application feature styles.
+
+## Landing-page ownership
+
+Landing-page composition is owned by `src/styles/lead-home.css`. Landing-only hero conversion, ethos, audit-preview and responsive rules belong there. `public-refresh.css` is reserved for genuinely reusable public marketing refinements; it must not become a second landing-page override layer.
