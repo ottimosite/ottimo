@@ -11,6 +11,7 @@ import type { Audit, OptimizationAction } from '../../types/domain'
 import { buildOptimizationActions } from '../../audit-engine/actions'
 import { blockingDependencies } from '../../audit-engine/action-dependencies'
 import { AuditCommandCentre2 } from './AuditCommandCentre2'
+import { AIDecisionPanel } from './AIDecisionPanel'
 import { EvidenceExplorer } from './EvidenceExplorer'
 import { ResourcePerformancePanel } from './ResourcePerformancePanel'
 
@@ -188,6 +189,7 @@ export function AuditOverview() {
     </header>
 
     <AuditCommandCentre2 audit={audit} openIssues={openIssues} actions={actions} />
+    <AIDecisionPanel audit={audit} />
     <nav className="audit-detail-nav" aria-label="Audit sections">
       <a href="#audit-evidence">Evidence</a>
       <a href="#audit-decisions">Actions</a>
