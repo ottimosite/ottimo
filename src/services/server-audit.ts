@@ -55,6 +55,28 @@ const statsForPage = (report: AuditReport): AuditStats | undefined => {
   }
 }
 
+const resourcePerformanceFor = (reports: Array<{ report: AuditReport }>): NonNullable<AuditStats['resourcePerformance']> => {
+  const resources = reports.flatMap(({ report }) => report.page?.resources ?? []).filter(resource => !resource.failed)
+  const byTypeMap = new Map<string, { count: number; transferBytes: number }>()
+  const sizeOf = (resource: (typeof resources)[number]) => resource.transferSize ?? resource.encodedBodySize ?? 0
+  for (const resource of resources) {
+    const type = resource.type || 'other'
+    const current = byTypeMap.get(type) ?? { count: 0, transferBytes: 0 }
+    current.count += 1
+    current.transferBytes += sizeOf(resource)
+    byTypeMap.set(type, current)
+  }
+  const withSize = resources.filter(resource => resource.transferSize !== undefined || resource.encodedBodySize !== undefined)
+  const withDuration = resources.filter(resource => resource.durationMs !== undefined)
+  return {
+    resourceCount: resources.length,
+    totalTransferBytes: resources.reduce((sum, resource) => sum + sizeOf(resource), 0),
+    byType: [...byTypeMap.entries()].map(([type, value]) => ({ type, ...value })).sort((a, b) => b.transferBytes - a.transferBytes),
+    largest: withSize.sort((a, b) => sizeOf(b) - sizeOf(a)).slice(0, 8).map(resource => ({ url: resource.url, type: resource.type || 'other', transferBytes: resource.transferSize ?? resource.encodedBodySize, durationMs: resource.durationMs })),
+    slowest: withDuration.sort((a, b) => (b.durationMs ?? 0) - (a.durationMs ?? 0)).slice(0, 8).map(resource => ({ url: resource.url, type: resource.type || 'other', transferBytes: resource.transferSize ?? resource.encodedBodySize, durationMs: resource.durationMs })),
+  }
+}
+
 const measuredCategoriesFor = (report: AuditReport): Category[] => {
   const measured = new Set<Category>()
   for (const measurement of report.measurements) {
@@ -137,6 +159,7 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
     siteIntelligence,
   })
   const firstStats = statsForPage(first)
+  const resourcePerformance = resourcePerformanceFor(successfulPages)
 
   return {
     score: health.score,
@@ -149,6 +172,7 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
     diagnostics: first.diagnostics,
     stats: {
       ...firstStats,
+      resourcePerformance,
       discovery: {
         ...firstStats?.discovery,
         finalUrl: site.finalUrl,

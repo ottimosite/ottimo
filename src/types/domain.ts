@@ -286,6 +286,14 @@ export interface Audit {
   diagnostics?: { code: string; stage: string; message: string; technicalDetails?: string; targetUrl?: string; pageUrl?: string; retryable: boolean }
 }
 
+export interface PerformanceResourceSummary {
+  resourceCount: number
+  totalTransferBytes: number
+  byType: Array<{ type: string; count: number; transferBytes: number }>
+  largest: Array<{ url: string; type: string; transferBytes?: number; durationMs?: number }>
+  slowest: Array<{ url: string; type: string; transferBytes?: number; durationMs?: number }>
+}
+
 export interface AuditStats {
   htmlBytes?: number
   imageCount?: number
@@ -302,6 +310,7 @@ export interface AuditStats {
   screenshotMode?: 'full-page' | 'viewport'
   pageScope?: 'single-page' | 'site-crawl'
   performance?: PerformanceMetrics
+  resourcePerformance?: PerformanceResourceSummary
   discovery?: DiscoverySummary
   source: 'live' | 'local'
   technologySignals?: TechnologySignal[]
