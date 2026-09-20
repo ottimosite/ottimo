@@ -228,12 +228,13 @@ export function Home() {
     </section>
 
     <section className="audit-output-section" aria-labelledby="audit-output-title">
-      <div className="section-intro">
+      <div className="landing-section-inner">
+        <div className="section-intro">
         <span className="eyebrow">What you receive</span>
         <h2 id="audit-output-title">A report you can understand — with the evidence underneath.</h2>
         <p>Ottimo is designed to give decision-makers a clear starting point without hiding the technical detail that developers need.</p>
-      </div>
-      <div className="audit-output-grid">
+        </div>
+        <div className="audit-output-grid">
         <article><span>01</span><h3>Executive summary</h3><p>See the most important observations first, including what is measured, inferred and unavailable.</p></article>
         <article><span>02</span><h3>Priority findings</h3><p>Understand which issues deserve attention and why, instead of working through an undifferentiated list.</p></article>
         <article><span>03</span><h3>Evidence</h3><p>Trace findings back to the pages, resources or signals that support them where evidence is available.</p></article>
@@ -248,20 +249,23 @@ export function Home() {
         <article><strong>Accessible</strong><p>Accessibility is part of the engineering, not a final checkbox.</p></article>
         <article><strong>Clear</strong><p>Every important finding should explain what happened, why it matters and what can be done.</p></article>
         <article><strong>Useful</strong><p>Audit output should lead to action, verification and learning.</p></article>
+        </div>
       </div>
     </section>
 
     <section className="faq-section" aria-labelledby="faq-title">
+      <div className="landing-section-inner">
       <div className="section-intro">
         <span className="eyebrow">Frequently asked</span>
         <h2 id="faq-title">Useful answers before you start.</h2>
       </div>
-      <div className="faq-list">
+        <div className="faq-list">
         <details><summary>Does Ottimo need access to my website?</summary><p>The initial audit is designed around publicly accessible website evidence. Ottimo should only request additional access when a later capability genuinely requires it.</p></details>
         <details><summary>Will Ottimo give me a single website score?</summary><p>The primary experience is evidence and prioritisation, not an opaque score. Where a score is useful, its methodology and evidence should be explainable.</p></details>
         <details><summary>Can an audit prove my rankings or conversions will improve?</summary><p>No. Technical observations can identify conditions worth addressing, but they do not by themselves prove future rankings, traffic, conversions or revenue.</p></details>
         <details><summary>What happens when Ottimo cannot measure something?</summary><p>It should say so. Unavailable evidence is a valid result and is preferable to presenting an invented number as fact.</p></details>
         <details><summary>Who is the audit for?</summary><p>The summary is designed for decision-makers and website owners, while the underlying evidence and technical detail are intended to help developers and specialists act on the findings.</p></details>
+        </div>
       </div>
     </section>
 
