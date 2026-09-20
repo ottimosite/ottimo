@@ -1,4 +1,4 @@
-import type { ActionEvidenceLink, ActionLifecycleStatus, ActionWorkContext, OptimizationAction } from '../types/domain'
+import type { ActionLifecycleStatus, ActionWorkContext, OptimizationAction } from '../types/domain'
 
 export interface ActionWorkItem extends OptimizationAction {
   work: ActionWorkContext
