@@ -25,16 +25,14 @@ export class MockAuditProvider implements AuditProvider {
 
     return {
       score: undefined,
-      scores: auditStandards.length
-        ? [
+      scores: [
             { category: 'performance', measurement: 'unavailable' },
             { category: 'accessibility', measurement: 'unavailable' },
             { category: 'seo', measurement: 'unavailable' },
             { category: 'usability', measurement: 'unavailable' },
             { category: 'technical', measurement: 'unavailable' },
             { category: 'ai', measurement: 'unavailable' },
-          ]
-        : [],
+          ],
       issues: [],
       durationMs: 0,
       standards: auditStandards.map(standard => standard.name),
