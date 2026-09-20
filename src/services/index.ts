@@ -15,3 +15,4 @@ export * from './scheduled-audits'
 export * from './regression-detection'
 
 export * from './notification-events'
+export * from './action-work-management'

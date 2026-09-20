@@ -244,6 +244,20 @@ export interface ActionPriorityBreakdown {
   score: number
 }
 
+export interface ActionEvidenceLink {
+  label: string
+  href: string
+  relation: 'finding' | 'audit' | 'verification' | 'guidance'
+}
+
+export interface ActionWorkContext {
+  owner?: string
+  implementationNotes?: string
+  evidenceLinks: ActionEvidenceLink[]
+  originatingFindingId: string
+  originatingAuditId?: string
+}
+
 export interface OptimizationAction {
   id: string
   issueId: string
@@ -265,6 +279,7 @@ export interface OptimizationAction {
   verification: VerificationCriterion[]
   expectedOutcome: string
   priority: ActionPriorityBreakdown
+  work?: ActionWorkContext
 }
 
 export interface Audit {

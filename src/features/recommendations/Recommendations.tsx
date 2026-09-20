@@ -30,9 +30,16 @@ const lifecycleTone: Record<ActionLifecycleStatus, string> = {
 
 const hydrateAuditActions = (audit: Audit): Audit => ({
   ...audit,
-  actions: normaliseActionDependencies(audit.actions?.length
+  actions: normaliseActionDependencies((audit.actions?.length
     ? buildInitialActionLifecycle(audit.actions)
-    : buildInitialActionLifecycle(buildOptimizationActions(audit.issues))),
+    : buildInitialActionLifecycle(buildOptimizationActions(audit.issues))).map(action => ({
+      ...action,
+      work: action.work ?? {
+        originatingFindingId: action.issueId,
+        originatingAuditId: audit.id,
+        evidenceLinks: [{ label: 'Originating finding', href: `/app/audits/${audit.id}#findings`, relation: 'finding' }],
+      },
+    }))),
 })
 
 const transition = (status: ActionLifecycleStatus, next: ActionLifecycleStatus): boolean => {
@@ -96,6 +103,24 @@ export function Recommendations() {
       ? b.priorityScore - a.priorityScore || a.title.localeCompare(b.title)
       : a.title.localeCompare(b.title)),
   [all, category, query, sort, status])
+
+  const updateWork = (auditId: string, actionId: string, changes: { owner?: string; implementationNotes?: string }) => {
+    const next = audits.map(audit => audit.id !== auditId ? audit : {
+      ...audit,
+      actions: audit.actions?.map(item => item.id !== actionId ? item : {
+        ...item,
+        work: {
+          originatingFindingId: item.work?.originatingFindingId ?? item.issueId,
+          originatingAuditId: item.work?.originatingAuditId ?? audit.id,
+          evidenceLinks: item.work?.evidenceLinks ?? [],
+          ...item.work,
+          ...changes,
+        },
+      }),
+    })
+    setAudits(next)
+    storage.saveAudits(next)
+  }
 
   const updateLifecycle = (auditId: string, actionId: string, nextStatus: ActionLifecycleStatus) => {
     const next = audits.map(audit => {
@@ -200,6 +225,21 @@ export function Recommendations() {
                 {verification ? <p className="muted"><strong>Observed evidence:</strong> {verification.evidence}</p> : <p className="muted">No later-audit verification evidence is recorded yet. This is not treated as success or failure.</p>}
                 <div className="action-proof__links"><Link to={evidenceHref}>Review originating evidence →</Link><Link to={`/app/audits/${action.auditId}?finding=${encodeURIComponent(action.issueId ?? '')}#ai-decision`}>Explain with evidence →</Link><Link to={`/app/audits/new/run?audit=${encodeURIComponent(action.auditId)}`}>Run verification audit →</Link></div>
               </div>
+
+              <details>
+                <summary>Work context and implementation detail</summary>
+                <div className="action-details">
+                  <p><strong>Originating finding:</strong> {action.work?.originatingFindingId ?? action.issueId}</p>
+                  <label>Owner
+                    <input aria-label={`Owner for ${action.title}`} value={action.work?.owner ?? ''} placeholder="Unassigned" onChange={event => updateWork(action.auditId, action.id, { owner: event.target.value })} />
+                  </label>
+                  <label>Implementation notes
+                    <textarea aria-label={`Implementation notes for ${action.title}`} value={action.work?.implementationNotes ?? ''} placeholder="Capture implementation context for the next person working on this action." onChange={event => updateWork(action.auditId, action.id, { implementationNotes: event.target.value })} />
+                  </label>
+                  <p><strong>Evidence links:</strong> {action.work?.evidenceLinks.length ?? 0} attached</p>
+                  {action.work?.evidenceLinks.map(link => <Link key={`${link.relation}-${link.href}`} to={link.href}>{link.label} →</Link>)}
+                </div>
+              </details>
 
               <details>
                 <summary>Priority and implementation detail</summary>

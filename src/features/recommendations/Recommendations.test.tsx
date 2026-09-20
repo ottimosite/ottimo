@@ -54,6 +54,9 @@ describe('Recommendations lifecycle UX', () => {
     expect(screen.getByRole('link', { name: /explain with evidence/i })).toHaveAttribute('href', '/app/audits/audit-1?finding=issue-1#ai-decision')
     expect(screen.getByRole('link', { name: /run verification audit/i })).toHaveAttribute('href', '/app/audits/new/run?audit=audit-1')
     expect(screen.getByText('Planned', { selector: '.badge' })).toBeInTheDocument()
+    expect(screen.getByRole('textbox', { name: /owner for improve test performance/i })).toHaveValue('')
+    fireEvent.click(screen.getByText('Work context and implementation detail'))
+    expect(screen.getByText('issue-1')).toBeInTheDocument()
     expect(select).toHaveValue('planned')
 
     const options = within(select).getAllByRole('option')
