@@ -14,7 +14,7 @@ const toBase64Url = (value: Uint8Array | string) => {
   const bytes = typeof value === 'string' ? encoder.encode(value) : value
   let binary = ''
   for (const byte of bytes) binary += String.fromCharCode(byte)
-  return btoa(binary).replace(/\\+/g, '-').replace(/\\//g, '_').replace(/=+$/, '')
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 }
 
 const fromBase64Url = (value: string) => {
