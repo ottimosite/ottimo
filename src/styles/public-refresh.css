@@ -88,3 +88,22 @@
 .faq-list p { max-width:70ch; padding:0 0 22px 20px; color:var(--ink-soft); line-height:1.6; }
 @media (max-width:900px) { .audit-output-grid { grid-template-columns:1fr 1fr; } }
 @media (max-width:600px) { .audit-output-section,.faq-section { padding:58px 0; } .audit-output-grid { grid-template-columns:1fr; } .audit-output-grid article { min-height:0; } }
+
+/* Constrain newly added full-bleed landing sections to the same reading grid. */
+.lead-home > .audit-output-section,
+.lead-home > .faq-section {
+  width: 100vw;
+  max-width: none;
+  margin-left: calc(50% - 50vw);
+  box-sizing: border-box;
+}
+.landing-section-inner {
+  width: min(1220px, calc(100% - 60px));
+  margin-inline: auto;
+}
+.audit-output-grid { width: 100%; }
+.faq-section .section-intro { max-width: 720px; }
+.faq-list { width: 100%; }
+@media (max-width: 600px) {
+  .landing-section-inner { width: calc(100% - 44px); }
+}
