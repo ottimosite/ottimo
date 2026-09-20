@@ -16,4 +16,4 @@ export * from './regression-detection'
 
 export * from './notification-events'
 export * from './action-work-management'
-export * from './reporting'\n
+export * from './reporting'
