@@ -6,13 +6,14 @@ import { seedAudits, seedWebsites } from '../../data/mock'
 import { storage } from '../../services/storage'
 import type { Category } from '../../types/domain'
 
-type Goal = Exclude<Category, 'ai'> | 'everything'
+type Goal = Category | 'everything'
 const goalOptions: { id: Goal; label: string; description: string }[] = [
   { id: 'performance', label: 'Website speed', description: 'Loading, responsiveness and Core Web Vitals.' },
   { id: 'seo', label: 'Search visibility', description: 'Crawlability, metadata, structure and indexability.' },
   { id: 'accessibility', label: 'Accessibility', description: 'Inclusive structure, navigation and content.' },
   { id: 'usability', label: 'User experience', description: 'Clear journeys, mobile behaviour and interaction signals.' },
   { id: 'technical', label: 'Technical health', description: 'Links, resources, redirects and site integrity.' },
+  { id: 'ai', label: 'AI readiness', description: 'Structured information, page identity and machine-readable context.' },
   { id: 'everything', label: 'Full audit', description: 'Run the broadest audit across every available domain.' },
 ]
 
@@ -67,30 +68,31 @@ export function AuditOnboarding() {
 
   return <div className="onboarding">
     <div className="onboarding-intro">
-      <span className="eyebrow">{resolvedWebsite ? 'Website audit' : 'New audit'}</span>
-      <h1>{resolvedWebsite ? 'Run the next audit.' : 'Start with your website.'}</h1>
-      <p>{resolvedWebsite ? 'Ottimo already knows this website. Review the target, then start the audit.' : 'Enter a public URL and Ottimo will discover, measure and explain what matters.'}</p>
+      <span className="eyebrow">{resolvedWebsite ? 'Website audit' : 'New audit'} · 1 of 2</span>
+      <h1>{resolvedWebsite ? 'Check this website again.' : 'Start with your website.'}</h1>
+      <p>{resolvedWebsite ? 'Confirm the website and choose what you want to investigate.' : 'Give Ottimo a public URL. You can run the full audit or focus it on the area you care about most.'}</p>
+      <div className="onboarding-progress" aria-label="Audit setup progress"><span className="active">1 <b>Website</b></span><i aria-hidden="true" /><span>2 <b>Focus</b></span></div>
     </div>
 
     <Card className="onboarding-card onboarding-card-single">
       <div className="onboarding-section">
         <div className="onboarding-section-heading">
-          <div><span className="eyebrow">Step 1</span><h2>Website to audit</h2></div>
+          <div><span className="eyebrow">Step 1</span><h2>Which website should we inspect?</h2></div>
           {resolvedWebsite && <span className="optional-tag">Saved website</span>}
         </div>
         <label htmlFor="website-url" className="sr-only">Website URL</label>
         <input id="website-url" autoFocus={!resolvedWebsite} inputMode="url" autoComplete="url" placeholder="https://example.com" value={url} onChange={event => { setUrl(event.target.value); setError('') }} onKeyDown={event => { if (event.key === 'Enter') startAudit() }} aria-invalid={Boolean(error)} aria-describedby={error ? 'url-error' : 'url-help'} />
-        {error ? <p id="url-error" className="error" role="alert">{error}</p> : <p id="url-help" className="muted">You can enter a domain without https:// and Ottimo will normalise it.</p>}
+        {error ? <p id="url-error" className="error" role="alert">{error}</p> : <p id="url-help" className="muted">Use a public website address. You can enter a domain without https:// and Ottimo will normalise it.</p>}
       </div>
 
       <div className="onboarding-divider" />
 
       <div className="onboarding-section">
         <div className="onboarding-section-heading">
-          <div><span className="eyebrow">Step 2 · optional</span><h2>Focus the audit</h2></div>
+          <div><span className="eyebrow">Step 2 · optional</span><h2>What do you want to investigate?</h2></div>
           <button type="button" className="btn btn-ghost" aria-expanded={showAdvanced} onClick={() => setShowAdvanced(value => !value)}>{showAdvanced ? 'Hide options' : 'Advanced options'}</button>
         </div>
-        <p className="muted onboarding-future">By default Ottimo runs the full audit. Open advanced options only if you want to focus on specific domains.</p>
+        <p className="muted onboarding-future">The full audit is the simplest starting point. Choose a focus only when you already know what you want to investigate.</p>
         {showAdvanced && <fieldset className="goal-grid">
           <legend className="sr-only">Audit priorities</legend>
           {goalOptions.map(goal => {
@@ -103,12 +105,13 @@ export function AuditOnboarding() {
       </div>
 
       <div className="onboarding-summary">
-        <strong>{goals.includes('everything') ? 'Full audit selected' : goals.length + ' audit ' + (goals.length === 1 ? 'area' : 'areas') + ' selected'}</strong>
-        <span>{resolvedWebsite ? 'This audit will be added to the existing website history.' : 'Ottimo will create a website record if this is a new property.'}</span>
+        <strong>{goals.includes('everything') ? 'Full website audit' : goals.length + ' focus ' + (goals.length === 1 ? 'area' : 'areas')}</strong>
+        <span>{resolvedWebsite ? 'The result will be added to this website’s history.' : 'A website record will be created automatically when you run the audit.'}</span>
       </div>
+      <div className="onboarding-reassurance" role="note"><strong>What happens next</strong><span>Ottimo validates the URL, discovers what it can access, analyses the available evidence and shows you the findings and recommended next actions.</span></div>
 
       <div className="onboarding-actions onboarding-actions-primary">
-        <Button onClick={startAudit}>Run audit <span aria-hidden="true">→</span></Button>
+        <Button onClick={startAudit}>Continue to audit <span aria-hidden="true">→</span></Button>
       </div>
     </Card>
   </div>
