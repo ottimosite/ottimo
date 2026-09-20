@@ -88,3 +88,40 @@
 .audit-secondary-details__content{display:grid;gap:18px;padding:0 14px 14px}
 @media(max-width:700px){.audit-detail-nav{top:6px;overflow-x:auto;flex-wrap:nowrap}.audit-detail-nav a{white-space:nowrap}.audit-primary-decision{display:grid;padding:18px}.audit-primary-decision .primary-action{width:100%;justify-content:center}}
 @media(prefers-reduced-motion:reduce){.audit-detail-nav{scroll-behavior:auto}}
+
+/* UI-03 decision cockpit refinements */
+.audit-centre-v2__summary a {
+  display: block;
+  padding: 16px;
+  border-right: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+}
+.audit-centre-v2__summary a:last-child { border-right: 0; }
+.audit-centre-v2__summary a:hover,
+.audit-centre-v2__summary a:focus-visible { background: var(--lime); outline: 0; }
+.audit-centre-v2__summary a span,
+.audit-centre-v2__summary a small { display: block; color: var(--muted); font-size: .68rem; font-weight: 800; }
+.audit-centre-v2__summary a strong { display: block; margin: 4px 0; color: var(--forest); font-size: 1.45rem; line-height: 1; }
+.audit-centre-v2__guidance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 22px;
+  border-top: 1px solid var(--line);
+  background: var(--mint);
+}
+.audit-centre-v2__guidance h3 {
+  margin: 6px 0 0;
+  color: var(--forest);
+  font: normal 1.35rem/1.1 Georgia, serif;
+}
+.audit-centre-v2__guidance-links { display: flex; flex-wrap: wrap; gap: 8px; }
+#audit-action-queue { scroll-margin-top: 82px; }
+@media(max-width:760px) {
+  .audit-centre-v2__summary a { border-right: 0; border-bottom: 1px solid var(--line); }
+  .audit-centre-v2__summary a:last-child { border-bottom: 0; }
+  .audit-centre-v2__guidance { display: grid; }
+  .audit-centre-v2__guidance-links { display: grid; }
+}
