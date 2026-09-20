@@ -1,7 +1,8 @@
-import type { AuditResult, AuditIssue, Category, Severity, AuditStats, PerformanceResourceSummary } from '../types/domain'
+import type { AuditResult, AuditIssue, Category, Severity, PerformanceResourceSummary } from '../types/domain'
 import { calculateHealth } from '../audit-engine/scoring'
 import { aggregateFindings } from '../audit-engine/aggregation'
-import { buildOptimizationActions } from '../audit-engine/actions'\nimport { buildWebsiteHealthModel } from '../audit-engine/health-model'
+import { buildOptimizationActions } from '../audit-engine/actions'
+import { buildWebsiteHealthModel } from '../audit-engine/health-model'
 import type { AuditCategory, AuditReport } from '../audit-engine/types'
 
 interface ServerSiteAuditReport {
