@@ -88,3 +88,7 @@ When adding a scenario:
 4. Include the failure mode and audit stage in the test name.
 5. Do not add fabricated traffic, conversion, acquisition or other business telemetry.
 6. Keep external origins represented only as fixture data; acceptance tests must not require third-party network access.
+
+## Engineering workflow
+
+GitHub is the single source of truth for Ottimo planning and delivery. See [docs/engineering-workflow.md](docs/engineering-workflow.md) for the branch, issue, PR and quality-gate workflow.
