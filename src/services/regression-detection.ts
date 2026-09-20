@@ -42,8 +42,8 @@ export function detectRegressions(input: {
     if (
       previousScore?.score === undefined ||
       currentScore.score === undefined ||
-      currentScore.measurement === 'unavailable' ||
-      previousScore.measurement === 'unavailable'
+      (currentScore.measurement !== 'measured' && currentScore.measurement !== 'inferred') ||
+      (previousScore.measurement !== 'measured' && previousScore.measurement !== 'inferred')
     ) continue
 
     const delta = currentScore.score - previousScore.score
