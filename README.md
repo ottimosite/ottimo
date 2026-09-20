@@ -28,7 +28,7 @@ npm run lint
 - Lightweight CSS design system instead of a large UI framework
 - Typed domain models in `src/types`
 - Replaceable audit boundary: `AuditProvider`
-- Deterministic local `MockAuditProvider`
+- Deterministic local `MockAuditProvider` backed by a captured real-site fixture
 - Local repositories via `localStorage`
 - Native SVG/CSS-style data presentation; no charting library
 - Vitest + Testing Library for automated tests
@@ -50,11 +50,16 @@ src/
 
 ## Demo behaviour
 
-The app starts with example websites and historical audits. New demo audits use the local provider and deterministic scores/issues, then persist the generated audit locally. Recommendation status changes are also stored locally. Reports can be printed from the browser, and history uses a lightweight CSS chart instead of a charting dependency.
+The app starts with a saved snapshot of a real public website: Wikipedia. The default fixture is captured from `https://www.wikipedia.org/` and stored locally so the UI and CI never depend on a live third-party request. New audits still use the local provider until the live audit provider is selected.
 
-## Harbour & Pine demo case study
+The snapshot is deliberately conservative: structural observations are retained as evidence, while browser performance measurements are represented as unavailable rather than invented. This keeps the demo useful without presenting fixture data as a live Lighthouse or Core Web Vitals result.
 
-The default demo uses a fictional saved snapshot for `https://harbourpine.example/`. Harbour & Pine is an illustrative independent home and lifestyle retailer created specifically for Ottimo demonstration data. It does not represent a real business or make runtime requests to a third-party site. Keep the example clearly labelled as illustrative and keep findings evidence-based rather than treating the saved scores as a live Lighthouse result.
+## Wikipedia real-site snapshot
+
+The deterministic fixture lives in `src/data/fixtures/wikipedia.ts`. It records the public Wikipedia portal observed on 20 September 2026, including its title, multilingual structure, language links and captured scope. The fixture is a testing snapshot, not a claim that the live site is unchanged.
+
+To refresh it, capture the public `https://www.wikipedia.org/` portal again, record the new capture date and source revision/observations, update the fixture, and update its tests. Do not make CI fetch Wikipedia directly.
+
 
 ## Future integrations
 
@@ -79,7 +84,7 @@ Copy `.env.example` only when adding environment-specific integrations. The loca
 
 ## Real-site acceptance scenarios
 
-The audit engine has deterministic acceptance contracts under `src/audit-engine/acceptance/`. These are fixture-based representatives of real-world structures rather than live third-party dependencies, so CI remains reproducible.
+The audit engine has deterministic acceptance contracts under `src/audit-engine/acceptance/`. These remain synthetic structural fixtures for edge-case coverage, while the default product/demo snapshot uses the captured real Wikipedia site described above.
 
 When adding a scenario:
 1. Model the smallest representative page/crawl structure that exercises the regression.

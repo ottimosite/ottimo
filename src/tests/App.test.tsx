@@ -37,7 +37,7 @@ describe('app', () => {
   })
 
   it('prepares a saved website for a direct audit action', () => {
-    render(<MemoryRouter initialEntries={['/app/websites/site-1']}><App /></MemoryRouter>)
+    render(<MemoryRouter initialEntries={['/app/websites/site-wikipedia']}><App /></MemoryRouter>)
     const runAudit = screen.getByRole('link', { name: /run audit/i })
     expect(runAudit.getAttribute('href')).toMatch(/\/app\/audits\/new\/run\?url=/)
   })
@@ -47,7 +47,7 @@ describe('app', () => {
     expect(screen.getByRole('heading', { name: /your digital presence at a glance/i })).toBeInTheDocument()
   })
   it('presents the audit as an evidence-to-verification workflow', () => {
-    render(<MemoryRouter initialEntries={['/app/audits/audit-3']}><App /></MemoryRouter>)
+    render(<MemoryRouter initialEntries={['/app/audits/audit-wikipedia']}><App /></MemoryRouter>)
     expect(screen.getByRole('heading', { name: /know what matters\. know what to do next/i })).toBeInTheDocument()
     expect(screen.getByRole('navigation', { name: /audit workflow/i })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: /open decision queue/i })).toBeInTheDocument()
@@ -58,7 +58,7 @@ describe('app', () => {
   })
 
   it('exposes an evidence explorer with page and resource scope filters', () => {
-    render(<MemoryRouter initialEntries={['/app/audits/audit-3']}><App /></MemoryRouter>)
+    render(<MemoryRouter initialEntries={['/app/audits/audit-wikipedia']}><App /></MemoryRouter>)
     expect(screen.getByRole('heading', { name: /why was this finding reported/i })).toBeInTheDocument()
     expect(screen.getByRole('group', { name: /evidence scope/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /resource-scoped/i })).toBeInTheDocument()
