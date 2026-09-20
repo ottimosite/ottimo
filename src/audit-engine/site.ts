@@ -93,8 +93,16 @@ const failedSiteReport = (requestedUrl: string, startedAt: string, started: numb
   },
 })
 
+export type DiscoveryLoader = (url: string) => Promise<{ robots: RobotsPolicy; sitemap: SitemapDiscovery }>
+
 export class SiteAuditEngine {
-  constructor(private readonly pageEngine = new AuditEngine()) {}
+  constructor(
+    private readonly pageEngine = new AuditEngine(),
+    private readonly discoveryLoader: DiscoveryLoader = async (url) => {
+      const robots = await discoverRobots(url)
+      return { robots, sitemap: await discoverSitemaps(url, robots) }
+    },
+  ) {}
 
   async audit(request: SiteAuditRequest): Promise<SiteAuditReport> {
     const started = performance.now()
