@@ -242,10 +242,10 @@ export interface ActionPriorityBreakdown {
   confidence: number
   effort: number
   evidence: number
-  scope: number
-  dependency: number
-  verification: number
-  regressionRisk: number
+  scope?: number
+  dependency?: number
+  verification?: number
+  regressionRisk?: number
   score: number
 }
 
