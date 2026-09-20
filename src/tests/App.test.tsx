@@ -25,6 +25,23 @@ describe('app', () => {
     expect(screen.getByRole('alert')).toHaveTextContent(/invalid url/i)
   })
 
+  it('uses grouped application navigation and a streamlined audit start surface', () => {
+    render(<MemoryRouter initialEntries={['/app/audits/new']}><App /></MemoryRouter>)
+    expect(screen.getByText('Workspace')).toBeInTheDocument()
+    expect(screen.getByText('Insights')).toBeInTheDocument()
+    expect(screen.getByText('Reporting')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /start with your website/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /run audit/i })).toBeInTheDocument()
+    expect(screen.queryByText(/step 1 of 2/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /continue/i })).not.toBeInTheDocument()
+  })
+
+  it('prepares a saved website for a direct audit action', () => {
+    render(<MemoryRouter initialEntries={['/app/websites/site-demo']}><App /></MemoryRouter>)
+    const runAudit = screen.getByRole('link', { name: /run audit/i })
+    expect(runAudit.getAttribute('href')).toMatch(/\/app\/audits\/new\/run\?url=/)
+  })
+
   it('renders dashboard route', () => {
     render(<MemoryRouter initialEntries={['/app/dashboard']}><App /></MemoryRouter>)
     expect(screen.getByRole('heading', { name: /your digital presence at a glance/i })).toBeInTheDocument()
