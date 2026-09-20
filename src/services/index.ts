@@ -13,3 +13,5 @@ export * from './acquisition-intelligence'
 export * from './scheduled-audits'
 
 export * from './regression-detection'
+
+export * from './notification-events'
