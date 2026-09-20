@@ -67,7 +67,7 @@ export function Recommendations() {
 
   const all = scopedAudits.flatMap(audit => (audit.actions ?? []).map(action => ({ ...action, auditId: audit.id })))
   const blockedCount = all.filter(action => isBlocked(action, scopedAudits.find(audit => audit.id === action.auditId)?.actions ?? [])).length
-  const readyCount = all.filter(action => action.lifecycleStatus === 'planned' && !isBlocked(action, audits.find(audit => audit.id === action.auditId)?.actions ?? [])).length
+  const readyCount = all.filter(action => action.lifecycleStatus === 'planned' && !isBlocked(action, scopedAudits.find(audit => audit.id === action.auditId)?.actions ?? [])).length
   const inProgressCount = all.filter(action => action.lifecycleStatus === 'in_progress' || action.lifecycleStatus === 'verification').length
 
   const shown = useMemo(() => [...all]
@@ -79,7 +79,7 @@ export function Recommendations() {
     .sort((a, b) => sort === 'priority'
       ? b.priorityScore - a.priorityScore || a.title.localeCompare(b.title)
       : a.title.localeCompare(b.title)),
-  [all, category, query, sort, status, scopedAudits])
+  [all, category, query, sort, status])
 
   const updateLifecycle = (auditId: string, actionId: string, nextStatus: ActionLifecycleStatus) => {
     const next = audits.map(audit => {
