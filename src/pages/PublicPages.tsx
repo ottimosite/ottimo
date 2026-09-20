@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Card } from '../components/ui'
-import { wikipediaAudit, wikipediaSnapshot } from '../data/fixtures/wikipedia'
+import { wikipediaSnapshot } from '../data/fixtures/wikipedia'
 
 const info = {
   '/services': ['Services', 'A practical optimisation partner for performance, visibility, accessibility and AI-ready digital products.'],
