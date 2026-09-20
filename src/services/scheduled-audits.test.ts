@@ -57,7 +57,9 @@ describe('scheduled audits', () => {
     expect(failure).toEqual(expect.objectContaining({
       status: 'failed',
       errorCode: 'AUDIT_PROVIDER_UNAVAILABLE',
-      auditId: undefined,
+      scheduleId: 'schedule-1',
+      websiteId: 'site-1',
     }))
+    expect('auditId' in failure).toBe(false)
   })
 })
