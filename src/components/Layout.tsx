@@ -36,20 +36,22 @@ function useMenuFocus(open: boolean, closeMenu: () => void, toggleRef: React.Ref
 
 
 function WebsiteContextNav({ closeMenu }: { closeMenu: () => void }) {
-  const { id } = useParams()
   const location = useLocation()
-  if (!id || location.pathname !== `/app/websites/${id}`) return null
+  const match = location.pathname.match(/^\/app\/websites\/([^/]+)$/)
+  const id = match?.[1]
+  if (!id) return null
 
+  const encodedId = encodeURIComponent(id)
   const links = [
-    [`/app/websites/${id}`, 'Health'],
-    [`/app/audits?website=${encodeURIComponent(id)}`, 'Audits'],
-    [`/app/performance?website=${encodeURIComponent(id)}`, 'Performance'],
-    [`/app/seo?website=${encodeURIComponent(id)}`, 'Search'],
-    [`/app/accessibility?website=${encodeURIComponent(id)}`, 'Accessibility'],
-    [`/app/usability?website=${encodeURIComponent(id)}`, 'Experience'],
-    [`/app/technical?website=${encodeURIComponent(id)}`, 'Technical'],
-    [`/app/ai?website=${encodeURIComponent(id)}`, 'AI readiness'],
-    [`/app/recommendations?website=${encodeURIComponent(id)}`, 'Actions'],
+    [`/app/websites/${encodedId}`, 'Health'],
+    [`/app/audits?website=${encodedId}`, 'Audits'],
+    [`/app/performance?website=${encodedId}`, 'Performance'],
+    [`/app/seo?website=${encodedId}`, 'Search'],
+    [`/app/accessibility?website=${encodedId}`, 'Accessibility'],
+    [`/app/usability?website=${encodedId}`, 'Experience'],
+    [`/app/technical?website=${encodedId}`, 'Technical'],
+    [`/app/ai?website=${encodedId}`, 'AI readiness'],
+    [`/app/recommendations?website=${encodedId}`, 'Actions'],
   ] as const
 
   return <div className="website-context">
