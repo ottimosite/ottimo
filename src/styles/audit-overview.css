@@ -64,3 +64,24 @@
  .audit-actions .btn{min-width:0}
  .audit-interpretation{padding:22px}
 }
+
+/* Explicit contrast contract for the dark takeaway surface.
+   Keep these selectors scoped so global heading/card styles cannot override them. */
+.audit-overview .audit-interpretation .section-head h2,
+.audit-overview .audit-interpretation h2 {
+  color: #ffffff;
+}
+.audit-overview .audit-interpretation .section-head p,
+.audit-overview .audit-interpretation .interpretation-item p {
+  color: #d9e7df;
+}
+.audit-overview .audit-interpretation .interpretation-item strong {
+  color: #ffffff;
+}
+.audit-overview .audit-interpretation .interpretation-label,
+.audit-overview .audit-interpretation .muted {
+  color: #d5ebc6;
+}
+.audit-overview .audit-interpretation .audit-open-count {
+  color: #ffffff;
+}
