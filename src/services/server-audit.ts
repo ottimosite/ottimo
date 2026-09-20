@@ -13,6 +13,14 @@ interface ServerSiteAuditReport {
   pages: Array<{ url: string; report: AuditReport }>
   discoveredUrls: string[]
   truncated: boolean
+  discovery: {
+    robotsFound: boolean
+    sitemapFound: boolean
+    sitemapPageCount: number
+    sitemapDocuments: string[]
+    sitemapUrls: string[]
+    robots: { found: boolean; sitemaps: string[]; disallow: string[]; allow: string[] }
+  }
   error?: AuditReport['error']
 }
 
@@ -145,8 +153,9 @@ const toResult = (site: ServerSiteAuditReport): AuditResult => {
         ...firstStats?.discovery,
         finalUrl: site.finalUrl,
         https: site.finalUrl.startsWith('https:'),
-        robotsFound: false,
-        sitemapFound: false,
+        robotsFound: site.discovery.robotsFound,
+        sitemapFound: site.discovery.sitemapFound,
+        sitemapPageCount: site.discovery.sitemapPageCount,
         discoveredPageCount: site.discoveredUrls.length,
         technologies: summariseTechnology(successfulPages.map(page => page.report.page?.technology)).signals.map(signal => signal.name),
         technologySignals: summariseTechnology(successfulPages.map(page => page.report.page?.technology)).signals,
