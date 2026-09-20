@@ -75,10 +75,11 @@ describe('real-site acceptance contracts', () => {
       },
     }
 
-    const result = await new SiteAuditEngine(fake as never, async () => ({
+    const engine = new SiteAuditEngine(fake as never, async () => ({
       robots: { found: true, sitemaps: [], disallow: ['/private'], allow: [] },
       sitemap: { found: true, documents: ['https://fixture.test/sitemap.xml'], urls: ['https://fixture.test/article', 'https://fixture.test/private/secret'] },
-    })).audit({ url: 'https://fixture.test/', maxPages: 2 })
+    }))
+    const result = await engine.audit({ url: 'https://fixture.test/', maxPages: 2 })
 
     expect(result.pages).toHaveLength(2)
     expect(audited).toEqual(['https://fixture.test/', 'https://fixture.test/article'])
