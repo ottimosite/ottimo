@@ -23,7 +23,6 @@ describe('Netlify storage integration', () => {
 
     expect(get).toHaveBeenCalledWith('tenant/tenant-1/websites', {
       type: 'json',
-      consistency: 'strong',
     })
     expect(setJSON).toHaveBeenCalledWith('tenant/tenant-1/websites', { schemaVersion: 1 })
   })
