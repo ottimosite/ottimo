@@ -27,9 +27,10 @@ describe('app', () => {
 
   it('uses grouped application navigation and a streamlined audit start surface', () => {
     render(<MemoryRouter initialEntries={['/app/audits/new']}><App /></MemoryRouter>)
-    expect(screen.getByText('Workspace')).toBeInTheDocument()
-    expect(screen.getByText('Insights')).toBeInTheDocument()
-    expect(screen.getByText('Reporting')).toBeInTheDocument()
+    const applicationNavigation = screen.getByRole('navigation', { name: /application/i })
+    expect(within(applicationNavigation).getByText('Workspace')).toBeInTheDocument()
+    expect(within(applicationNavigation).getByRole('link', { name: 'Insights' })).toBeInTheDocument()
+    expect(within(applicationNavigation).getByText('Reporting')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /start with your website/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /run audit/i })).toBeInTheDocument()
     expect(screen.queryByText(/step 1 of 2/i)).not.toBeInTheDocument()
