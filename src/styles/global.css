@@ -504,3 +504,22 @@ footer p { max-width:460px; margin:12px 0 0; color:#b9d1bf; font-size:.86rem; }
     overflow-y: auto;
   }
 }
+
+
+/* Shared keyboard contract: every interactive control gets a visible, high-contrast focus indicator. */
+:where(a, button, input, select, textarea, summary):focus-visible {
+  outline: 3px solid var(--lime);
+  outline-offset: 3px;
+}
+
+main:focus {
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .site-header .brand,
+  .progress span {
+    transition: none;
+  }
+}
