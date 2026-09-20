@@ -6,6 +6,7 @@ import { auditStandards } from '../../services/audit'
 import { Badge, Button, Card, Progress, Score } from '../../components/ui'
 import { formatDate } from '../../lib/format'
 import { IssueTable } from './Audits'
+import { ResourcePerformancePanel } from './ResourcePerformancePanel'
 import type { Audit } from '../../types/domain'
 
 type MetricState = 'good' | 'needs-improvement' | 'poor' | 'unavailable'
@@ -126,6 +127,7 @@ function ChangePanel({ audit }: { audit: Audit }) {
     </div></Card>
     <div className="audit-summary-grid"><Card className="audit-health"><div><span className="muted">Overall health</span>{audit.health?.score === undefined ? <div className="score"><strong>—</strong><span>Not measured</span></div> : <Score value={audit.health.score} label={audit.health.status === 'good' ? 'Good' : audit.health.status === 'needs-improvement' ? 'Needs improvement' : 'Needs attention'} />} {audit.health?.score !== undefined && <small className="muted">{audit.health.checks} measured checks · {audit.health.passed} passed · {audit.health.failed} failed</small>} {audit.health?.excludedCategories.length ? <small className="muted">Not scored: {audit.health.excludedCategories.join(', ')}</small> : null}</div><div><span className="eyebrow">How the score works</span><p>{audit.health?.methodology ?? 'Health is shown only when the audit has enough measured evidence.'}</p><span className="eyebrow">Priority focus</span><p>{openIssues.length ? openIssues.length + ' open issues need a decision.' : 'All recorded issues are resolved.'}</p><Link to="/app/recommendations">Open action queue →</Link></div></Card><Card><span className="muted">Open issues</span><strong className="big-number">{openIssues.length}</strong><div className="severity-list">{Object.entries(severityCounts).map(([severity, count]) => <span key={severity}><Badge tone={severity}>{severity}</Badge> {count}</span>)}</div></Card></div>
     <PerformancePanel metrics={stats?.performance} />
+    <ResourcePerformancePanel audit={audit} />
     <IntelligencePanel stats={stats} />\n    <HealthModelPanel audit={audit} />\n    <ChangePanel audit={audit} />
     {mode === 'engineer' && <EngineerDiagnostics audit={audit} />}
     <div className="audit-evidence-grid"><Card className="screenshot-card"><div className="section-head"><div><span className="eyebrow">Visual evidence</span><h2>Page snapshot</h2></div><a href={screenshotUrl} target="_blank" rel="noreferrer">Open full image ↗</a></div><div className="screenshot-frame"><img src={screenshotUrl} alt={`Screenshot preview of ${audit.url}`} loading="lazy" /></div><small>Generated through the optional screenshot adapter. It may take a moment to appear.</small></Card><Card><span className="eyebrow">Page profile</span><h2>What we found</h2><div className="profile-list"><span><strong>{stats?.language || '—'}</strong> document language</span><span><strong>{formatStat(stats?.wordCount)}</strong> visible words</span><span><strong>{stats?.title ? 'Present' : '—'}</strong> page title</span><span><strong>{stats?.source === 'live' ? 'Fetched' : 'Fixture'}</strong> evidence source</span></div></Card></div>
