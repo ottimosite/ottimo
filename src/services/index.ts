@@ -9,3 +9,5 @@ export * from './search-console'
 export * from './analytics-integration'
 
 export * from './acquisition-intelligence'
+
+export * from './scheduled-audits'
