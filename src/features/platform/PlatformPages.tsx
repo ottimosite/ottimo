@@ -1,6 +1,7 @@
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { auditScores, categoryLabels, seedAudits, seedWebsites } from '../../data/mock'
+import { auditScores, categoryLabels } from '../../data/mock'
 import { storage } from '../../services/storage'
+import { localRepository } from '../../services/local-repository'
 import type { Category } from '../../types/domain'
 import { Badge, Button, Card, Progress, Score } from '../../components/ui'
 import { formatDate, titleCase } from '../../lib/format'
@@ -14,7 +15,7 @@ const categoryCopy: Record<Category, { title: string; body: string; next: string
   ai: { title: 'AI readiness without the hype', body: 'Structure useful business knowledge so both people and machines can interpret it.', next: 'Start with consistent entities, semantic content and reliable source data.' },
 }
 
-function currentAudits() { return storage.audits().length ? storage.audits() : seedAudits }
+function currentAudits() { return localRepository.audits() }
 
 function evidenceLabel(status: string) { return status === 'partial' ? 'Inferred' : titleCase(status) }
 
@@ -35,7 +36,7 @@ export function CategoryPage({ category }: { category: Category }) {
 
 export function WebsiteDetail() {
   const { id } = useParams()
-  const websites = storage.websites().length ? storage.websites() : seedWebsites
+  const websites = localRepository.websites()
   const website = websites.find(item => item.id === id)
   const audits = currentAudits().filter(audit => audit.websiteId === id).sort((a, b) => a.createdAt.localeCompare(b.createdAt))
   if (!website) return <Card><h1>Website not found</h1><p>The local demo could not find that property.</p><Link to="/app/websites">Back to websites</Link></Card>
@@ -170,7 +171,7 @@ export function InsightsPage() {
   const websiteId = new URLSearchParams(location.search).get('website')
   const audits = websiteId ? currentAudits().filter(item => item.websiteId === websiteId) : currentAudits()
   const audit = audits.at(-1)
-  const website = websiteId ? (storage.websites().length ? storage.websites() : seedWebsites).find(item => item.id === websiteId) : undefined
+  const website = websiteId ? localRepository.findWebsite(websiteId) : undefined
 
   if (!audit) return <div className="stack">
     <div className="page-heading"><div><span className="eyebrow">Insights</span><h1>Understand what matters.</h1><p>Insights need an audit baseline. Ottimo will keep observed evidence separate from inference and unavailable data.</p></div></div>
