@@ -152,9 +152,6 @@ td a { color:var(--green-dark); font-weight:850; }
 .health-domain .progress { margin:13px 0; }
 .health-domain__foot { font-size:.75rem; }
 .health-domain__foot a { color:var(--green-dark); font-weight:900; }
-.evidence-status { color:var(--green-dark); font-weight:850; }
-.evidence-status--partial { color:#755400; }
-.evidence-status--unavailable { color:var(--muted); }
 .verification-summary { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:20px; }
 .verification-summary > div { padding:16px; border:1px solid var(--line); border-radius:12px; background:var(--mint); }
 .verification-summary strong,.verification-summary span { display:block; }
@@ -221,31 +218,6 @@ td a { color:var(--green-dark); font-weight:850; }
   .action-proof__head { flex-direction:column; }
 }
 
-
-.ai-decision-panel { background:#f5f8f1; }
-.ai-decision-context { margin:14px 0 0; padding:12px 14px; border-left:3px solid var(--green); background:#fff; color:var(--ink-soft); }
-.ai-decision-result { display:grid; gap:12px; margin-top:18px; }
-.ai-decision-block { padding:17px; border:1px solid var(--line); border-radius:13px; background:#fff; }
-.ai-decision-block p { margin:8px 0; color:var(--ink-soft); }
-.ai-decision-block small { color:var(--muted); }
-.ai-decision-label { display:block; color:var(--forest); font-size:.72rem; font-weight:900; letter-spacing:.08em; text-transform:uppercase; }
-.ai-decision-proposal { border-style:dashed; background:var(--mint); }
-.ai-evidence-details { margin-top:13px; padding-top:12px; border-top:1px solid var(--line); }
-.ai-evidence-details summary { color:var(--green-dark); cursor:pointer; font-weight:850; }
-.ai-evidence-list { display:grid; gap:8px; margin-top:10px; }
-.ai-evidence-list > div { display:grid; gap:3px; padding:10px 12px; border-radius:9px; background:#f7faf5; }
-.ai-evidence-list strong { color:var(--forest); font-size:.82rem; }
-.ai-evidence-list span { color:var(--ink-soft); font-size:.8rem; }
-.ai-evidence-list small { font-size:.72rem; }
-.ai-decision-status { margin-top:15px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:#fff; color:var(--ink-soft); }
-.insight-card__links { display:flex; flex-wrap:wrap; gap:10px 16px; }
-.insight-card__links a { color:var(--green-dark); font-weight:900; }
-@media(max-width:760px) {
-  .insight-card__links { display:grid; gap:8px; }
-}
-@media(prefers-reduced-motion:reduce) {
-  .ai-decision-panel * { scroll-behavior:auto; }
-}
 
 /* UX-04 responsive decision-surface hardening */
 @media (max-width:760px) {
