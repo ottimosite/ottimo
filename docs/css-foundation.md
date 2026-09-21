@@ -56,3 +56,17 @@ Application-only selectors must not be introduced into this layer. Public pages 
 ## Landing-page ownership
 
 Landing-page composition is owned by `src/styles/lead-home.css`. Landing-only hero conversion, ethos, audit-preview and responsive rules belong there. `public-refresh.css` is reserved for genuinely reusable public marketing refinements; it must not become a second landing-page override layer.
+
+
+## Application and audit feature ownership
+
+The application feature layer is split by feature rather than by generic visual primitive:
+
+- `platform.css` owns reusable application/platform surfaces and platform-page composition. Audit-only evidence and AI decision presentation must not be added here.
+- `audit-overview.css` owns the audit overview surface, including the authoritative `.audit-stat-grid`, interpretation surface and audit-specific decision presentation.
+- `audit-expansion.css` owns deeper audit evidence, command-centre, evidence explorer and resource-detail presentation. It consumes the audit overview's shared audit-stat contract rather than redefining it.
+- `performance-metrics.css` owns performance metric explanation and status presentation; the audit interpretation surface is owned by `audit-overview.css`.
+- `standards.css` owns standards/criterion presentation.
+- `onboarding.css` owns audit setup/loading states.
+
+When a selector is used by more than one audit sub-surface, establish one authoritative definition in the owning audit feature stylesheet rather than adding a later override.
