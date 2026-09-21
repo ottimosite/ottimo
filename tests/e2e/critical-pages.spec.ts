@@ -70,7 +70,7 @@ test.describe('public landing page', () => {
           Array.from(document.querySelectorAll('*'))
             .filter(element => {
               const style = getComputedStyle(element)
-              return style.display !== 'none' && style.visibility !== 'hidden' && element.textContent?.trim()
+              return style.display !== 'none' && style.visibility !== 'hidden' && element.getClientRects().length > 0 && element.textContent?.trim()
             })
             .map(element => getComputedStyle(element).fontFamily),
         )
