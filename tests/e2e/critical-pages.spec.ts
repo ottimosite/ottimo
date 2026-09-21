@@ -60,7 +60,7 @@ function accessibilitySummary(
 }
 
 test.describe('public landing page', () => {
-  test('uses one sans-serif font family across the visible interface', async ({ page }) => {
+  ) => {
     for (const route of ['/', '/app/audits']) {
       await page.goto(route)
 
