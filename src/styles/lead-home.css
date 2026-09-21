@@ -167,7 +167,7 @@
 
   .lead-home > .lead-hero h1 {
     max-width: 860px;
-    font-size: clamp(3.8rem, 4vw, 5rem);
+    font-size: clamp(3rem, 3vw, 4rem);
   }
 }
 
