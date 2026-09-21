@@ -100,3 +100,18 @@
 .ai-decision-block p { margin: 0 0 .5rem; }
 .ai-decision-block small { color: var(--muted, #5d6675); }
 @media (max-width: 720px) { .ai-decision-controls, .ai-decision-result { grid-template-columns: 1fr; } .ai-decision-controls .btn { width: 100%; } }
+
+
+/* Audit issue header layout is feature-local; the tactical application-layout
+   layer previously supplied this contract globally. */
+.issue-explained .issue-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, auto);
+  align-items: start;
+  gap: 24px;
+}
+@media (max-width: 800px) {
+  .issue-explained .issue-top {
+    grid-template-columns: 1fr;
+  }
+}
