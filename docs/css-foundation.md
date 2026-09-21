@@ -70,3 +70,10 @@ The application feature layer is split by feature rather than by generic visual 
 - `onboarding.css` owns audit setup/loading states.
 
 When a selector is used by more than one audit sub-surface, establish one authoritative definition in the owning audit feature stylesheet rather than adding a later override.
+
+
+## Tactical application-layout retirement
+
+The tactical `application-layout.css` layer introduced during #166 has now been retired in #184. Its remaining audit issue-header contract is owned by `audit-overview.css`; command-centre contracts remain in `audit-expansion.css`, shared issue presentation remains in `platform.css`, and landing audit-preview structures remain in `lead-home.css`.
+
+New layout contracts must be added to their feature owner rather than to a final global override stylesheet.
