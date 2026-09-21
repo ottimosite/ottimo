@@ -60,6 +60,33 @@ function accessibilitySummary(
 }
 
 test.describe('public landing page', () => {
+  test('uses one sans-serif font family across the visible interface', async ({ page }) => {
+    for (const route of ['/', '/app/audits']) {
+      await page.goto(route)
+
+      const typography = await page.evaluate(() => {
+        const bodyFamily = getComputedStyle(document.body).fontFamily
+        const families = new Set(
+          Array.from(document.querySelectorAll('*'))
+            .filter(element => {
+              const style = getComputedStyle(element)
+              return style.display !== 'none' && style.visibility !== 'hidden' && element.textContent?.trim()
+            })
+            .map(element => getComputedStyle(element).fontFamily),
+        )
+
+        return {
+          bodyFamily,
+          families: [...families],
+        }
+      })
+
+      expect(typography.families).toEqual([typography.bodyFamily])
+      expect(typography.bodyFamily.toLowerCase()).not.toContain('serif')
+      expect(typography.bodyFamily.toLowerCase()).not.toContain('monospace')
+    }
+  })
+
   test('renders the core product narrative and has no accessibility violations', async ({ page }) => {
     const errors = await assertNoPageErrors(page)
     await page.goto('/')
