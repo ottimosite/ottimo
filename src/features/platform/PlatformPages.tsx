@@ -23,7 +23,7 @@ export function CategoryPage({ category }: { category: Category }) {
   const location = useLocation()
   const websiteId = new URLSearchParams(location.search).get('website')
   const audits = websiteId ? currentAudits().filter(item => item.websiteId === websiteId) : currentAudits()
-  const audit = audits.at(-1) ?? seedAudits.at(-1)!
+  const audit = audits.at(-1)!
   const score = audit.scores.find(item => item.category === category) ?? auditScores.find(item => item.category === category)!
   const issues = audit.issues.filter(issue => issue.category === category).sort((a, b) => b.priority - a.priority)
   const copy = categoryCopy[category]
