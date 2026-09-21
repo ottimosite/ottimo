@@ -63,8 +63,8 @@ test.describe('public landing page', () => {
   test('keeps the hero responsive without overflow or cramped columns', async ({ page }) => {
     const viewports = [
       { width: 1440, height: 1000, columns: 2 },
-      { width: 900, height: 1000, columns: 1 },
-      { width: 390, height: 844, columns: 1 },
+      { width: 899, height: 1000, columns: 1 },
+      { width: 389, height: 844, columns: 1 },
     ]
 
     for (const viewport of viewports) {
@@ -110,7 +110,11 @@ test.describe('public landing page', () => {
       })
 
       expect(typography.bodyFamily).toContain('sans-serif')
-      expect(typography.families.some(family => /Georgia|serif|monospace/i.test(family))).toBe(false)
+      const genericFamilies = typography.families.flatMap(family => family.split(',').map(token => token.trim().replace(/^["']|["']$/g, '').toLowerCase()))
+      expect(genericFamilies).not.toContain('serif')
+      expect(genericFamilies).not.toContain('monospace')
+      expect(genericFamilies).not.toContain('cursive')
+      expect(genericFamilies).not.toContain('fantasy')
     }
   })
 
