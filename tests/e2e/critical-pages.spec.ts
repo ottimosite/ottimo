@@ -82,8 +82,13 @@ test.describe('public landing page', () => {
       })
 
       expect(typography.families).toEqual([typography.bodyFamily])
-      expect(typography.bodyFamily.toLowerCase()).not.toContain('serif')
-      expect(typography.bodyFamily.toLowerCase()).not.toContain('monospace')
+      const genericFamilies = typography.bodyFamily
+        .split(',')
+        .map(family => family.trim().replace(/^["']|["']$/g, '').toLowerCase())
+
+      expect(genericFamilies).not.toContain('serif')
+      expect(genericFamilies).not.toContain('monospace')
+      expect(genericFamilies).toContain('sans-serif')
     }
   })
 
