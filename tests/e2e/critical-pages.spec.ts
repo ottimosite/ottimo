@@ -60,6 +60,27 @@ function accessibilitySummary(
 }
 
 test.describe('public landing page', () => {
+  test('keeps the desktop hero copy column usable', async ({ page }) => {
+    test.skip(page.viewportSize()?.width !== undefined && page.viewportSize()!.width < 1440, 'desktop geometry check')
+    await page.setViewportSize({ width: 1752, height: 1000 })
+    await page.goto('/')
+
+    const grid = page.locator('.lead-hero-grid')
+    const copy = grid.locator('> div').first()
+    const heading = page.getByRole('heading', { level: 1 })
+
+    const [gridBox, copyBox, headingBox] = await Promise.all([
+      grid.boundingBox(),
+      copy.boundingBox(),
+      heading.boundingBox(),
+    ])
+
+    expect(gridBox?.width ?? 0).toBeGreaterThanOrEqual(1100)
+    expect(copyBox?.width ?? 0).toBeGreaterThanOrEqual(500)
+    expect(headingBox?.width ?? 0).toBeGreaterThanOrEqual(500)
+    expect(headingBox?.height ?? 0).toBeLessThan(300)
+  })
+
   test('renders the core product narrative and has no accessibility violations', async ({ page }) => {
     const errors = await assertNoPageErrors(page)
     await page.goto('/')
