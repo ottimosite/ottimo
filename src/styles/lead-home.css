@@ -134,15 +134,17 @@
 
 .lead-home > .lead-hero {
   display: block;
-  width: 100%;
+  width: 100vw;
   max-width: none;
-  padding-left: max(30px, calc((100% - 1220px) / 2));
-  padding-right: max(30px, calc((100% - 1220px) / 2));
+  margin-left: calc(50% - 50vw);
+  box-sizing: border-box;
+  padding-left: max(30px, calc((100vw - 1220px) / 2));
+  padding-right: max(30px, calc((100vw - 1220px) / 2));
 }
 
 .lead-home > .lead-hero > .hero-kicker,
 .lead-home > .lead-hero > .lead-hero-grid {
-  width: min(100%, 1220px);
+  width: min(1220px, calc(100vw - 60px));
   max-width: 1220px;
   margin-left: auto;
   margin-right: auto;
