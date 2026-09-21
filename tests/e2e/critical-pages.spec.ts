@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import { createRequire } from 'node:module'
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect, type Page } from 'playwright/test'
 
 const require = createRequire(import.meta.url)
 const axeSourcePath = require.resolve('axe-core/axe.min.js')
