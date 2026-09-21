@@ -1,7 +1,11 @@
-import { test, expect } from '@playwright/test'
-import AxeBuilder from '@axe-core/playwright'
+import { readFile } from 'node:fs/promises'
+import { createRequire } from 'node:module'
+import { test, expect, type Page } from '@playwright/test'
 
-async function assertNoPageErrors(page: import('@playwright/test').Page) {
+const require = createRequire(import.meta.url)
+const axeSourcePath = require.resolve('axe-core/axe.min.js')
+
+async function assertNoPageErrors(page: Page) {
   const consoleErrors: string[] = []
   const requestFailures: string[] = []
 
@@ -20,6 +24,14 @@ async function assertNoPageErrors(page: import('@playwright/test').Page) {
   }
 }
 
+async function runAccessibilityCheck(page: Page) {
+  await page.addScriptTag({ content: await readFile(axeSourcePath, 'utf8') })
+  return page.evaluate(async () => {
+    const axe = (window as unknown as { axe: { run: () => Promise<{ violations: unknown[] }> } }).axe
+    return axe.run()
+  })
+}
+
 test.describe('public landing page', () => {
   test('renders the core product narrative and has no accessibility violations', async ({ page }) => {
     const errors = await assertNoPageErrors(page)
@@ -27,7 +39,7 @@ test.describe('public landing page', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
     await expect(page.getByRole('link', { name: /start|audit|get started/i }).first()).toBeVisible()
 
-    const results = await new AxeBuilder({ page }).analyze()
+    const results = await runAccessibilityCheck(page)
     expect(results.violations).toEqual([])
     errors.assertClean()
 
@@ -40,11 +52,11 @@ test.describe('onboarding and audit workspace', () => {
     const errors = await assertNoPageErrors(page)
     await page.goto('/app/audits/new')
     await expect(page.getByRole('heading', { level: 1 })).toContainText(/website/i)
-    await expect(page.getByRole('button', { name: /audit|continue|start/i }).first()).toBeVisible()
+    await expect(page.getByRole('button', { name: /continue to audit/i })).toBeVisible()
     errors.assertClean()
   })
 
-  test('renders the deterministic audit overview without runtime errors', async ({ page }) => {
+  test('renders the deterministic audit list without runtime errors', async ({ page }) => {
     const errors = await assertNoPageErrors(page)
     await page.goto('/app/audits')
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
