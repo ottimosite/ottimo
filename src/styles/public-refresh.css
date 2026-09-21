@@ -20,11 +20,11 @@
 .public-info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
 .public-info-grid article { min-height: 250px; padding: 28px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: #fff; }
 .public-info-grid article > span { color: var(--green-dark); font-size: .7rem; font-weight: 950; letter-spacing: .1em; }
-.public-info-grid h2 { margin: 38px 0 10px; color: var(--forest); font: normal clamp(1.7rem, 3vw, 2.5rem) / .98 Georgia, serif; letter-spacing: -.04em; }
+.public-info-grid h2 { margin: 38px 0 10px; color: var(--forest); font: normal clamp(1.7rem, 3vw, 2.5rem) / .98 var(--font-sans); letter-spacing: -.04em; }
 .public-info-grid p { max-width: 55ch; color: var(--ink-soft); line-height: 1.55; }
 .public-info-grid strong { display: block; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--green-dark); font-size: .78rem; line-height: 1.45; }
 .public-info-proof { display: grid; grid-template-columns: .9fr 1.1fr; gap: 70px; margin-top: 72px; padding: 55px; background: var(--lime); }
-.public-info-proof h2 { margin: 14px 0; color: var(--forest); font: normal clamp(2.1rem, 4vw, 3.7rem) / .96 Georgia, serif; letter-spacing: -.05em; }
+.public-info-proof h2 { margin: 14px 0; color: var(--forest); font: normal clamp(2.1rem, 4vw, 3.7rem) / .96 var(--font-sans); letter-spacing: -.05em; }
 .public-info-proof p { max-width: 56ch; color: var(--ink-soft); }
 .public-info-proof-list { display: grid; align-content: center; }
 .public-info-proof-list span { padding: 17px 0; border-bottom: 1px solid rgba(18,61,46,.22); color: var(--forest); font-weight: 900; }
