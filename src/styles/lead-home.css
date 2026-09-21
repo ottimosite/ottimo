@@ -167,6 +167,10 @@
     padding-left: 30px;
     padding-right: 30px;
   }
+
+  .lead-home > .lead-hero > .lead-hero-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 600px) {
