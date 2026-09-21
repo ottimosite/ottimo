@@ -60,35 +60,45 @@ function accessibilitySummary(
 }
 
 test.describe('public landing page', () => {
-  test('keeps the hero responsive without overflow or cramped columns', async ({ page }) => {
+  test('keeps the hero responsive without overflow or cramped columns', async ({ browser }) => {
     const viewports = [
       { width: 1440, height: 1000, columns: 2 },
       { width: 899, height: 1000, columns: 1 },
       { width: 389, height: 844, columns: 1 },
     ]
 
+    const baseURL = test.info().project.use.baseURL as string
+
     for (const viewport of viewports) {
-      await page.setViewportSize(viewport)
-      await page.goto('/')
+      const context = await browser.newContext({ baseURL, viewport: { width: viewport.width, height: viewport.height } })
+      const page = await context.newPage()
 
-      const grid = page.locator('.lead-hero-grid')
-      const heading = page.getByRole('heading', { level: 1 })
+      try {
+        await page.goto('/')
 
-      await expect(grid).toBeVisible()
-      await expect(heading).toBeVisible()
+        const grid = page.locator('.lead-hero-grid')
+        const heading = page.getByRole('heading', { level: 1 })
 
-      const layout = await page.evaluate(() => {
-        const grid = document.querySelector('.lead-hero-grid')
-        if (!grid) return null
-        return {
-          columns: getComputedStyle(grid).gridTemplateColumns,
-          overflow: document.documentElement.scrollWidth > window.innerWidth,
-        }
-      })
+        await expect(grid).toBeVisible()
+        await expect(heading).toBeVisible()
 
-      expect(layout).not.toBeNull()
-      expect(layout?.columns.split(' ').length).toBe(viewport.columns)
-      expect(layout?.overflow).toBe(false)
+        const layout = await page.evaluate(() => {
+          const grid = document.querySelector('.lead-hero-grid')
+          if (!grid) return null
+          return {
+            viewportWidth: window.innerWidth,
+            columns: getComputedStyle(grid).gridTemplateColumns,
+            overflow: document.documentElement.scrollWidth > window.innerWidth,
+          }
+        })
+
+        expect(layout).not.toBeNull()
+        expect(layout?.viewportWidth).toBe(viewport.width)
+        expect(layout?.columns.split(' ').length).toBe(viewport.columns)
+        expect(layout?.overflow).toBe(false)
+      } finally {
+        await context.close()
+      }
     }
   })
 
