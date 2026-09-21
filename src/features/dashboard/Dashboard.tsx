@@ -1,14 +1,12 @@
 import { Link } from 'react-router-dom'
-import { auditScores, seedAudits, seedWebsites, categoryLabels } from '../../data/mock'
-import { storage } from '../../services/storage'
+import { auditScores, categoryLabels } from '../../data/mock'
+import { localRepository } from '../../services/local-repository'
 import { Card, Score, Progress } from '../../components/ui'
 import { formatDate } from '../../lib/format'
 
 export function Dashboard() {
-  const storedAudits = storage.audits()
-  const storedWebsites = storage.websites()
-  const audits = storedAudits.length ? storedAudits : seedAudits
-  const websites = storedWebsites.length ? storedWebsites : seedWebsites
+  const audits = localRepository.audits()
+  const websites = localRepository.websites()
   const audit = audits[audits.length - 1]!
   const website = websites.find(item => item.id === audit.websiteId) ?? websites[0]
 

@@ -300,3 +300,7 @@
 .preview-action{border-bottom:0}
 .preview-action strong{font-weight:900}
 .preview-note{color:#d9e7d6}
+
+
+@media (min-width:1440px){.lead-home .lead-hero{max-width:1440px;}.coverage-section,.case-study-lead{max-width:1440px;}.lead-form{max-width:1360px;}}
+.public-home.lead-home{width:100%;max-width:none;margin:0;padding-left:0;padding-right:0;}.public-home.lead-home>section{box-sizing:border-box;}

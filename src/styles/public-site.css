@@ -35,3 +35,7 @@ footer p{max-width:460px;margin:12px 0 0;color:#b9d1bf;font-size:.86rem}
  .site-header .header-actions{gap:8px}
  .site-header .header-actions .btn{flex:1}
 }
+
+
+.hero{overflow:hidden;}
+@media (min-width:1440px){.public-home,.content-page{max-width:1440px;padding-inline:48px;}}

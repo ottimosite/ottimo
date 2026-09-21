@@ -1,6 +1,6 @@
 # Ottimo Architecture Baseline
 
-> Baseline for refactor programme #167. Captured from the repository state on 20 September 2026. This document records observed structure; candidates are not deletion instructions.
+> Baseline for refactor programme #167. Captured from the repository state on 20 September 2026. This document records observed structure; candidates are not deletion instructions. Historical measurements remain intentionally preserved where noted.
 
 ## 1. Scope
 
@@ -20,9 +20,7 @@ It deliberately does **not** change runtime behaviour or audit evidence semantic
 1. `global.css`
 2. `components.css`
 3. `platform.css`
-4. `overrides.css`
-5. `menu-overrides.css`
-6. `concepts.css`
+4. `concepts.css`
 7. `lead-home.css`
 8. `public-refresh.css`
 9. `public-services.css`
@@ -34,7 +32,7 @@ It deliberately does **not** change runtime behaviour or audit evidence semantic
 15. `quality.css`
 16. `application-layout.css` — removed in #184
 
-The last stylesheet is explicitly described in source as a tactical deterministic application-layout contract. It currently contains multiple `!important` declarations so that critical layouts win over earlier shared rules. This is evidence of cascade pressure, not a target architecture.
+The legacy `overrides.css` and `menu-overrides.css` layers have since been removed in #182. Their remaining required rules were redistributed to their owning stylesheets. The last stylesheet is explicitly described in source as a tactical deterministic application-layout contract. It currently contains multiple `!important` declarations so that critical layouts win over earlier shared rules. This is evidence of cascade pressure, not a target architecture.
 
 ### Measured stylesheet inventory
 
@@ -43,8 +41,8 @@ The last stylesheet is explicitly described in source as a tactical deterministi
 | global.css | 17,422 | 214 | 310 | 15 | 0 |
 | components.css | 4,412 | 55 | 83 | 3 | 0 |
 | platform.css | 20,654 | 254 | 394 | 14 | 0 |
-| overrides.css | 3,376 | 51 | 83 | 3 | 0 |
-| menu-overrides.css | 3,171 | 38 | 73 | 2 | 1 |
+| overrides.css | removed in #182 | — | — | — | — |
+| menu-overrides.css | removed in #182 | — | — | — | — |
 | concepts.css | 5,699 | 65 | 133 | 1 | 0 |
 | lead-home.css | 13,664 | 158 | 321 | 9 | 0 |
 | public-refresh.css | 9,011 | 109 | 184 | 8 | 0 |
@@ -57,8 +55,10 @@ The last stylesheet is explicitly described in source as a tactical deterministi
 | quality.css | 545 | 6 | 2 | 2 | 4 |
 | application-layout.css | removed in #184 | — | — | — | — |
 | **Total** | **103,173** | **1,390** | **2,336** | **85** | **34** |
+| application-layout.css | 3,208 | 39 | 47 | 3 | 27 |
+| **Historical baseline total** | **103,173** | **1,390** | **2,336** | **85** | **34** |
 
-Counts are mechanical inventory measures, not quality scores. Selector occurrences include repeated selector tokens within selectors and therefore should not be interpreted as unique rule counts.
+Counts are mechanical inventory measures, not quality scores. The table preserves the pre-refactor baseline; it is not a current post-#182 measurement. Selector occurrences include repeated selector tokens within selectors and therefore should not be interpreted as unique rule counts.
 
 ## 3. Confirmed CSS duplication/overlap
 
@@ -73,14 +73,14 @@ The following class names are defined in multiple stylesheets and require owners
 - `section-head` — components, platform, audit-overview, audit-expansion
 - `muted` — components, platform, audit-overview, performance-metrics
 - `text-link` — concepts, lead-home, public-refresh, public-services
-- `site-header` — global, overrides, menu-overrides
-- `brand` — global, overrides, menu-overrides
-- `header-actions` — global, overrides, menu-overrides
-- `sidebar` — global, overrides, menu-overrides
-- `menu-toggle` — global, overrides, menu-overrides
-- `app-content` — global, platform, overrides
-- `hero` — global, overrides
-- `content-page` — global, overrides
+- `site-header` — global/shell ownership established; legacy override layers removed in #182
+- `brand` — global/shell ownership established; legacy override layers removed in #182
+- `header-actions` — global/shell ownership established; legacy override layers removed in #182
+- `sidebar` — global/shell ownership established; legacy override layers removed in #182
+- `menu-toggle` — global/shell ownership established; legacy override layers removed in #182
+- `app-content` — shell ownership established; legacy platform/override duplication reduced in #182
+- `hero` — public-site ownership established; legacy override duplication removed in #182
+- `content-page` — public-site ownership established; legacy override duplication removed in #182
 - `content-hero` — global, public-refresh
 - `side-cta` — global, overrides
 
@@ -96,7 +96,7 @@ The following class names are defined in multiple stylesheets and require owners
 - `screenshot-card` / `screenshot-frame` — components, audit-expansion
 - `stat-icon` — components, audit-overview
 - `standard-tag` / `criterion` — components, standards
-- `stack` / `score-card` / `metric-copy` / `hero-metrics` — platform, overrides
+- `stack` / `score-card` / `metric-copy` / `hero-metrics` — platform ownership; legacy override rules removed in #182
 - `evidence-status` / `evidence-status--unavailable` — platform, audit-expansion
 - `ai-decision-* ` — platform and audit-overview
 - `profile-list` / `section-subtitle` — audit-overview and audit-expansion
@@ -130,6 +130,10 @@ Confirmed observations:
 3. `application-layout.css` was previously imported last specifically to override earlier layout rules; it was removed in #184.
 4. The tactical layer contained 27 `!important` declarations; those declarations were removed with the stylesheet.
 5. Remaining `!important` declarations are limited to other documented contracts in `audit-overview.css`, `onboarding.css` and `quality.css`.
+2. `overrides.css` and `menu-overrides.css` were identified as superseded override layers and removed in #182.
+3. `application-layout.css` is imported last specifically to override earlier layout rules.
+4. `application-layout.css` contains 27 `!important` declarations.
+5. Other `!important` declarations exist in `menu-overrides.css`, `audit-overview.css`, `onboarding.css` and `quality.css`.
 6. Responsive rules are distributed across most stylesheet files, with 85 `@media` occurrences in the current inventory.
 7. The architecture therefore depends partly on cascade order rather than a single explicit ownership model.
 
@@ -276,3 +280,17 @@ The desired end state is not a particular number of CSS files. It is:
 - rendered behaviour protected by automated and manual QA;
 - unchanged evidence integrity.
 
+
+
+### Local repository read boundary
+
+The local demo application's persisted/seed read policy is owned by `src/services/local-repository.ts`. Feature components should use `localRepository` for normal website/audit reads rather than combining `storage` with seed collections themselves.
+
+The repository currently exposes:
+- `audits()`
+- `websites()`
+- `findAudit(id)`
+- `findWebsite(id)`
+- `websiteForAudit(audit)`
+
+This boundary preserves the existing fallback policy: persisted collections are used when non-empty; otherwise the corresponding seed collection is returned. Storage writes remain owned by `storage.ts` while this migration is in progress.
