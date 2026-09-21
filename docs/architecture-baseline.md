@@ -32,7 +32,7 @@ It deliberately does **not** change runtime behaviour or audit evidence semantic
 13. `performance-metrics.css`
 14. `onboarding.css`
 15. `quality.css`
-16. `application-layout.css`
+16. `application-layout.css` — removed in #184
 
 The last stylesheet is explicitly described in source as a tactical deterministic application-layout contract. It currently contains multiple `!important` declarations so that critical layouts win over earlier shared rules. This is evidence of cascade pressure, not a target architecture.
 
@@ -55,7 +55,7 @@ The last stylesheet is explicitly described in source as a tactical deterministi
 | performance-metrics.css | 2,209 | 29 | 60 | 2 | 0 |
 | onboarding.css | 5,639 | 74 | 151 | 2 | 1 |
 | quality.css | 545 | 6 | 2 | 2 | 4 |
-| application-layout.css | 3,208 | 39 | 47 | 3 | 27 |
+| application-layout.css | removed in #184 | — | — | — | — |
 | **Total** | **103,173** | **1,390** | **2,336** | **85** | **34** |
 
 Counts are mechanical inventory measures, not quality scores. Selector occurrences include repeated selector tokens within selectors and therefore should not be interpreted as unique rule counts.
@@ -127,9 +127,9 @@ Confirmed observations:
 
 1. `src/main.tsx` relies on global stylesheet import order.
 2. `overrides.css` and `menu-overrides.css` both redefine application/public shell concepts already present in `global.css`.
-3. `application-layout.css` is imported last specifically to override earlier layout rules.
-4. `application-layout.css` contains 27 `!important` declarations.
-5. Other `!important` declarations exist in `menu-overrides.css`, `audit-overview.css`, `onboarding.css` and `quality.css`.
+3. `application-layout.css` was previously imported last specifically to override earlier layout rules; it was removed in #184.
+4. The tactical layer contained 27 `!important` declarations; those declarations were removed with the stylesheet.
+5. Remaining `!important` declarations are limited to other documented contracts in `audit-overview.css`, `onboarding.css` and `quality.css`.
 6. Responsive rules are distributed across most stylesheet files, with 85 `@media` occurrences in the current inventory.
 7. The architecture therefore depends partly on cascade order rather than a single explicit ownership model.
 
@@ -222,8 +222,9 @@ The refactor must preserve the existing architecture contracts:
 
 The following are **candidates for investigation only**:
 
-- `overrides.css`
-- `menu-overrides.css`
+- `overrides.css` — removed in #182
+- `menu-overrides.css` — removed in #182
+- `application-layout.css` — removed in #184
 - portions of `lead-home.css` that overlap the newer `public-refresh.css`
 - duplicated primitives in `global.css`, `components.css` and `platform.css`
 - compatibility declarations in `application-layout.css` once its consumers have migrated
