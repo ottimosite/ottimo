@@ -60,6 +60,38 @@ function accessibilitySummary(
 }
 
 test.describe('public landing page', () => {
+  test('keeps the hero responsive without overflow or cramped columns', async ({ page }) => {
+    const viewports = [
+      { width: 1440, height: 1000, columns: 2 },
+      { width: 900, height: 1000, columns: 1 },
+      { width: 390, height: 844, columns: 1 },
+    ]
+
+    for (const viewport of viewports) {
+      await page.setViewportSize(viewport)
+      await page.goto('/')
+
+      const grid = page.locator('.lead-hero-grid')
+      const heading = page.getByRole('heading', { level: 1 })
+
+      await expect(grid).toBeVisible()
+      await expect(heading).toBeVisible()
+
+      const layout = await page.evaluate(() => {
+        const grid = document.querySelector('.lead-hero-grid')
+        if (!grid) return null
+        return {
+          columns: getComputedStyle(grid).gridTemplateColumns,
+          overflow: document.documentElement.scrollWidth > window.innerWidth,
+        }
+      })
+
+      expect(layout).not.toBeNull()
+      expect(layout?.columns.split(' ').length).toBe(viewport.columns)
+      expect(layout?.overflow).toBe(false)
+    }
+  })
+
   test('renders the core product narrative and has no accessibility violations', async ({ page }) => {
     const errors = await assertNoPageErrors(page)
     await page.goto('/')
