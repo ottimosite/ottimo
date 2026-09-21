@@ -162,12 +162,12 @@
 
 @media (min-width: 1100px) {
   .lead-home > .lead-hero > .lead-hero-grid {
-    grid-template-columns: minmax(520px, 1fr) minmax(420px, .84fr);
+    grid-template-columns: minmax(0, 1fr) 420px;
   }
 
   .lead-home > .lead-hero h1 {
     max-width: 860px;
-    font-size: clamp(4.8rem, 5.5vw, 6.8rem);
+    font-size: clamp(3.8rem, 4vw, 5rem);
   }
 }
 
