@@ -60,35 +60,57 @@ function accessibilitySummary(
 }
 
 test.describe('public landing page', () => {
-  ) => {
+  test('keeps the hero responsive without overflow or cramped columns', async ({ page }) => {
+    const viewports = [
+      { width: 1440, height: 1000, columns: 2 },
+      { width: 900, height: 1000, columns: 1 },
+      { width: 390, height: 844, columns: 1 },
+    ]
+
+    for (const viewport of viewports) {
+      await page.setViewportSize(viewport)
+      await page.goto('/')
+
+      const grid = page.locator('.lead-hero-grid')
+      const heading = page.getByRole('heading', { level: 1 })
+
+      await expect(grid).toBeVisible()
+      await expect(heading).toBeVisible()
+
+      const layout = await page.evaluate(() => {
+        const grid = document.querySelector('.lead-hero-grid')
+        if (!grid) return null
+        return {
+          columns: getComputedStyle(grid).gridTemplateColumns,
+          overflow: document.documentElement.scrollWidth > window.innerWidth,
+        }
+      })
+
+      expect(layout).not.toBeNull()
+      expect(layout?.columns.split(' ').length).toBe(viewport.columns)
+      expect(layout?.overflow).toBe(false)
+    }
+  })
+
+  test('uses the authoritative sans-serif family on public and application routes', async ({ page }) => {
     for (const route of ['/', '/app/audits']) {
       await page.goto(route)
 
       const typography = await page.evaluate(() => {
         const bodyFamily = getComputedStyle(document.body).fontFamily
-        const families = new Set(
-          Array.from(document.querySelectorAll('*'))
-            .filter(element => {
-              const style = getComputedStyle(element)
-              return style.display !== 'none' && style.visibility !== 'hidden' && element.getClientRects().length > 0 && element.textContent?.trim()
-            })
-            .map(element => getComputedStyle(element).fontFamily),
-        )
+        const textElements = Array.from(document.querySelectorAll('body *')).filter(element => {
+          const style = getComputedStyle(element)
+          return style.display !== 'none' && style.visibility !== 'hidden' && element.getClientRects().length > 0 && element.textContent?.trim()
+        })
 
         return {
           bodyFamily,
-          families: [...families],
+          families: [...new Set(textElements.map(element => getComputedStyle(element).fontFamily))],
         }
       })
 
-      expect(typography.families).toEqual([typography.bodyFamily])
-      const genericFamilies = typography.bodyFamily
-        .split(',')
-        .map(family => family.trim().replace(/^["']|["']$/g, '').toLowerCase())
-
-      expect(genericFamilies).not.toContain('serif')
-      expect(genericFamilies).not.toContain('monospace')
-      expect(genericFamilies).toContain('sans-serif')
+      expect(typography.bodyFamily).toContain('sans-serif')
+      expect(typography.families.some(family => /Georgia|serif|monospace/i.test(family))).toBe(false)
     }
   })
 
