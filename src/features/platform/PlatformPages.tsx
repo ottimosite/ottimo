@@ -1,5 +1,5 @@
 import { Link, useLocation, useParams } from 'react-router-dom'
-import { auditScores, categoryLabels } from '../../data/mock'
+import { auditScores, categoryLabels, seedAudits } from '../../data/mock'
 import { storage } from '../../services/storage'
 import { localRepository } from '../../services/local-repository'
 import type { Category } from '../../types/domain'
