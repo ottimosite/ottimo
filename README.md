@@ -18,8 +18,11 @@ npm run dev
 npm run build
 npm run preview
 npm run test
+npm run test:e2e
 npm run lint
 ```
+
+`npm run test:e2e` starts the Vite development server and runs Chromium against representative rendered journeys. In CI, the Quality Gate installs Chromium and also captures a landing-page screenshot for inspection. Browser accessibility checks use the repository's existing `axe-core` dependency.
 
 ## Architecture
 
@@ -36,6 +39,7 @@ npm run lint
 - Durable server storage through the `ServerStorageAdapter` contract
 - Native SVG/CSS-style data presentation; no charting library
 - Vitest + Testing Library for automated tests
+- Playwright + axe-core for rendered-page quality checks
 
 ## Project structure
 
@@ -48,10 +52,10 @@ src/
   pages/            public website pages
   services/         audit, authentication, persistence and runtime integrations
   styles/           global responsive design system
-  services/         audit provider, authentication and persistence boundaries
-  styles/            global responsive design system
-  tests/             unit/component tests
   types/             domain models
+  tests/             unit/component tests
+tests/
+  e2e/              rendered browser journeys
 ```
 
 ## Demo behaviour
@@ -78,6 +82,7 @@ The server-side persistence path is provider-independent at the repository bound
 Netlify production uses a site-wide strongly consistent store. Preview and branch deployments use deploy-scoped storage so non-production data is isolated from production. The runtime receives Netlify storage configuration from the platform; no storage credentials are committed to the repository.
 
 Set `OTTIMO_SESSION_SECRET` as a server-side environment variable with at least 32 characters. Local tests inject their own secret and never require Netlify credentials.
+
 ## Authentication boundary
 
 The authenticated application uses a replaceable server-session boundary. Production deployments can enable it with `VITE_AUTH_REQUIRED=true`. The browser never stores session secrets or credentials.
@@ -116,11 +121,14 @@ The current service boundaries are designed so real Lighthouse/PageSpeed/crawler
 - No external fonts required
 - Stable dimensions and simple CSS visualisations
 - Deterministic local data for reproducible tests
+- Rendered desktop/mobile smoke coverage
+- Automated axe-core accessibility checks on representative public content
 
 ## Environment
 
 Production secrets and platform configuration must be managed through the deployment environment rather than committed to source control.
-Copy `.env.example` only when adding environment-specific integrations. The local demo does not need environment variables. Production storage credentials, when required by the selected server platform, must be configured through the platform environment rather than committed to the repository.
+Copy `.env.example` only when adding environment-specific integrations. The local demo does not need environment variables. Production storage credentials, when required by the selected server platform, must be configured through the platform environment rather than committed to repository.
+
 ## Real-site acceptance scenarios
 
 The audit engine has deterministic acceptance contracts under `src/audit-engine/acceptance/`. These remain synthetic structural fixtures for edge-case coverage, while the default product/demo snapshot uses the captured real Wikipedia site described above.
@@ -136,7 +144,6 @@ When adding a scenario:
 ## Engineering workflow
 
 GitHub is the single source of truth for Ottimo planning and delivery. See [docs/engineering-workflow.md](docs/engineering-workflow.md) for the branch, issue, PR and quality-gate workflow.
-
 
 ## Production security boundary
 

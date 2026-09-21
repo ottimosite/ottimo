@@ -2,7 +2,7 @@ name: Quality Gate
 
 on:
   push:
-    branches: [master, 'feat/**']
+    branches: [master, 'feat/**', 'refactor/**', 'quality/**']
   pull_request:
     branches: [master]
 
@@ -30,3 +30,9 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Rendered page QA
+        run: npm run test:e2e
