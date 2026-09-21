@@ -27,7 +27,7 @@
 .section-intro p{max-width:580px;color:var(--ink-soft);font-size:1.08rem}
 .coverage-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;margin-top:58px;background:var(--line);border:1px solid var(--line)}
 .coverage-item{min-height:205px;padding:25px;background:var(--cream)}
-.coverage-item>span{color:var(--coral);font-size:.76rem;font-weight:950;letter-spacing:.1em}
+.coverage-item>span{color:var(--green-dark);font-size:.76rem;font-weight:950;letter-spacing:.1em}
 .coverage-item h3{margin:28px 0 8px;color:var(--forest);font-size:1.15rem}
 .coverage-item p{margin:0;color:var(--ink-soft);font-size:.93rem}
 .case-study-lead{width:100%;max-width:none;margin:0;padding:25px max(30px,calc((100vw - 1220px)/2)) 115px;display:grid;grid-template-columns:1fr .65fr;gap:80px;align-items:center}
@@ -89,7 +89,7 @@
 .method-lead p{max-width:540px;color:var(--ink-soft);font-size:1.06rem;line-height:1.65}
 .method-steps{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
 .method-steps li{display:grid;grid-template-columns:60px 1fr;gap:22px;padding:28px 0;border-bottom:1px solid var(--line)}
-.method-steps li>span{font-weight:950;color:var(--coral);font-size:.78rem;letter-spacing:.08em}
+.method-steps li>span{font-weight:950;color:var(--green-dark);font-size:.78rem;letter-spacing:.08em}
 .method-steps h3{margin:0 0 7px;color:var(--forest);font-size:1.35rem}
 .method-steps p{margin:0;color:var(--ink-soft);max-width:620px;line-height:1.55}
 .principles-section{background:var(--forest);color:#fff;padding:105px max(30px,calc((100vw - 1160px)/2));display:grid;grid-template-columns:.8fr 1.2fr;gap:80px}
