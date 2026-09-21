@@ -35,6 +35,10 @@ canvas {
   max-width: 100%;
 }
 
+svg {
+  font-family: var(--font-sans);
+}
+
 img,
 video {
   height: auto;
