@@ -53,7 +53,7 @@
 
 
 .audit-output-section { padding: 80px 0; border-top: 1px solid var(--line); }
-.audit-output-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:34px; border-top:1px solid var(--line); border-left:1px solid var(--line); }
+.audit-output-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:34px; border-top:1px solid var(--line); border-left:1px solid var(--line); }\n.audit-output-grid article > span { color:var(--green-dark); }
 .audit-output-grid article { min-height:220px; padding:28px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); background:#fff; }
 .audit-output-grid article > span { color:var(--coral); font-size:.7rem; font-weight:950; letter-spacing:.1em; }
 .audit-output-grid h3 { margin:38px 0 10px; color:var(--forest); font-size:1.35rem; }
