@@ -126,7 +126,6 @@ test.describe('public landing page', () => {
       expect(genericFamilies).not.toContain('cursive')
       expect(genericFamilies).not.toContain('fantasy')
 
-      expect(genericFamilies).not.toContain('fantasy')
     }
   })
 
