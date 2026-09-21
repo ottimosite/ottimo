@@ -10,7 +10,7 @@
 .btn:focus-visible{position:relative;z-index:1}
 
 .card{min-width:0;padding:26px;border:1px solid var(--line);border-radius:var(--radius-xl);background:var(--surface);box-shadow:var(--shadow-card)}
-.card>h2{margin:0 0 16px;color:var(--forest);font:normal 1.9rem/1.05 var(--font-serif);letter-spacing:-.04em}
+.card>h2{margin:0 0 16px;color:var(--forest);font:normal 1.9rem/1.05 var(--font-sans);letter-spacing:-.04em}
 .card p:last-child{margin-bottom:0}
 .card>a{color:var(--green-dark);font-weight:850}
 
@@ -18,5 +18,5 @@
 
 .muted{color:var(--muted)}
 .section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
-.section-head h2{margin:7px 0 0;color:var(--forest);font:normal 1.9rem/1.05 var(--font-serif);letter-spacing:-.04em}
+.section-head h2{margin:7px 0 0;color:var(--forest);font:normal 1.9rem/1.05 var(--font-sans);letter-spacing:-.04em}
 .section-head>a{color:var(--green-dark);font-weight:850;white-space:nowrap}
