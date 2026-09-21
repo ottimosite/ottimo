@@ -134,31 +134,61 @@
 
 .lead-home > .lead-hero {
   display: block;
+  width: 100vw;
+  max-width: none;
+  margin-left: calc(50% - 50vw);
+  box-sizing: border-box;
   padding-left: max(30px, calc((100vw - 1220px) / 2));
   padding-right: max(30px, calc((100vw - 1220px) / 2));
 }
 
 .lead-home > .lead-hero > .hero-kicker,
 .lead-home > .lead-hero > .lead-hero-grid {
-  width: 100%;
+  width: min(1220px, calc(100vw - 60px));
   max-width: 1220px;
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline: auto;
+  min-width: 0;
 }
 
 .lead-home > .lead-hero > .lead-hero-grid {
-  grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr);
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: clamp(48px, 5vw, 72px);
 }
 
-@media (min-width: 1440px) {
-  .lead-home > .lead-hero > .lead-hero-grid {
-    grid-template-columns: minmax(0, 1fr) minmax(500px, .8fr);
-    gap: clamp(72px, 6vw, 120px);
-  }
+.lead-home > .lead-hero > .lead-hero-grid > * {
+  min-width: 0;
+}
+
 
   .lead-home > .lead-hero h1 {
     max-width: 860px;
     font-size: clamp(3rem, 3vw, 4rem);
+  }
+
+.lead-home > .lead-hero h1 {
+  max-width: 860px;
+  font-size: clamp(3rem, 3vw, 4rem);
+}
+
+@media (max-width: 900px) {
+  .lead-home > .lead-hero {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+
+  .lead-home > .lead-hero > .lead-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lead-home > .lead-hero h1 {
+    font-size: clamp(3rem, 8vw, 5rem);
+  }
+}
+
+@media (max-width: 600px) {
+  .lead-home > .lead-hero {
+    padding-left: 22px;
+    padding-right: 22px;
   }
 }
 
@@ -177,10 +207,6 @@
   .lead-home > .lead-hero {
     padding-left: 22px;
     padding-right: 22px;
-  }
-
-  .lead-home > .lead-hero > .lead-hero-grid {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -305,10 +331,11 @@
 .preview-action strong{font-weight:900}
 .preview-note{color:#d9e7d6}
 
-
 @media (min-width: 1440px) {
   .coverage-section,
   .case-study-lead { max-width: 1440px; }
   .lead-form { max-width: 1360px; }
 }
+
+@media (min-width:1440px){.coverage-section,.case-study-lead{max-width:1440px;}.lead-form{max-width:1360px;}}
 .public-home.lead-home{width:100%;max-width:none;margin:0;padding-left:0;padding-right:0;}.public-home.lead-home>section{box-sizing:border-box;}
