@@ -110,3 +110,7 @@ main:focus{outline:none}
  .auth-account button{min-height:40px}
 }
 @media(prefers-reduced-motion:reduce){.menu-toggle span{transition:none}.site-header .brand{transition:none}}
+
+
+/* Large-screen shell spacing previously supplied by overrides.css. */
+@media (min-width:1440px){.site-header{padding-inline:max(5vw,calc((100vw - 1560px)/2));}.app-content{width:100%;max-width:1440px;margin-inline:auto;padding-inline:48px;}.app-content>.stack{max-width:none;}.app-top{padding-inline:max(4vw,calc((100vw - 1560px)/2));}}
