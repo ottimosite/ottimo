@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { Link, NavLink, Outlet, useLocation, useParams } from 'react-router-dom'
-import { seedAudits } from '../data/mock'
-import { storage } from '../services/storage'
+import { localRepository } from '../services/local-repository'
 import { useAuth } from '../features/auth/AuthBoundary'
 
 const publicLinks = [
@@ -47,7 +46,7 @@ function WebsiteContextNav({ closeMenu }: { closeMenu: () => void }) {
   const { id: auditId } = useParams()
   const websiteRouteMatch = location.pathname.match(/^\/app\/websites\/([^/]+)$/)
   const websiteIdFromQuery = new URLSearchParams(location.search).get('website')
-  const audit = auditId ? [...storage.audits(), ...seedAudits].find(item => item.id === auditId) : undefined
+  const audit = auditId ? localRepository.findAudit(auditId) : undefined
   const id = websiteRouteMatch?.[1] ?? websiteIdFromQuery ?? audit?.websiteId
 
   if (!id || location.pathname.endsWith('/new') || location.pathname.endsWith('/run')) return null
