@@ -27,9 +27,36 @@ async function assertNoPageErrors(page: Page) {
 async function runAccessibilityCheck(page: Page) {
   await page.addScriptTag({ content: await readFile(axeSourcePath, 'utf8') })
   return page.evaluate(async () => {
-    const axe = (window as unknown as { axe: { run: () => Promise<{ violations: unknown[] }> } }).axe
+    const axe = (window as unknown as {
+      axe: {
+        run: () => Promise<{
+          violations: Array<{
+            id: string
+            impact?: string | null
+            help: string
+            nodes: Array<{ target: string[] }>
+          }>
+        }>
+      }
+    }).axe
     return axe.run()
   })
+}
+
+function accessibilitySummary(
+  violations: Array<{
+    id: string
+    impact?: string | null
+    help: string
+    nodes: Array<{ target: string[] }>
+  }>,
+) {
+  return violations.map(violation => ({
+    id: violation.id,
+    impact: violation.impact,
+    help: violation.help,
+    targets: violation.nodes.map(node => node.target.join(' ')),
+  }))
 }
 
 test.describe('public landing page', () => {
@@ -40,10 +67,14 @@ test.describe('public landing page', () => {
     await expect(page.getByRole('link', { name: /start|audit|get started/i }).first()).toBeVisible()
 
     const results = await runAccessibilityCheck(page)
-    expect(results.violations).toEqual([])
+    const violations = accessibilitySummary(results.violations)
+    expect(violations, 'accessibility violations').toEqual([])
     errors.assertClean()
 
-    await page.screenshot({ path: 'test-results/landing-desktop.png', fullPage: true })
+    await page.screenshot({
+      path: `test-results/landing-${test.info().project.name}.png`,
+      fullPage: true,
+    })
   })
 })
 
