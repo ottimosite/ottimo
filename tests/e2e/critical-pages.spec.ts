@@ -60,25 +60,54 @@ function accessibilitySummary(
 }
 
 test.describe('public landing page', () => {
-  test('keeps the desktop hero copy column usable', async ({ page }) => {
-    test.skip(page.viewportSize()?.width !== undefined && page.viewportSize()!.width < 1440, 'desktop geometry check')
-    await page.setViewportSize({ width: 1752, height: 1000 })
+  test('keeps the hero responsive without overflow or cramped columns', async ({ page }) => {
     await page.goto('/')
 
     const grid = page.locator('.lead-hero-grid')
-    const copy = grid.locator('> div').first()
     const heading = page.getByRole('heading', { level: 1 })
 
-    const [gridBox, copyBox, headingBox] = await Promise.all([
-      grid.boundingBox(),
-      copy.boundingBox(),
-      heading.boundingBox(),
-    ])
+    await expect(grid).toBeVisible()
+    await expect(heading).toBeVisible()
 
-    expect(gridBox?.width ?? 0).toBeGreaterThanOrEqual(1100)
-    expect(copyBox?.width ?? 0).toBeGreaterThanOrEqual(500)
-    expect(headingBox?.width ?? 0).toBeGreaterThanOrEqual(500)
-    expect(headingBox?.height ?? 0).toBeLessThan(300)
+    const desktopLayout = await page.evaluate(() => {
+      const grid = document.querySelector('.lead-hero-grid')
+      if (!grid) return null
+      const styles = getComputedStyle(grid)
+      return {
+        columns: styles.gridTemplateColumns,
+        overflow: document.documentElement.scrollWidth > window.innerWidth,
+      }
+    })
+
+    expect(desktopLayout).not.toBeNull()
+    expect(desktopLayout?.columns.split(' ').length).toBe(2)
+    expect(desktopLayout?.overflow).toBe(false)
+
+    await page.setViewportSize({ width: 900, height: 1000 })
+
+    const tabletLayout = await page.evaluate(() => {
+      const grid = document.querySelector('.lead-hero-grid')
+      if (!grid) return null
+      const styles = getComputedStyle(grid)
+      return {
+        columns: styles.gridTemplateColumns,
+        overflow: document.documentElement.scrollWidth > window.innerWidth,
+      }
+    })
+
+    expect(tabletLayout).not.toBeNull()
+    expect(tabletLayout?.columns.split(' ').length).toBe(1)
+    expect(tabletLayout?.overflow).toBe(false)
+
+    await page.setViewportSize({ width: 390, height: 844 })
+
+    const mobileLayout = await page.evaluate(() => ({
+      overflow: document.documentElement.scrollWidth > window.innerWidth,
+      gridColumns: getComputedStyle(document.querySelector('.lead-hero-grid')!).gridTemplateColumns,
+    }))
+
+    expect(mobileLayout.overflow).toBe(false)
+    expect(mobileLayout.gridColumns.split(' ').length).toBe(1)
   })
 
   test('renders the core product narrative and has no accessibility violations', async ({ page }) => {
