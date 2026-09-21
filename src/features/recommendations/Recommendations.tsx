@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { seedAudits, seedWebsites, categoryLabels } from '../../data/mock'
+import { categoryLabels } from '../../data/mock'
 import { storage } from '../../services/storage'
+import { localRepository } from '../../services/local-repository'
 import type { ActionLifecycleStatus, Audit, OptimizationAction } from '../../types/domain'
 import { buildOptimizationActions } from '../../audit-engine/actions'
 import { prioritiseAction, type RegressionRisk } from '../../audit-engine/action-prioritisation'
@@ -93,12 +94,10 @@ const verificationState = (audit: Audit | undefined, action: OptimizationAction)
 
 export function Recommendations() {
   const [audits, setAudits] = useState(() => {
-    const stored = storage.audits()
-    const source = stored.length ? stored : seedAudits
-    return source.map(hydrateAuditActions)
+    return localRepository.audits().map(hydrateAuditActions)
   })
   const websiteId = new URLSearchParams(useLocation().search).get('website') ?? undefined
-  const websites = storage.websites().length ? storage.websites() : seedWebsites
+  const websites = localRepository.websites()
   const website = websiteId ? websites.find(item => item.id === websiteId) : undefined
   const scopedAudits = websiteId ? audits.filter(audit => audit.websiteId === websiteId) : audits
   const [query, setQuery] = useState('')
