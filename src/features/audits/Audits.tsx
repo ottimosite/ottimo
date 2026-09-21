@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { categoryLabels, seedAudits, seedWebsites } from '../../data/mock'
+import { categoryLabels, seedAudits } from '../../data/mock'
 import { ServerAuditProvider } from '../../services/server-audit'
 import { storage } from '../../services/storage'
 import { localRepository } from '../../services/local-repository'
@@ -11,7 +11,7 @@ import { isValidUrl, normaliseUrl } from '../../lib/validation'
 import { compareAudits } from '../../audit-engine/audit-comparison'
 import { verifyActions } from '../../audit-engine/verification'
 
-export function AuditList() { const location = useLocation(); const websiteId = new URLSearchParams(location.search).get('website'); const [audits] = useState(() => localRepository.audits()); const visibleAudits = websiteId ? audits.filter(audit => audit.websiteId === websiteId) : audits; return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Audits</span><h1>Turn a URL into a clear action plan.</h1><p>Run the live audit engine against the rendered website and turn its evidence into an action plan.</p></div><Link className="btn btn-primary" to="/app/audits/new">New audit</Link></div><Card><div className="audit-list">{visibleAudits.map(audit => <Link className="audit-item" key={audit.id} to={`/app/audits/${audit.id}`}><span className="audit-score">{audit.score ?? "—"}</span><span><strong>{seedWebsites.find(website => website.id === audit.websiteId)?.name ?? audit.url}</strong><small>{formatDate(audit.createdAt)} · {audit.issues.filter(issue => issue.status !== 'resolved').length} open issues</small></span><span>→</span></Link>)}</div></Card></div> }
+export function AuditList() { const location = useLocation(); const websiteId = new URLSearchParams(location.search).get('website'); const [audits] = useState(() => localRepository.audits()); const visibleAudits = websiteId ? audits.filter(audit => audit.websiteId === websiteId) : audits; return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Audits</span><h1>Turn a URL into a clear action plan.</h1><p>Run the live audit engine against the rendered website and turn its evidence into an action plan.</p></div><Link className="btn btn-primary" to="/app/audits/new">New audit</Link></div><Card><div className="audit-list">{visibleAudits.map(audit => <Link className="audit-item" key={audit.id} to={`/app/audits/${audit.id}`}><span className="audit-score">{audit.score ?? "—"}</span><span><strong>{localRepository.findWebsite(audit.websiteId)?.name ?? audit.url}</strong><small>{formatDate(audit.createdAt)} · {audit.issues.filter(issue => issue.status !== 'resolved').length} open issues</small></span><span>→</span></Link>)}</div></Card></div> }
 
 export function NewAudit() {
   const location = useLocation()
