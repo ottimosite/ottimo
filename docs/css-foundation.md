@@ -70,3 +70,10 @@ The application feature layer is split by feature rather than by generic visual 
 - `onboarding.css` owns audit setup/loading states.
 
 When a selector is used by more than one audit sub-surface, establish one authoritative definition in the owning audit feature stylesheet rather than adding a later override.
+
+
+## Legacy override-layer removal
+
+The superseded `overrides.css` and `menu-overrides.css` layers have been removed. Their remaining legitimate rules were redistributed to their owning layers: `shell.css` for shell spacing, `platform.css` for platform preview sizing, `public-site.css` for shared public structure, and `lead-home.css` for landing-page composition. Foundational document behaviour remains in `global.css`.
+
+New CSS must not recreate these concerns as a later override layer.
