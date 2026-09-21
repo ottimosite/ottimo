@@ -61,53 +61,35 @@ function accessibilitySummary(
 
 test.describe('public landing page', () => {
   test('keeps the hero responsive without overflow or cramped columns', async ({ page }) => {
-    await page.goto('/')
+    const viewports = [
+      { width: 1440, height: 1000, columns: 2 },
+      { width: 900, height: 1000, columns: 1 },
+      { width: 390, height: 844, columns: 1 },
+    ]
 
-    const grid = page.locator('.lead-hero-grid')
-    const heading = page.getByRole('heading', { level: 1 })
+    for (const viewport of viewports) {
+      await page.setViewportSize(viewport)
+      await page.goto('/')
 
-    await expect(grid).toBeVisible()
-    await expect(heading).toBeVisible()
+      const grid = page.locator('.lead-hero-grid')
+      const heading = page.getByRole('heading', { level: 1 })
 
-    const desktopLayout = await page.evaluate(() => {
-      const grid = document.querySelector('.lead-hero-grid')
-      if (!grid) return null
-      const styles = getComputedStyle(grid)
-      return {
-        columns: styles.gridTemplateColumns,
-        overflow: document.documentElement.scrollWidth > window.innerWidth,
-      }
-    })
+      await expect(grid).toBeVisible()
+      await expect(heading).toBeVisible()
 
-    expect(desktopLayout).not.toBeNull()
-    expect(desktopLayout?.columns.split(' ').length).toBe(2)
-    expect(desktopLayout?.overflow).toBe(false)
+      const layout = await page.evaluate(() => {
+        const grid = document.querySelector('.lead-hero-grid')
+        if (!grid) return null
+        return {
+          columns: getComputedStyle(grid).gridTemplateColumns,
+          overflow: document.documentElement.scrollWidth > window.innerWidth,
+        }
+      })
 
-    await page.setViewportSize({ width: 900, height: 1000 })
-
-    const tabletLayout = await page.evaluate(() => {
-      const grid = document.querySelector('.lead-hero-grid')
-      if (!grid) return null
-      const styles = getComputedStyle(grid)
-      return {
-        columns: styles.gridTemplateColumns,
-        overflow: document.documentElement.scrollWidth > window.innerWidth,
-      }
-    })
-
-    expect(tabletLayout).not.toBeNull()
-    expect(tabletLayout?.columns.split(' ').length).toBe(1)
-    expect(tabletLayout?.overflow).toBe(false)
-
-    await page.setViewportSize({ width: 390, height: 844 })
-
-    const mobileLayout = await page.evaluate(() => ({
-      overflow: document.documentElement.scrollWidth > window.innerWidth,
-      gridColumns: getComputedStyle(document.querySelector('.lead-hero-grid')!).gridTemplateColumns,
-    }))
-
-    expect(mobileLayout.overflow).toBe(false)
-    expect(mobileLayout.gridColumns.split(' ').length).toBe(1)
+      expect(layout).not.toBeNull()
+      expect(layout?.columns.split(' ').length).toBe(viewport.columns)
+      expect(layout?.overflow).toBe(false)
+    }
   })
 
   test('renders the core product narrative and has no accessibility violations', async ({ page }) => {
