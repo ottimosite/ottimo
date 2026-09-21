@@ -2,8 +2,7 @@ import { useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Button, Card } from '../../components/ui'
 import { isValidUrl, normaliseUrl } from '../../lib/validation'
-import { seedAudits, seedWebsites } from '../../data/mock'
-import { storage } from '../../services/storage'
+import { localRepository } from '../../services/local-repository'
 import type { Category } from '../../types/domain'
 
 type Goal = Category | 'everything'
@@ -26,11 +25,10 @@ export function AuditOnboarding() {
   const requestedAuditId = params.get('audit') ?? ''
 
   const resolvedWebsite = useMemo(() => {
-    const websites = [...seedWebsites, ...storage.websites()]
-    if (requestedWebsiteId) return websites.find(site => site.id === requestedWebsiteId)
+    if (requestedWebsiteId) return localRepository.findWebsite(requestedWebsiteId)
     if (requestedAuditId) {
-      const audit = [...seedAudits, ...storage.audits()].find(item => item.id === requestedAuditId)
-      return audit ? websites.find(site => site.id === audit.websiteId) : undefined
+      const audit = localRepository.findAudit(requestedAuditId)
+      return audit ? localRepository.websiteForAudit(audit) : undefined
     }
     return undefined
   }, [requestedAuditId, requestedWebsiteId])
