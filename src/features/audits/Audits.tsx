@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { categoryLabels, seedAudits, seedWebsites } from '../../data/mock'
+import { categoryLabels, seedAudits } from '../../data/mock'
 import { ServerAuditProvider } from '../../services/server-audit'
 import { storage } from '../../services/storage'
+import { localRepository } from '../../services/local-repository'
 import type { Audit, Category, Severity, Status } from '../../types/domain'
 import { Badge, Button, Card, Progress } from '../../components/ui'
 import { formatDate } from '../../lib/format'
@@ -10,13 +11,13 @@ import { isValidUrl, normaliseUrl } from '../../lib/validation'
 import { compareAudits } from '../../audit-engine/audit-comparison'
 import { verifyActions } from '../../audit-engine/verification'
 
-export function AuditList() { const location = useLocation(); const websiteId = new URLSearchParams(location.search).get('website'); const [audits] = useState(() => storage.audits().length ? storage.audits() : seedAudits); const visibleAudits = websiteId ? audits.filter(audit => audit.websiteId === websiteId) : audits; return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Audits</span><h1>Turn a URL into a clear action plan.</h1><p>Run the live audit engine against the rendered website and turn its evidence into an action plan.</p></div><Link className="btn btn-primary" to="/app/audits/new">New audit</Link></div><Card><div className="audit-list">{visibleAudits.map(audit => <Link className="audit-item" key={audit.id} to={`/app/audits/${audit.id}`}><span className="audit-score">{audit.score ?? "—"}</span><span><strong>{seedWebsites.find(website => website.id === audit.websiteId)?.name ?? audit.url}</strong><small>{formatDate(audit.createdAt)} · {audit.issues.filter(issue => issue.status !== 'resolved').length} open issues</small></span><span>→</span></Link>)}</div></Card></div> }
+export function AuditList() { const location = useLocation(); const websiteId = new URLSearchParams(location.search).get('website'); const [audits] = useState(() => localRepository.audits()); const visibleAudits = websiteId ? audits.filter(audit => audit.websiteId === websiteId) : audits; return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Audits</span><h1>Turn a URL into a clear action plan.</h1><p>Run the live audit engine against the rendered website and turn its evidence into an action plan.</p></div><Link className="btn btn-primary" to="/app/audits/new">New audit</Link></div><Card><div className="audit-list">{visibleAudits.map(audit => <Link className="audit-item" key={audit.id} to={`/app/audits/${audit.id}`}><span className="audit-score">{audit.score ?? "—"}</span><span><strong>{localRepository.findWebsite(audit.websiteId)?.name ?? audit.url}</strong><small>{formatDate(audit.createdAt)} · {audit.issues.filter(issue => issue.status !== 'resolved').length} open issues</small></span><span>→</span></Link>)}</div></Card></div> }
 
 export function NewAudit() {
   const location = useLocation()
   const search = new URLSearchParams(location.search)
   const requestedAuditId = search.get('audit')
-  const requestedAudit = requestedAuditId ? [...seedAudits, ...storage.audits()].find(item => item.id === requestedAuditId) : undefined
+  const requestedAudit = requestedAuditId ? localRepository.findAudit(requestedAuditId) : undefined
   const initialUrl = search.get('url') ?? requestedAudit?.url ?? 'https://example.com'
   const categories = search.get('categories')?.split(',').filter(Boolean) ?? []
   const [url] = useState(normaliseUrl(initialUrl))
@@ -37,15 +38,14 @@ export function NewAudit() {
       const auditStarted = performance.now()
       try {
         const result = await new ServerAuditProvider().runAudit(url, categories)
-        const storedWebsites = storage.websites()
-        const allWebsites = [...seedWebsites, ...storedWebsites]
+        const allWebsites = localRepository.websites()
         const website = allWebsites.find(item => normaliseUrl(item.url) === url) ?? {
           id: 'site-' + Date.now(),
           name: new URL(url).hostname,
           url,
           createdAt: new Date().toISOString(),
         }
-        const previousAudits = [...seedAudits, ...storage.audits()]
+        const previousAudits = localRepository.audits()
           .filter(item => normaliseUrl(item.url) === url)
           .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
         const audit: Audit = {
@@ -97,7 +97,7 @@ export function NewAudit() {
   </div>
 }
 
-export function AuditDetail() { const { id } = useParams(); const audit = [...seedAudits, ...storage.audits()].find(item => item.id === id); if (!audit) return <Card><h1>Audit not found</h1><Link to="/app/audits">Back to audits</Link></Card>; return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Audit result</span><h1>{audit.url}</h1><p>{formatDate(audit.createdAt)} · completed in {audit.durationMs}ms</p></div><div className="result-score"><strong>{audit.score ?? "—"}</strong><span>{audit.score === undefined ? "not measured" : "/ 100"}</span></div></div><div className="grid-3">{audit.scores.map(score => <Card key={score.category}><span className="muted">{categoryLabels[score.category]}</span><div className="mini-score"><strong>{score.score ?? "—"}</strong>{score.score === undefined ? <small>Not measured</small> : <Progress value={score.score} />}</div></Card>)}</div><Card><div className="section-head"><div><span className="eyebrow">Findings</span><h2>What needs attention</h2></div><span className="muted">{audit.issues.length} findings</span></div><IssueTable issues={audit.issues} /></Card></div> }
+export function AuditDetail() { const { id } = useParams(); const audit = id ? localRepository.findAudit(id) : undefined; if (!audit) return <Card><h1>Audit not found</h1><Link to="/app/audits">Back to audits</Link></Card>; return <div className="stack"><div className="page-heading"><div><span className="eyebrow">Audit result</span><h1>{audit.url}</h1><p>{formatDate(audit.createdAt)} · completed in {audit.durationMs}ms</p></div><div className="result-score"><strong>{audit.score ?? "—"}</strong><span>{audit.score === undefined ? "not measured" : "/ 100"}</span></div></div><div className="grid-3">{audit.scores.map(score => <Card key={score.category}><span className="muted">{categoryLabels[score.category]}</span><div className="mini-score"><strong>{score.score ?? "—"}</strong>{score.score === undefined ? <small>Not measured</small> : <Progress value={score.score} />}</div></Card>)}</div><Card><div className="section-head"><div><span className="eyebrow">Findings</span><h2>What needs attention</h2></div><span className="muted">{audit.issues.length} findings</span></div><IssueTable issues={audit.issues} /></Card></div> }
 
 export function IssueTable({ issues }: { issues: Audit['issues'] }) {
   const [search, setSearch] = useState('')

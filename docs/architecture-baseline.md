@@ -275,3 +275,17 @@ The desired end state is not a particular number of CSS files. It is:
 - rendered behaviour protected by automated and manual QA;
 - unchanged evidence integrity.
 
+
+
+### Local repository read boundary
+
+The local demo application's persisted/seed read policy is owned by `src/services/local-repository.ts`. Feature components should use `localRepository` for normal website/audit reads rather than combining `storage` with seed collections themselves.
+
+The repository currently exposes:
+- `audits()`
+- `websites()`
+- `findAudit(id)`
+- `findWebsite(id)`
+- `websiteForAudit(audit)`
+
+This boundary preserves the existing fallback policy: persisted collections are used when non-empty; otherwise the corresponding seed collection is returned. Storage writes remain owned by `storage.ts` while this migration is in progress.

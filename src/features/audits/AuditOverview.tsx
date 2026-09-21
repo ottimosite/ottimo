@@ -1,7 +1,8 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useState } from 'react'
-import { categoryLabels, seedAudits, seedWebsites } from '../../data/mock'
+import { categoryLabels, seedAudits } from '../../data/mock'
 import { storage } from '../../services/storage'
+import { localRepository } from '../../services/local-repository'
 import { auditStandards } from '../../services/audit'
 import { Badge, Button, Card, Progress, Score } from '../../components/ui'
 import { formatDate } from '../../lib/format'
@@ -161,9 +162,9 @@ function ChangePanel({ audit }: { audit: Audit }) {
 }
 
 export function AuditOverview() {
-  const { id } = useParams(); const navigate = useNavigate(); const [mode, setMode] = useState<'customer' | 'engineer'>('customer'); const audit = [...seedAudits, ...storage.audits()].find(item => item.id === id)
+  const { id } = useParams(); const navigate = useNavigate(); const [mode, setMode] = useState<'customer' | 'engineer'>('customer'); const audit = id ? localRepository.findAudit(id) : undefined
   if (!audit) return <Card><h1>Audit not found</h1><p>This audit may have been cleared from local browser storage.</p><Link to="/app/audits">Back to audits</Link></Card>
-  const website = [...seedWebsites, ...storage.websites()].find(item => item.id === audit.websiteId)
+  const website = localRepository.websiteForAudit(audit)
   const stats = audit.stats; const openIssues = audit.issues.filter(issue => issue.status !== 'resolved')
   const severityCounts = audit.issues.reduce<Record<string, number>>((counts, issue) => ({ ...counts, [issue.severity]: (counts[issue.severity] ?? 0) + 1 }), {})
   const topIssues = openIssues.slice().sort((a, b) => b.priority - a.priority).slice(0, 3)
