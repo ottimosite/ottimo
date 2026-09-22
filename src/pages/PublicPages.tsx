@@ -143,6 +143,7 @@ function usePublicMetadata(title: string, description: string) {
     upsertMeta('name', 'twitter:description', description)
 
     const canonicalUrl = new URL(window.location.pathname || '/', window.location.origin).toString()
+    upsertMeta('property', 'og:url', canonicalUrl)
     let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
     if (!canonical) {
       canonical = document.createElement('link')
