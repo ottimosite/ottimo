@@ -1,0 +1,39 @@
+/* Platform page feature styles. Keep website-health presentation with PlatformPages rather than shared application primitives. */
+
+.website-health-primary { background:var(--lime); }
+.website-health-score { display:grid; grid-template-columns:minmax(190px,.9fr) repeat(2,minmax(120px,.55fr)); gap:24px; align-items:center; margin:24px 0; }
+.website-health-score > div:not(.result-score) { display:grid; gap:5px; }
+.website-health-score > div:not(.result-score) strong { color:var(--forest); font:normal 2.4rem/.9 var(--font-sans); letter-spacing:-.05em; }
+.website-health-score > div:not(.result-score) span { color:var(--forest); font-weight:850; }
+.website-health-score small { color:var(--muted); }
+.website-change-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:20px; }
+.website-change-grid > div { padding:14px; border:1px solid var(--line); border-radius:12px; background:var(--mint); }
+.website-change-grid strong,.website-change-grid span { display:block; }
+.website-change-grid strong { color:var(--forest); font:normal 2rem/.9 var(--font-sans); }
+.website-change-grid span { margin-top:6px; color:var(--muted); font-size:.76rem; font-weight:800; }
+.website-workspace .health-model-panel { background:#f5f8f1; }
+
+@media(max-width:760px) {
+  .website-health-score { grid-template-columns:1fr 1fr; }
+  .website-health-score .result-score { grid-column:1 / -1; }
+  .website-change-grid { grid-template-columns:1fr 1fr; }
+}
+
+.health-domain-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:20px; }
+.health-domain { min-width:0; padding:16px; border:1px solid var(--line); border-radius:14px; background:var(--mint); }
+.health-domain__head,.health-domain__foot { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.health-domain__head span { color:var(--ink-soft); font-weight:850; }
+.health-domain__head strong { color:var(--forest); font:normal 1.8rem/.9 var(--font-sans); }
+.health-domain .progress { margin:13px 0; }
+.health-domain__foot { font-size:.75rem; }
+.health-domain__foot a { color:var(--green-dark); font-weight:900; }
+.verification-summary { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-top:20px; }
+.verification-summary > div { padding:16px; border:1px solid var(--line); border-radius:12px; background:var(--mint); }
+.verification-summary strong,.verification-summary span { display:block; }
+.verification-summary strong { color:var(--forest); font:normal 2rem/.9 var(--font-sans); }
+.verification-summary span { margin-top:7px; color:var(--muted); font-size:.76rem; font-weight:800; }
+
+@media(max-width:760px) {
+  .health-domain-grid { grid-template-columns:1fr 1fr; }
+  .verification-summary { grid-template-columns:1fr 1fr; }
+}
