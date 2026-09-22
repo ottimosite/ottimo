@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>/</loc></url>
-  <url><loc>/services</loc></url>
-  <url><loc>/performance</loc></url>
-  <url><loc>/seo</loc></url>
-  <url><loc>/accessibility</loc></url>
-  <url><loc>/ai</loc></url>
-  <url><loc>/methodology</loc></url>
-  <url><loc>/usability</loc></url>
-  <url><loc>/technical</loc></url>
-  <url><loc>/pricing</loc></url>
-  <url><loc>/about</loc></url>
-  <url><loc>/case-studies</loc></url>
-  <url><loc>/contact</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/services</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/performance</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/seo</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/accessibility</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/ai</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/methodology</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/usability</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/technical</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/pricing</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/about</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/case-studies</loc></url>
+  <url><loc>https://ottimo-site.netlify.app/contact</loc></url>
 </urlset>
