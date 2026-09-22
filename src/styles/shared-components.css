@@ -27,6 +27,12 @@
   .section-head>a{white-space:normal}
 }
 
+/* Shared form layout and validation presentation. */
+.filters { display:grid; grid-template-columns:minmax(220px,1fr) repeat(3,minmax(120px,.45fr)); gap:10px; margin-bottom:20px; }
+.error { color:#9e2f1e; font-weight:800; }
+.form-grid { display:grid; gap:14px; }
+.form-grid .btn { justify-self:start; }
+
 /* Shared action list presentation. */
 .action-list { display:grid; gap:0; margin-top:8px; }
 .action { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:18px; padding:17px 0; border-bottom:1px solid var(--line); color:var(--ink); }
