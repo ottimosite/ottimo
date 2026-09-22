@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { categoryLabels } from '../../data/mock'
-import { storage } from '../../services/storage'
 import { localRepository } from '../../services/local-repository'
 import type { ActionLifecycleStatus, Audit, OptimizationAction } from '../../types/domain'
 import { buildOptimizationActions } from '../../audit-engine/actions'
@@ -138,7 +137,7 @@ export function Recommendations() {
       }),
     })
     setAudits(next)
-    storage.saveAudits(next)
+    localRepository.saveAudits(next)
   }
 
   const updateLifecycle = (auditId: string, actionId: string, nextStatus: ActionLifecycleStatus) => {
