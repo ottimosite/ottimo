@@ -202,7 +202,7 @@ export function AuditOverview() {
     <EvidenceExplorer audit={audit} />
     <section id="audit-decision" className="audit-primary-decision">
       <div><span className="eyebrow">Next decision</span><h2>{openIssues.length ? 'Turn the highest-impact finding into action.' : 'Review the evidence and verify what is already resolved.'}</h2><p>{openIssues.length ? 'The audit has unresolved findings. Use the decision queue to work through priority, effort and dependencies without losing the evidence behind each action.' : 'No unresolved findings are recorded. Review comparison and verification evidence to understand what changed.'}</p></div>
-      <Link className="primary-action" to={openIssues.length ? "/app/recommendations" : "#audit-changes"}>{openIssues.length ? 'Open decision queue →' : 'Review changes →'}</Link>
+      <Link className="btn btn-primary primary-action" to={openIssues.length ? "/app/recommendations" : "#audit-changes"}>{openIssues.length ? 'Open decision queue →' : 'Review changes →'}</Link>
     </section>
     <Card className="standards-card audit-standards">
       <div><span className="eyebrow">Audit basis</span><h2>Standards applied</h2><p>These are the lenses used to interpret this audit.</p></div>
