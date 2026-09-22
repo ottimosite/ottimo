@@ -14,7 +14,7 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   webServer: {
-    command: 'npm run dev -- --host 127.0.0.1 --port 4173',
+    command: 'npm run dev -- --port 4173 --no-open',
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: !process.env.CI,
   },
