@@ -33,6 +33,34 @@
 .form-grid { display:grid; gap:14px; }
 .form-grid .btn { justify-self:start; }
 
+/* Shared finding, badge, impact and table presentation. */
+.issue-list { display:grid; gap:12px; }
+.issue { padding:20px; border:1px solid var(--line); border-radius:15px; background:#fff; }
+.issue-top { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; }
+.issue-top h3 { margin:9px 0 0; color:var(--forest); font-size:1.08rem; }
+.issue-top > strong { color:var(--coral); white-space:nowrap; }
+.issue > p { margin:13px 0; color:var(--ink-soft); }
+.issue-foot { display:flex; align-items:center; flex-wrap:wrap; gap:8px; padding-top:13px; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; }
+.impact-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:17px 0; }
+.impact-grid > div { padding:14px; border-radius:11px; background:#f2f7ef; }
+.impact-grid small { display:block; color:var(--green-dark); font-weight:900; text-transform:uppercase; letter-spacing:.06em; }
+.impact-grid p { margin:7px 0 0; font-size:.88rem; }
+.badge { display:inline-flex; align-items:center; min-height:24px; padding:4px 8px; border-radius:999px; background:#eef3ef; color:var(--green-dark); font-size:.68rem; font-weight:900; text-transform:uppercase; letter-spacing:.06em; }
+.badge-critical,.badge-high { background:#fde7e2; color:#9e2f1e; }
+.badge-medium { background:#fff0c7; color:#755400; }
+.badge-low,.badge-resolved { background:#e5f3e2; color:#27653d; }
+.badge-open { background:#eef3ef; color:var(--green-dark); }
+.badge-in_progress { background:#e7edf8; color:#2f4f78; }
+
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; }
+th,td { padding:14px 12px; text-align:left; border-bottom:1px solid var(--line); }
+th { color:var(--muted); font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; }
+td { color:var(--ink-soft); font-size:.88rem; }
+td strong { color:var(--forest); }
+td a { color:var(--green-dark); font-weight:850; }
+
+
 /* Shared action list presentation. */
 .action-list { display:grid; gap:0; margin-top:8px; }
 .action { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:18px; padding:17px 0; border-bottom:1px solid var(--line); color:var(--ink); }
