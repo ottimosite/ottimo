@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint .",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test:e2e:rendered": "playwright test tests/e2e/rendered-pages.spec.ts"
   },
   "dependencies": {
     "@netlify/blobs": "^11.1.0",
