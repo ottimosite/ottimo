@@ -20,3 +20,9 @@
 .section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
 .section-head h2{margin:7px 0 0;color:var(--forest);font:normal 1.9rem/1.05 var(--font-sans);letter-spacing:-.04em}
 .section-head>a{color:var(--green-dark);font-weight:850;white-space:nowrap}
+
+@media(max-width:760px){
+  .card{padding:20px;border-radius:15px}
+  .section-head{flex-direction:column}
+  .section-head>a{white-space:normal}
+}
