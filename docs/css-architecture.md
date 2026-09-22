@@ -1,6 +1,6 @@
 # Ottimo CSS Architecture Baseline
 
-> Baseline taken from `master` after PR #193 (single sans-serif typography). This document records the existing migration groundwork and the remaining architecture problem; it is not a proposal to rewrite the styling system.
+ > Baseline taken from `master` after the CSS ownership migrations through PR #211. This document records the current migration state; it is not a proposal to rewrite the styling system.
 
 ## Purpose
 
@@ -20,19 +20,18 @@ New CSS should not be added to a legacy file merely because that file is current
 2. `shell.css`
 3. `shared-components.css`
 4. `public-site.css`
-5. `global.css`
-6. `components.css`
-7. `platform.css`
-8. `concepts.css`
-9. `lead-home.css`
-10. `public-refresh.css`
-11. `public-services.css`
-12. `audit-overview.css`
-13. `audit-expansion.css`
-14. `standards.css`
-15. `performance-metrics.css`
-16. `onboarding.css`
-17. `quality.css`
+5. `components.css`
+6. `platform.css`
+7. `concepts.css`
+8. `lead-home.css`
+9. `public-refresh.css`
+10. `public-services.css`
+11. `audit-overview.css`
+12. `audit-expansion.css`
+13. `standards.css`
+14. `performance-metrics.css`
+15. `onboarding.css`
+16. `quality.css`
 
 The ordering is currently functional but still acts as a significant part of the cascade contract. The target is for ownership and specificity to make this ordering much less fragile.
 
@@ -44,7 +43,6 @@ The ordering is currently functional but still acts as a significant part of the
 | `shell.css` | 8.9 KB | 97 | 5 | 1 | App shell + navigation | **Keep / consolidate** |
 | `shared-components.css` | 1.7 KB | 16 | 0 | 0 | Shared primitives | **Keep / authoritative** |
 | `public-site.css` | 2.6 KB | 24 | 3 | 0 | Public shared styles | **Keep / consolidate** |
-| `global.css` | 9.6 KB | 90 | 9 | 0 | Mixed foundation + legacy compatibility + UI | **Reduce heavily** |
 | `components.css` | 3.5 KB | 36 | 3 | 0 | Mixed component styles | **Consolidate into shared/feature owners** |
 | `platform.css` | 17.3 KB | 184 | 12 | 0 | Large mixed application layer | **Split/consolidate** |
 | `concepts.css` | 5.7 KB | 1 grouped block | 1 | 0 | Concept pages | **Keep as feature-owned CSS; normalise formatting later** |
@@ -88,11 +86,9 @@ PR #193 established the single sans-serif direction. Future CSS migration must p
 
 ## Main architectural problems remaining
 
-### 1. Foundation leakage
+### 1. Remaining legacy ownership
 
-`global.css` contains both genuine foundational rules and application/component rules. This makes it difficult to know whether a selector is globally contractual or merely legacy.
-
-The first migration target is therefore not deletion; it is classification.
+The former `global.css` layer has now been retired. Remaining architectural work is concentrated in mixed application/component stylesheets, particularly `platform.css`, `components.css`, and the public/audit feature layers.
 
 ### 2. Duplicate shared primitives
 
@@ -123,7 +119,7 @@ The correct response was to fix ownership/specificity in the feature stylesheet,
 
 ### 5. Legacy compatibility surface
 
-`global.css`, `components.css` and `platform.css` contain a mixture of older and newer patterns. They should not be deleted wholesale. Rules need to migrate into the appropriate owner and then be removed from the legacy layer.
+`components.css` and `platform.css` still contain a mixture of older and newer patterns. Rules should continue to migrate into the appropriate shared or feature owner rather than accumulating new generic application rules.
 
 ## Target architecture
 
@@ -210,6 +206,6 @@ This baseline does **not**:
 
 ## Next implementation slice
 
-The next implementation PR should extract the genuine foundation/base responsibilities currently living in `global.css`, while preserving behaviour and leaving component/feature migration for subsequent focused PRs.
+The next implementation slice should inspect the remaining mixed application layer, with `platform.css` as the primary candidate, and move clearly feature-owned rules into their existing feature stylesheets. Each move should be independently verified before deletion from the mixed layer.
 
-Before deleting any global rule, confirm its consumers and move it to the correct owner. The success criterion is not merely fewer lines of CSS; it is a more predictable ownership graph.
+`global.css` is retired. The success criterion is not merely fewer lines of CSS; it is a more predictable ownership graph with explicit shared/application/feature boundaries.
