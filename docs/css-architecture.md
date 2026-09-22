@@ -52,8 +52,7 @@ The ordering is currently functional but still acts as a significant part of the
 | `lead-home.css` | 17.8 KB | 191 | 12 | 0 | Landing page | **Keep as public feature owner** |
 | `public-refresh.css` | 7.4 KB | 78 | 7 | 0 | Landing/public additions | **Merge into public feature ownership** |
 | `public-services.css` | 2.2 KB | 17 | 2 | 0 | Public services pages | **Keep as feature owner** |
-| `audit-overview.css` | 9.9 KB | 78 | 8 | 1 | Audit UI | **Keep as audit feature owner; remove legacy overlap** |
-| `audit-expansion.css` | 11.6 KB | 89 | 11 | 0 | Audit UI extensions | **Consolidate with audit ownership** |
+| `audit.css` | ~22 KB | combined audit feature rules | feature-owned | 0 | Audit UI | **Single audit feature owner** |
 | `standards.css` | 0.7 KB | 1 grouped block | 1 | 0 | Standards feature | **Keep; consider merging if ownership remains tiny** |
 | `performance-metrics.css` | 1.6 KB | 1 grouped block | 1 | 0 | Performance feature | **Keep; consider merging if ownership remains tiny** |
 | `onboarding.css` | 5.6 KB | 38 | 2 | 1 | Onboarding feature | **Keep as feature owner; remove generic overlap** |
