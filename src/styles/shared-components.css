@@ -26,3 +26,17 @@
   .section-head{flex-direction:column}
   .section-head>a{white-space:normal}
 }
+
+/* Shared audit list presentation. */
+.audit-list { display:grid; }
+.audit-item { display:grid; grid-template-columns:58px minmax(0,1fr) auto; gap:18px; align-items:center; padding:17px 4px; border-bottom:1px solid var(--line); color:var(--ink); }
+.audit-item:last-child { border-bottom:0; }
+.audit-item:hover { background:var(--mint); }
+.audit-score { display:grid; place-items:center; width:50px; height:50px; border-radius:14px; background:var(--forest); color:var(--lime); font-weight:900; }
+.audit-item strong,.audit-item small { display:block; }
+.audit-item small { margin-top:4px; color:var(--muted); }
+.audit-item > span:last-child { color:var(--green-dark); font-weight:900; }
+@media(max-width:760px) {
+  .audit-item { grid-template-columns:50px minmax(0,1fr) auto; gap:12px; }
+  .audit-score { width:44px; height:44px; }
+}
