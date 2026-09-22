@@ -298,6 +298,66 @@ export function Home() {
   </div>
 }
 
+export function PublicAuditExample() {
+  usePublicMetadata('Working audit example', 'Explore a deterministic Ottimo audit example showing evidence, uncertainty, prioritisation and verification without presenting fictional customer results as live measurements.')
+
+  return <div className="public-audit-example content-page">
+    <div className="content-hero">
+      <span className="eyebrow">Working audit example</span>
+      <h1>See the evidence before you run your own audit.</h1>
+      <p>This example uses Ottimo's captured Wikipedia fixture. It is deliberately labelled as a deterministic snapshot so you can see the product model without mistaking fixture data for a live customer measurement.</p>
+      <div className="hero-actions">
+        <Link className="btn btn-primary" to="/app/audits/audit-wikipedia">Open the working audit</Link>
+        <Link className="text-link" to="/methodology">Read the methodology →</Link>
+      </div>
+    </div>
+
+    <section className="public-example-summary" aria-labelledby="example-summary-title">
+      <div>
+        <span className="eyebrow">Executive summary</span>
+        <h2 id="example-summary-title">What the snapshot can actually tell us</h2>
+        <p>The fixture gives us structural evidence about the public Wikipedia portal. Browser timing and several other measurements are intentionally unavailable.</p>
+      </div>
+      <div className="public-example-state-grid">
+        <div><span>Source</span><strong>Deterministic fixture</strong><small>Captured {wikipediaAudit.createdAt.slice(0, 10)}</small></div>
+        <div><span>Scope</span><strong>1 snapshot page</strong><small>Public Wikipedia portal</small></div>
+        <div><span>Performance</span><strong>Unavailable</strong><small>No browser timing retained</small></div>
+      </div>
+    </section>
+
+    <section className="public-example-findings" aria-labelledby="example-findings-title">
+      <div className="section-intro"><span className="eyebrow">Priority findings</span><h2 id="example-findings-title">Finding → evidence → action.</h2><p>Each finding explains what was observed, what it means, what evidence supports it and what could happen next.</p></div>
+      <div className="public-example-finding-list">
+        {wikipediaAudit.issues.map(issue => <article key={issue.id}>
+          <div className="public-example-finding-top"><Badge tone={issue.severity}>{issue.severity}</Badge><span>{categoryLabels[issue.category]}</span></div>
+          <h3>{issue.title}</h3>
+          <p>{issue.summary}</p>
+          <dl>
+            <div><dt>Evidence</dt><dd>{issue.evidence?.status ?? 'unavailable'} · {issue.evidence?.details ?? 'No additional evidence detail is available.'}</dd></div>
+            <div><dt>Why it matters</dt><dd>{issue.impact}</dd></div>
+            <div><dt>Next action</dt><dd>{issue.solution}</dd></div>
+          </dl>
+          <details><summary>Show technical context</summary><p>Confidence: {issue.confidence}. Priority: {issue.priority}. {issue.affectedPages?.length ? `Affected page: ${issue.affectedPages[0]}` : 'No affected-page list is available in this fixture.'}</p></details>
+        </article>)}
+      </div>
+    </section>
+
+    <section className="public-example-coverage" aria-labelledby="example-coverage-title">
+      <div className="section-intro"><span className="eyebrow">Six lenses</span><h2 id="example-coverage-title">Coverage stays explicit.</h2><p>Ottimo does not turn unavailable measurements into scores just to fill a dashboard.</p></div>
+      <div className="public-example-coverage-grid">
+        {wikipediaAudit.scores.map(score => <div key={score.category}><span>{categoryLabels[score.category]}</span><strong>{score.measurement === 'measured' ? 'Measured' : 'Unavailable'}</strong></div>)}
+      </div>
+    </section>
+
+    <section className="public-example-verification" aria-labelledby="example-verification-title">
+      <div><span className="eyebrow">Verification</span><h2 id="example-verification-title">Improvement needs a second piece of evidence.</h2><p>The fixture does not claim an optimisation was completed. In the real product, a later comparable audit can show whether a finding was resolved, improved, regressed or remains inconclusive.</p></div>
+      <Link className="btn btn-primary" to="/app/audits/audit-wikipedia">Explore the audit workflow</Link>
+    </section>
+
+    <section className="callout"><span className="eyebrow">Ready to use your website</span><h2>Start with a Website Check.</h2><p>Enter a public website and review the audit setup before the live browser inspection runs.</p><Link className="btn btn-primary" to="/#start">Start my Website Check</Link></section>
+  </div>
+}
+
 export function InfoPage({ path }: { path: PublicPath }) {
   const content = pageContent[path]
   usePublicMetadata(content.title, content.intro)
