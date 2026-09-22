@@ -8,10 +8,13 @@ const children = [
   spawn(npmCommand, ['run', 'dev:vite', '--', '--host', '127.0.0.1', '--port', '5173'], {
     stdio: 'inherit',
     env: { ...process.env, OTTIMO_LOCAL_AUDIT: 'true' },
+    env: { ...process.env },
+    shell: process.platform === 'win32',
   }),
   spawn(npxCommand, ['--yes', 'netlify-cli@27.8.0', 'functions:serve', '--port', '9999'], {
     stdio: 'inherit',
     env: { ...process.env, NETLIFY_DEV: 'true' },
+    shell: process.platform === 'win32',
   }),
 ]
 
