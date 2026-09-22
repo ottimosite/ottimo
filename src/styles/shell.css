@@ -100,6 +100,9 @@ main:focus{outline:none}
  .sidebar.menu-open .website-context{display:block;max-height:55vh;overflow-y:auto}
  .website-context{padding-bottom:10px}
  .website-context nav{max-height:45vh;overflow-y:auto}
+ .audit-context{min-height:0}
+ .audit-context nav a{min-height:44px}
+ .sidebar .side-cta{min-height:44px}
  .app-main{margin-left:0}
  .app-top{min-height:66px;padding:14px 20px;align-items:flex-start;gap:12px}
  .app-top>div:first-child{display:grid;gap:3px}
