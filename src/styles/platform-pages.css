@@ -70,3 +70,19 @@
   .insight-grid,.insights-evidence-summary { grid-template-columns:1fr; }
   .insight-handoff { align-items:flex-start; flex-direction:column; }
 }
+
+/* Platform capability and authentication presentation. */
+.website-capability-nav { scroll-margin-top: 24px; }
+.capability-link-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.capability-link-grid a { display:grid; gap:5px; min-height:78px; padding:13px; border:1px solid var(--line); border-radius:10px; color:var(--ink); background:var(--cream); text-decoration:none; }
+.capability-link-grid a:hover, .capability-link-grid a:focus-visible { border-color:var(--green); outline:none; }
+.capability-link-grid a > span { color:var(--muted); font-size:.76rem; line-height:1.45; }
+.website-capability-nav [id] { scroll-margin-top:24px; }
+.auth-state { min-height:100vh; display:grid; align-content:center; justify-items:start; gap:12px; max-width:620px; margin:auto; padding:40px 24px; }
+.auth-state h1 { margin:0; }
+.auth-state p { color:var(--ink-soft); max-width:58ch; }
+.auth-account { display:flex; align-items:center; gap:10px; }
+.auth-account span { color:var(--muted); font-size:.75rem; }
+.auth-account button { min-height:40px; padding:7px 12px; border:1px solid var(--line); border-radius:999px; background:transparent; color:var(--ink); cursor:pointer; }
+@media(max-width:900px){ .capability-link-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media(max-width:520px){ .capability-link-grid { grid-template-columns:1fr; } .auth-account span { display:none; } }
