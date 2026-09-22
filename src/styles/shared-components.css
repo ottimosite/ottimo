@@ -33,6 +33,17 @@
 .form-grid { display:grid; gap:14px; }
 .form-grid .btn { justify-self:start; }
 
+/* Shared application layout responsiveness. */
+@media(max-width:1000px){
+  .page-heading{align-items:flex-start;flex-direction:column}
+  .filters{grid-template-columns:1fr 1fr}
+}
+@media(max-width:760px){
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .page-heading h1{font-size:clamp(2.8rem,12vw,4.8rem)}
+  .filters{grid-template-columns:1fr}
+}
+
 /* Shared finding, badge, impact and table presentation. */
 .issue-list { display:grid; gap:12px; }
 .issue { padding:20px; border:1px solid var(--line); border-radius:15px; background:#fff; }
