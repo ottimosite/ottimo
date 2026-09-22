@@ -15,7 +15,7 @@ It deliberately does **not** change runtime behaviour or audit evidence semantic
 
 ## 2. Global stylesheet inventory
 
-`src/main.tsx` currently imports these stylesheets in this order:
+The current `src/main.tsx` stylesheet surface is:
 
 1. `tokens.css`
 2. `base.css`
@@ -24,21 +24,22 @@ It deliberately does **not** change runtime behaviour or audit evidence semantic
 5. `public-site.css`
 6. `components.css`
 7. `platform.css`
-4. `concepts.css`
-7. `lead-home.css`
-8. `public-refresh.css`
-9. `public-services.css`
-10. `audit-overview.css`
-11. `audit-expansion.css`
-12. `standards.css`
-13. `performance-metrics.css`
-14. `onboarding.css`
-15. `quality.css`
-16. `application-layout.css` — removed in #184
+8. `concepts.css`
+9. `lead-home.css`
+10. `public-refresh.css`
+11. `public-services.css`
+12. `audit-overview.css`
+13. `audit-expansion.css`
+14. `standards.css`
+15. `performance-metrics.css`
+16. `onboarding.css`
+17. `quality.css`
 
-The legacy `overrides.css` and `menu-overrides.css` layers have since been removed in #182. Their remaining required rules were redistributed to their owning stylesheets. The last stylesheet is explicitly described in source as a tactical deterministic application-layout contract. It currently contains multiple `!important` declarations so that critical layouts win over earlier shared rules. This is evidence of cascade pressure, not a target architecture.
+`global.css` was retired in #211 after its remaining application/component rules were moved to their owning layers. The former `overrides.css`, `menu-overrides.css` and `application-layout.css` layers were also retired earlier in the refactor programme.
 
-### Measured stylesheet inventory
+### Historical measured inventory
+
+The following measurements are preserved from the pre-refactor repository state. They are historical evidence, not current measurements:
 
 | Stylesheet | Approx bytes | Rules | Selector occurrences | @media | !important |
 |---|---:|---:|---:|---:|---:|
@@ -58,11 +59,8 @@ The legacy `overrides.css` and `menu-overrides.css` layers have since been remov
 | onboarding.css | 5,639 | 74 | 151 | 2 | 1 |
 | quality.css | 545 | 6 | 2 | 2 | 4 |
 | application-layout.css | removed in #184 | — | — | — | — |
-| **Total** | **103,173** | **1,390** | **2,336** | **85** | **34** |
-| application-layout.css | 3,208 | 39 | 47 | 3 | 27 |
-| **Historical baseline total** | **103,173** | **1,390** | **2,336** | **85** | **34** |
 
-Counts are mechanical inventory measures, not quality scores. The table preserves the pre-refactor baseline; it is not a current post-#182 measurement. Selector occurrences include repeated selector tokens within selectors and therefore should not be interpreted as unique rule counts.
+The historical total was 103,173 bytes, 1,390 rules, 2,336 selector occurrences, 85 media-query occurrences and 34 `!important` declarations. These figures must not be presented as current.
 
 ## 3. Confirmed CSS duplication/overlap
 
@@ -77,16 +75,16 @@ The following class names are defined in multiple stylesheets and require owners
 - `section-head` — components, platform, audit-overview, audit-expansion
 - `muted` — components, platform, audit-overview, performance-metrics
 - `text-link` — concepts, lead-home, public-refresh, public-services
-- `site-header` — global/shell ownership established; legacy override layers removed in #182
-- `brand` — global/shell ownership established; legacy override layers removed in #182
-- `header-actions` — global/shell ownership established; legacy override layers removed in #182
-- `sidebar` — global/shell ownership established; legacy override layers removed in #182
-- `menu-toggle` — global/shell ownership established; legacy override layers removed in #182
+- `site-header` — shell ownership established; legacy override layers removed in #182
+- `brand` — shell ownership established; legacy override layers removed in #182
+- `header-actions` — shell ownership established; legacy override layers removed in #182
+- `sidebar` — shell ownership established; legacy override layers removed in #182
+- `menu-toggle` — shell ownership established; legacy override layers removed in #182
 - `app-content` — shell ownership established; legacy platform/override duplication reduced in #182
 - `hero` — public-site ownership established; legacy override duplication removed in #182
 - `content-page` — public-site ownership established; legacy override duplication removed in #182
 - `content-hero` — public-site/public-refresh
-- `side-cta` — global, overrides
+- `side-cta` — public/legacy ownership requires further review
 
 ### Application/audit overlap
 
@@ -130,16 +128,10 @@ These may represent legitimate variants, but ownership is currently distributed 
 Confirmed observations:
 
 1. `src/main.tsx` still relies partly on stylesheet import order.
-2. `overrides.css` and `menu-overrides.css` were superseded and removed; their legitimate rules now have owning layers.
-3. `application-layout.css` was previously imported last specifically to override earlier layout rules; it was removed in #184.
-4. The tactical layer contained 27 `!important` declarations; those declarations were removed with the stylesheet.
-5. Remaining `!important` declarations are limited to other documented contracts in `audit-overview.css`, `onboarding.css` and `quality.css`.
-2. `overrides.css` and `menu-overrides.css` were identified as superseded override layers and removed in #182.
-3. `application-layout.css` is imported last specifically to override earlier layout rules.
-4. `application-layout.css` contains 27 `!important` declarations.
-5. Other `!important` declarations exist in `menu-overrides.css`, `audit-overview.css`, `onboarding.css` and `quality.css`.
-6. Responsive rules are distributed across most stylesheet files, with 85 `@media` occurrences in the current inventory.
-7. The architecture therefore depends partly on cascade order rather than a single explicit ownership model.
+2. The superseded `overrides.css`, `menu-overrides.css` and `application-layout.css` layers have been removed.
+3. The former tactical application-layout layer contained 27 `!important` declarations; those declarations were removed with that stylesheet.
+4. Remaining `!important` declarations are limited to documented contracts in `audit-overview.css`, `onboarding.css`, `quality.css` and the shell where explicitly required.
+5. Responsive rules remain distributed across most stylesheet files, so ownership and cascade order still require continued attention.
 
 These are structural observations. They do not by themselves prove that every duplicate selector is incorrect; some may intentionally provide contextual variants.
 
