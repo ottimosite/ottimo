@@ -6,13 +6,13 @@ import App from '../App'
 describe('app', () => {
   it('renders the product landing page around a clear improvement proposition', () => {
     render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>)
-    expect(screen.getByRole('heading', { name: /know what’s holding your website back\. know what to fix next\./i })).toBeInTheDocument()
-    expect(screen.getAllByRole('link', { name: /analyse my website/i }).length).toBeGreaterThan(0)
-    expect(screen.getByRole('heading', { name: /six lenses\. one digital experience/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /from website signal to verified improvement/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /make your website work better\. know what to fix next\./i })).toBeInTheDocument()
+    expect(screen.getAllByRole('link', { name: /start my website check/i }).length).toBeGreaterThan(0)
+    expect(screen.getByRole('heading', { name: /six lenses\. one website/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /turn website evidence into verified improvement/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /a report you can understand/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /see how ottimo turns evidence into an action/i })).toBeInTheDocument()
-    expect(screen.getByText(/deterministic fixture/i)).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /see how ottimo turns evidence into the next action/i })).toBeInTheDocument()
+    expect(screen.getByText(/This working example uses a deterministic fixture/i)).toBeInTheDocument()
     expect(screen.getByText(/snapshot coverage is limited to the public portal/i)).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /useful answers before you start/i })).toBeInTheDocument()
     expect(screen.getByText(/unavailable evidence is a valid result/i)).toBeInTheDocument()
@@ -24,7 +24,7 @@ describe('app', () => {
   it('shows a useful error when the audit form has an invalid URL', () => {
     render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>)
     fireEvent.change(screen.getByPlaceholderText('yourbusiness.co.uk'), { target: { value: '%%%' } })
-    fireEvent.click(screen.getAllByRole('button', { name: /analyse my website/i })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: /start my website check/i })[0])
     expect(screen.getByRole('alert')).toHaveTextContent(/invalid url/i)
   })
 
