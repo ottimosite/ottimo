@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "npx --yes netlify-cli@27.8.0 dev --no-open",
+    "dev": "node scripts/dev-local.mjs",
     "dev:vite": "vite",
     "dev:functions": "npx --yes netlify-cli@27.8.0 functions:serve",
     "build": "tsc -b && vite build",
