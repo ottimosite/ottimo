@@ -329,7 +329,7 @@ export function PublicAuditExample() {
       <div className="section-intro"><span className="eyebrow">Priority findings</span><h2 id="example-findings-title">Finding → evidence → action.</h2><p>Each finding explains what was observed, what it means, what evidence supports it and what could happen next.</p></div>
       <div className="public-example-finding-list">
         {wikipediaAudit.issues.map(issue => <article key={issue.id}>
-          <div className="public-example-finding-top"><Badge tone={issue.severity}>{issue.severity}</Badge><span>{categoryLabels[issue.category]}</span></div>
+          <div className="public-example-finding-top"><Badge tone={issue.severity}>{issue.severity}</Badge><span>{categoryLabels[issue.category as keyof typeof categoryLabels]}</span></div>
           <h3>{issue.title}</h3>
           <p>{issue.summary}</p>
           <dl>
@@ -345,7 +345,7 @@ export function PublicAuditExample() {
     <section className="public-example-coverage" aria-labelledby="example-coverage-title">
       <div className="section-intro"><span className="eyebrow">Six lenses</span><h2 id="example-coverage-title">Coverage stays explicit.</h2><p>Ottimo does not turn unavailable measurements into scores just to fill a dashboard.</p></div>
       <div className="public-example-coverage-grid">
-        {wikipediaAudit.scores.map(score => <div key={score.category}><span>{categoryLabels[score.category]}</span><strong>{score.measurement === 'measured' ? 'Measured' : 'Unavailable'}</strong></div>)}
+        {wikipediaAudit.scores.map(score => <div key={score.category}><span>{categoryLabels[score.category as keyof typeof categoryLabels]}</span><strong>{score.measurement === 'measured' ? 'Measured' : 'Unavailable'}</strong></div>)}
       </div>
     </section>
 
