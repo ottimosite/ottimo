@@ -339,3 +339,53 @@
 
 @media (min-width:1440px){.coverage-section,.case-study-lead{max-width:1440px;}.lead-form{max-width:1360px;}}
 .public-home.lead-home{width:100%;max-width:none;margin:0;padding-left:0;padding-right:0;}.public-home.lead-home>section{box-sizing:border-box;}
+
+/* Landing-page presentation migrated from public-refresh.css. */
+/* Public marketing refresh: stronger hierarchy, proof, conversion and route-level clarity. */
+.public-trust-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-top: 1px solid var(--forest);
+  border-bottom: 1px solid var(--forest);
+  padding: 0 max(30px, calc((100vw - 1220px) / 2));
+}
+.public-trust-row > div { display: grid; gap: 5px; padding: 24px 22px; border-right: 1px solid var(--line); }
+.public-trust-row > div:last-child { border-right: 0; }
+.public-trust-row strong { color: var(--forest); font-size: .86rem; }
+.public-trust-row span { color: var(--ink-soft); font-size: .76rem; line-height: 1.45; }
+.lead-home .audit-preview { box-shadow: 18px 18px 0 var(--lime); }
+.preview-link { display: inline-block; margin-top: 18px; color: var(--lime); font-size: .78rem; font-weight: 900; }
+.lead-home .education-strip > div:first-child p { max-width: 560px; color: var(--ink-soft); font-size: 1rem; line-height: 1.6; }
+.coverage-item { display: flex; flex-direction: column; }
+.coverage-item .text-link, .coverage-item > a { margin-top: auto; padding-top: 20px; color: var(--green-dark); font-size: .75rem; font-weight: 900; }
+.audit-output-section { padding: 80px 0; border-top: 1px solid var(--line); }
+.audit-output-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); margin-top:34px; border-top:1px solid var(--line); border-left:1px solid var(--line); }
+.audit-output-grid article { min-height:220px; padding:28px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); background:#fff; }
+.audit-output-grid article > span { color:var(--green-dark); font-size:.7rem; font-weight:950; letter-spacing:.1em; }
+.audit-output-grid h3 { margin:38px 0 10px; color:var(--forest); font-size:1.35rem; }
+.audit-output-grid p { color:var(--ink-soft); line-height:1.55; }
+.faq-section { padding:80px 0; border-top:1px solid var(--line); }
+.faq-list { margin-top:30px; border-top:1px solid var(--line); }
+.faq-list details { border-bottom:1px solid var(--line); }
+.faq-list summary { cursor:pointer; padding:22px 0; color:var(--forest); font-weight:900; list-style-position:outside; }
+.faq-list p { max-width:70ch; padding:0 0 22px 20px; color:var(--ink-soft); line-height:1.6; }
+@media (max-width:900px) { .audit-output-grid { grid-template-columns:1fr 1fr; } }
+@media (max-width:600px) { .audit-output-section,.faq-section { padding:58px 0; } .audit-output-grid { grid-template-columns:1fr; } .audit-output-grid article { min-height:0; } }
+
+/* Constrain newly added full-bleed landing sections to the same reading grid. */
+.lead-home > .audit-output-section,
+.lead-home > .faq-section {
+  width: 100vw;
+  max-width: none;
+  margin-left: calc(50% - 50vw);
+  box-sizing: border-box;
+}
+.landing-section-inner {
+  width: min(1220px, calc(100% - 60px));
+  margin-inline: auto;
+}
+.audit-output-grid { width: 100%; }
+.faq-section .section-intro { max-width: 720px; }
+.faq-list { width: 100%; }
+@media (max-width: 600px) {
+  .landing-section-inner { width: calc(100% - 44px); }
