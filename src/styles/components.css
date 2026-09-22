@@ -153,3 +153,28 @@
   .queue-intro { display: grid; gap: 8px; }
   .action-details dl { grid-template-columns: 1fr; }
 }
+
+
+/* Recoverable application failure state */
+.app-error {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background: var(--paper);
+}
+.app-error__panel {
+  width: min(100%, 680px);
+  padding: clamp(24px, 5vw, 48px);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface, #fff);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .08);
+}
+.app-error__panel h1 {
+  margin: .25rem 0 .75rem;
+}
+.app-error__panel p:not(.eyebrow) {
+  max-width: 58ch;
+  color: var(--muted);
+}
