@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { auditScores, categoryLabels } from '../../data/mock'
 import { localRepository } from '../../services/local-repository'
-import { Card, Score, Progress } from '../../components/ui'
+import { Card, PageHeading, Score, Progress } from '../../components/ui'
 import { formatDate } from '../../lib/format'
 
 export function Dashboard() {
@@ -11,10 +11,7 @@ export function Dashboard() {
   const website = websites.find(item => item.id === audit.websiteId) ?? websites[0]
 
   return <div className="stack">
-    <div className="page-heading">
-      <div><span className="eyebrow">Overview</span><h1>Your digital presence at a glance.</h1><p>See what matters most, fix the highest-impact issues and track progress over time.</p></div>
-      <Link className="btn btn-primary" to="/app/audits/new">Run an audit</Link>
-    </div>
+    <PageHeading eyebrow="Overview" title="Your digital presence at a glance." description="See what matters most, fix the highest-impact issues and track progress over time." action={<Link className="btn btn-primary" to="/app/audits/new">Run an audit</Link>} />
 
     <div className="hero-metrics">
       <Card className="score-card">
