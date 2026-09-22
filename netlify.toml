@@ -5,13 +5,21 @@
 [build.environment]
   NODE_VERSION = "22"
 
+# Local Netlify Dev wraps the Vite server so /.netlify/functions/* is available.
+# The browser-facing proxy stays on 8888 by default; Vite remains on 5173.
+[dev]
+  command = "npm run dev:vite"
+  framework = "#custom"
+  targetPort = 5173
+  port = 8888
+  autoLaunch = false
+
 # Ottimo is a client-side React Router application. Serve index.html
 # for application routes so direct navigation and refreshes work in production.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
 
 [functions]
   directory = "netlify/functions"
@@ -22,7 +30,6 @@
   timeout = 55
   memory = 2048
 
- 
 [[headers]]
   for = "/*"
   [headers.values]
