@@ -232,7 +232,7 @@ export function Home() {
         <span className="eyebrow">See the product, not a mockup</span>
         <h2 id="audit-example-title">See how Ottimo turns evidence into the next action.</h2>
         <p>This working example uses a deterministic fixture. It shows how Ottimo connects a finding, its evidence and its next action without presenting the snapshot as a live customer measurement.</p>
-        <Link className="text-link" to="/app/audits/audit-wikipedia">Explore the working audit →</Link>
+        <Link className="text-link" to="/example-audit">Explore the working audit example →</Link>
       </div>
       <div className="case-score audit-example-card">
         <div className="audit-example-header"><span>Illustrative audit</span><strong>Deterministic fixture</strong></div>
