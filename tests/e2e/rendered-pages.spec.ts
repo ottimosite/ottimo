@@ -5,7 +5,9 @@ const publicRoutes = ['/', '/services', '/performance', '/seo', '/accessibility'
 const applicationRoutes = ['/app/dashboard', '/app/websites', '/app/audits', '/app/audits/audit-wikipedia', '/app/recommendations', '/app/reports', '/app/history', '/app/settings']
 const routeName = (path: string) => path === '/' ? 'home' : path.replace(/^\//, '').replace(/\//g, '-')
 
-type BrowserAxe = { run: (context: Document, options: { resultTypes: string[] }) => Promise<{ violations: Array<{ id: string }> }> }\n\nasync function assertRenderedPage(page: Page, path: string) {
+type BrowserAxe = { run: (context: Document, options: { resultTypes: string[] }) => Promise<{ violations: Array<{ id: string }> }> }
+
+async function assertRenderedPage(page: Page, path: string) {
   const consoleErrors: string[] = []
   const pageErrors: string[] = []
   const failedRequests: string[] = []
