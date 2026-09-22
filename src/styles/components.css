@@ -60,6 +60,7 @@
   align-content:start;
   gap:6px;
   padding:16px;
+  padding-left:18px;
   border-radius:12px;
   background:var(--cream);
   border-left:1px solid var(--line);
