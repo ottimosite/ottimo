@@ -1,6 +1,6 @@
 # Ottimo CSS Architecture Baseline
 
- > Baseline taken from `master` after the CSS ownership migrations through PR #211. This document records the current migration state; it is not a proposal to rewrite the styling system.
+> Baseline taken from `master` after the CSS ownership migrations through PR #211. This document records the current migration state; it is not a proposal to rewrite the styling system.
 
 ## Purpose
 
@@ -165,11 +165,11 @@ A feature may consume lower layers. Lower layers must not depend on feature styl
 The migration should proceed in small PRs:
 
 1. **Baseline/inventory** — this document.
-2. **Foundation extraction** — separate true reset/base contracts from `global.css`.
-3. **Shared primitive consolidation** — establish authoritative card/button/section/form/focus primitives.
-4. **Shell isolation** — keep application chrome independent of feature styles.
+2. **Foundation extraction** — completed through #197.
+3. **Shared primitive consolidation** — completed in the current migration slices for cards, recommendations and action-queue ownership.
+4. **Shell isolation** — completed through #201/#203.
 5. **Public consolidation** — reduce overlap between `lead-home.css` and `public-refresh.css`.
-6. **Audit consolidation** — establish a coherent audit presentation boundary.
+6. **Audit consolidation** — continue establishing a coherent audit presentation boundary.
 7. **Application feature cleanup** — migrate remaining `platform.css`/component rules.
 8. **Delete obsolete rules/files** — only after usage is proven absent.
 9. **Quality hardening** — add checks that prevent duplicate ownership and cascade regressions.
