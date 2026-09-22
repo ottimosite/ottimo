@@ -34,6 +34,7 @@
   --muted: var(--color-muted);
   --coral: var(--color-coral);
   --line: var(--color-line);
+  --border: var(--line);
   --surface: var(--color-surface);
   --text: var(--color-ink);
 
