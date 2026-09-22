@@ -12,7 +12,7 @@ describe('app', () => {
     expect(screen.getByRole('heading', { name: /turn website evidence into verified improvement/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /a report you can understand/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /see how ottimo turns evidence into the next action/i })).toBeInTheDocument()
-    expect(screen.getByText(/deterministic fixture/i)).toBeInTheDocument()
+    expect(screen.getByText(/This working example uses a deterministic fixture/i)).toBeInTheDocument()
     expect(screen.getByText(/snapshot coverage is limited to the public portal/i)).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /useful answers before you start/i })).toBeInTheDocument()
     expect(screen.getByText(/unavailable evidence is a valid result/i)).toBeInTheDocument()
