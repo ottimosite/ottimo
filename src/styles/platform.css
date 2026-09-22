@@ -1,15 +1,11 @@
 /* Shared application and content primitives. Pages should compose these classes rather than inventing one-off layout rules. */
 
 
-.filters { display:grid; grid-template-columns:minmax(220px,1fr) repeat(3,minmax(120px,.45fr)); gap:10px; margin-bottom:20px; }
 input,select,textarea { width:100%; border:1px solid rgba(18,61,46,.24); border-radius:10px; background:#fff; color:var(--ink); padding:12px 13px; }
 label { display:grid; gap:7px; color:var(--forest); font-size:.78rem; font-weight:850; }
 label + label { margin-top:14px; }
 input::placeholder { color:#89958e; }
 input:disabled { background:#f0f4ed; color:var(--muted); }
-.error { color:#9e2f1e; font-weight:800; }
-.form-grid { display:grid; gap:14px; }
-.form-grid .btn { justify-self:start; }
 
 .issue-list { display:grid; gap:12px; }
 .issue { padding:20px; border:1px solid var(--line); border-radius:15px; background:#fff; }
