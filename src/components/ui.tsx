@@ -4,6 +4,10 @@ export function Button({children,className='',variant='primary',...props}:{child
   return <button className={`btn btn-${variant} ${className}`} {...props}>{children}</button>
 }
 
+export function PageHeading({eyebrow,title,description,action}:{eyebrow:ReactNode;title:string;description:ReactNode;action?:ReactNode}){
+  return <div className="page-heading"><div><span className="eyebrow">{eyebrow}</span><h1>{title}</h1><p>{description}</p></div>{action}</div>
+}
+
 export function Card({children,className='',id}:{children:ReactNode;className?:string;id?:string}){
   return <section id={id} className={`card ${className}`}>{children}</section>
 }
