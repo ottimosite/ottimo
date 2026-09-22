@@ -29,8 +29,7 @@ New CSS should not be added to a legacy file merely because that file is current
 11. `lead-home.css`
 12. `public-refresh.css`
 13. `public-services.css`
-14. `audit-overview.css`
-15. `audit-expansion.css`
+14. `audit.css`
 16. `standards.css`
 17. `performance-metrics.css`
 18. `onboarding.css`
@@ -80,7 +79,7 @@ Rule counts are an inventory heuristic rather than a CSS parser result; grouped/
 
 ### Audit feature ownership
 
-`audit-overview.css` and `audit-expansion.css` already indicate that audit presentation has a feature boundary. The next step is to decide which rules are genuinely shared audit primitives versus route-specific presentation.
+`audit.css` already indicate that audit presentation now has one explicit feature boundary in `audit.css`.
 
 ### Typography
 
@@ -90,7 +89,7 @@ PR #193 established the single sans-serif direction. Future CSS migration must p
 
 ### 1. Remaining legacy ownership
 
-The former `global.css`, `platform.css`, and other superseded compatibility layers have now been retired. Remaining architectural work is concentrated in feature boundaries and the small amount of mixed presentation still in `components.css`, plus consolidation of public and audit styles.
+The former `global.css`, `platform.css`, and other superseded compatibility layers have now been retired. Remaining architectural work is concentrated in feature boundaries and the small amount of mixed presentation still in `components.css`, while completing application feature ownership.
 
 ### 2. Duplicate shared primitives
 
@@ -158,7 +157,7 @@ The migration should proceed in small PRs:
 3. **Shared primitive consolidation** — substantially completed through the shared card/heading work and PR #244 recommendation ownership.
 4. **Shell isolation** — completed through #201/#203.
 5. **Public consolidation** — reduce overlap between `lead-home.css` and `public-refresh.css`.
-6. **Audit consolidation** — continue establishing a coherent audit presentation boundary.
+6. **Audit consolidation** — completed through #247/#248 with a single `audit.css` owner.
 7. **Application feature cleanup** — migrate remaining mixed component rules and verify `dashboard.css`/`platform-pages.css` feature boundaries.
 8. **Delete obsolete rules/files** — only after usage is proven absent.
 9. **Quality hardening** — add checks that prevent duplicate ownership and cascade regressions.
@@ -195,6 +194,6 @@ This baseline does **not**:
 
 ## Next implementation slice
 
-The current implementation slice is #245: consolidate landing-page ownership out of `public-refresh.css` and update this architecture record to the current repository state. After it lands, continue with the next coherent feature boundary rather than selector-by-selector cleanup, prioritising audit consolidation and then remaining application feature ownership.
+The current implementation slice is #249: remove remaining feature-owned presentation from `components.css` and return it to explicit feature owners. After it lands, continue with remaining application feature ownership and then quality hardening.
 
 `global.css` and `platform.css` are retired. The success criterion is not merely fewer lines of CSS; it is a predictable ownership graph with explicit shared/application/feature boundaries.
