@@ -7,7 +7,7 @@ import { buildOptimizationActions } from '../../audit-engine/actions'
 import { prioritiseAction, type RegressionRisk } from '../../audit-engine/action-prioritisation'
 import { buildInitialActionLifecycle } from '../../audit-engine/action-lifecycle'
 import { blockingDependencies, canTransitionAction, normaliseActionDependencies } from '../../audit-engine/action-dependencies'
-import { Badge, Card } from '../../components/ui'
+import { Badge, Card, PageHeading } from '../../components/ui'
 
 const lifecycleOrder: ActionLifecycleStatus[] = ['planned', 'in_progress', 'verification', 'resolved', 'failed', 'inconclusive']
 
@@ -161,13 +161,7 @@ export function Recommendations() {
   }
 
   return <div className="stack">
-    <div className="page-heading">
-      <div>
-        <span className="eyebrow">{website ? `Actions · ${website.name}` : 'Actions'}</span>
-        <h1>Fix the things that matter most.</h1>
-        <p>{website ? 'A website-specific execution queue keeps each recommendation connected to the evidence that created it and the verification needed to prove the change.' : 'Prioritised actions turn evidence into a practical execution queue. Work is ordered by deterministic priority, while dependencies prevent unsafe transitions.'}</p>
-      </div>
-    </div>
+    <PageHeading eyebrow={website ? `Actions · ${website.name}` : 'Actions'} title="Fix the things that matter most." description={website ? 'A website-specific execution queue keeps each recommendation connected to the evidence that created it and the verification needed to prove the change.' : 'Prioritised actions turn evidence into a practical execution queue. Work is ordered by deterministic priority, while dependencies prevent unsafe transitions.'} />
 
     <div className="action-summary" aria-label="Action queue summary">
       <Card className="action-summary-card"><strong>{all.length}</strong><span>Total actions</span></Card>
