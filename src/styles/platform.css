@@ -1,11 +1,4 @@
 /* Shared application and content primitives. Pages should compose these classes rather than inventing one-off layout rules. */
-:root {
-  --border: var(--line);
-  --text: var(--ink);
-  --surface: #fff;
-  --surface-2: var(--mint);
-}
-
 .score-card { display:grid; grid-template-columns:minmax(170px,.7fr) minmax(0,1.3fr); align-items:center; gap:30px; background:var(--lime); }
 .score { display:grid; justify-items:center; gap:8px; color:var(--forest); }
 .score-ring { width:116px; aspect-ratio:1; display:grid; place-items:center; border-radius:50%; background:conic-gradient(var(--forest) var(--score), rgba(18,61,46,.15) 0); position:relative; }
@@ -114,7 +107,6 @@ td a { color:var(--green-dark); font-weight:850; }
   .app-content { padding-inline:20px; }
   .grid-2,.grid-3,.hero-metrics,.score-card,.impact-grid { grid-template-columns:1fr; }
   .page-heading h1 { font-size:clamp(2.8rem,12vw,4.8rem); }
-  .card { padding:20px; border-radius:15px; }
   .score-card { gap:22px; }
   .score-row { grid-template-columns:1fr auto; }
   .score-row .progress { grid-column:1 / -1; grid-row:2; }
