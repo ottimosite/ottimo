@@ -98,3 +98,10 @@ td a { color:var(--green-dark); font-weight:850; }
   .audit-item { grid-template-columns:50px minmax(0,1fr) auto; gap:12px; }
   .audit-score { width:44px; height:44px; }
 }
+
+/* Shared application form controls. */
+input,select,textarea { width:100%; border:1px solid rgba(18,61,46,.24); border-radius:10px; background:#fff; color:var(--ink); padding:12px 13px; }
+label { display:grid; gap:7px; color:var(--forest); font-size:.78rem; font-weight:850; }
+label + label { margin-top:14px; }
+input::placeholder { color:#89958e; }
+input:disabled { background:#f0f4ed; color:var(--muted); }
