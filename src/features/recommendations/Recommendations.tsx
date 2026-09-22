@@ -157,7 +157,7 @@ export function Recommendations() {
       }
     })
     setAudits(next)
-    storage.saveAudits(next)
+    localRepository.saveAudits(next)
   }
 
   return <div className="stack">
