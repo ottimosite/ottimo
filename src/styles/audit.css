@@ -126,9 +126,7 @@
 .audit-command-lead p{max-width:700px;margin:0;color:var(--muted)}
 .audit-command-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .primary-action,.secondary-action,.audit-action-item{display:flex;align-items:center;justify-content:space-between;gap:14px;text-decoration:none}
-.primary-action,.secondary-action{padding:11px 15px;border-radius:10px;font-weight:800}
-.primary-action{background:var(--forest);color:white}
-.secondary-action{border:1px solid var(--border);color:var(--forest)}
+.primary-action,.secondary-action{min-width:0}
 .audit-command-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border-top:1px solid var(--border)}
 .audit-command-grid article{padding:18px 20px;border-right:1px solid var(--border)}
 .audit-command-grid article:last-child{border-right:0}
