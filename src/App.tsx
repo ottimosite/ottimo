@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { PublicLayout, AppLayout } from './components/Layout'
-import { Home, InfoPage } from './pages/PublicPages'
+import { Home, InfoPage, PublicAuditExample } from './pages/PublicPages'
 import { PublicServicePage } from './pages/PublicServicePages'
 import { Dashboard } from './features/dashboard/Dashboard'
 import { Websites } from './features/websites/Websites'
