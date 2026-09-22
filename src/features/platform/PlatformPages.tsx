@@ -3,7 +3,7 @@ import { auditScores, categoryLabels, seedAudits } from '../../data/mock'
 import { storage } from '../../services/storage'
 import { localRepository } from '../../services/local-repository'
 import type { Category } from '../../types/domain'
-import { Badge, Button, Card, Progress, Score } from '../../components/ui'
+import { Badge, Button, Card, PageHeading, Progress, Score } from '../../components/ui'
 import { formatDate, titleCase } from '../../lib/format'
 
 const categoryCopy: Record<Category, { title: string; body: string; next: string }> = {
@@ -28,7 +28,7 @@ export function CategoryPage({ category }: { category: Category }) {
   const issues = audit.issues.filter(issue => issue.category === category).sort((a, b) => b.priority - a.priority)
   const copy = categoryCopy[category]
   return <div className="stack">
-    <div className="page-heading"><div><span className="eyebrow">{categoryLabels[category]}</span><h1>{copy.title}</h1><p>{copy.body}</p></div><Link className="btn btn-primary" to={`/app/audits/new/run?url=${encodeURIComponent(audit.url)}`}>Run another audit</Link></div>
+    <PageHeading eyebrow={categoryLabels[category]} title={copy.title} description={copy.body} action={<Link className="btn btn-primary" to={`/app/audits/new/run?url=${encodeURIComponent(audit.url)}`}>Run another audit</Link>} />
     <div className="grid-2"><Card className="score-card"><div><span className="muted">Latest score</span>{score.score === undefined ? <div className="score"><strong>—</strong><span>Not measured</span></div> : <Score value={score.score} label={titleCase(category)} />}</div><div className="metric-copy"><span className="eyebrow">What next</span><p>{copy.next}</p><Link to="/app/recommendations">Open recommendations →</Link></div></Card><Card><span className="muted">Open findings</span><strong className="big-number">{issues.filter(issue => issue.status !== 'resolved').length}</strong><p>{issues.length} findings in the latest audit.</p></Card></div>
     <Card><div className="section-head"><div><span className="eyebrow">Latest signals</span><h2>Issues in this domain</h2></div>{score.score === undefined ? <span className="muted">Not measured</span> : <Progress value={score.score} />}</div><div className="issue-list">{issues.length ? issues.map(issue => <article className="issue" key={issue.id}><div className="issue-top"><div><Badge tone={issue.severity}>{issue.severity}</Badge><h3>{issue.title}</h3></div><strong>#{issue.priority}</strong></div><p>{issue.summary}</p><div className="issue-foot"><span>{issue.effort} effort</span><Badge tone={issue.status}>{titleCase(issue.status)}</Badge></div></article>) : <p className="muted">No findings are recorded for this category yet.</p>}</div></Card>
   </div>
@@ -53,10 +53,7 @@ export function WebsiteDetail() {
   const intelligence = model?.siteIntelligence
 
   return <div className="stack website-workspace">
-    <div className="page-heading">
-      <div><span className="eyebrow">Website workspace</span><h1>{website.name}</h1><p>{website.url}</p></div>
-      <Link className="btn btn-primary" to={`/app/audits/new/run?url=${encodeURIComponent(website.url)}`}>Run audit</Link>
-    </div>
+    <PageHeading eyebrow="Website workspace" title={website.name} description={website.url} action={<Link className="btn btn-primary" to={`/app/audits/new/run?url=${encodeURIComponent(website.url)}`}>Run audit</Link>} />
 
     {!latestAudit ? <Card className="empty-state">
       <span className="eyebrow">Baseline needed</span>
