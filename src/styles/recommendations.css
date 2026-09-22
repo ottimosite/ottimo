@@ -58,6 +58,20 @@
 }
 .rec-meta select:focus-visible { outline:3px solid var(--lime); outline-offset:2px; }
 
+.rec-labels { display:flex; flex-wrap:wrap; align-items:center; gap:7px; }
+.rec-labels .muted { font-size:.76rem; }
+
+@media (max-width:900px) {
+  .recommendation { grid-template-columns:1fr; gap:18px; }
+  .rec-meta { grid-template-columns:auto auto 1fr; padding:14px 0 0; border-left:0; border-top:1px solid var(--line); }
+  .rec-meta select { grid-column:auto; }
+}
+@media (max-width:700px) {
+  .recommendation { padding:20px 0; }
+  .rec-meta { grid-template-columns:1fr 1fr; }
+  .rec-meta select { grid-column:1 / -1; }
+}
+
 /* UX-04 action queue touch and narrow-screen hardening */
 .action-next-step { display:grid; gap:4px; margin:12px 0; padding:12px 14px; border-left:3px solid var(--green); background:var(--mint); }
 .action-next-step strong { color:var(--forest); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; }
