@@ -31,6 +31,43 @@ async function assertRenderedPage(page: Page, path: string) {
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await expect(page.locator('body')).toBeVisible()
   await expect(page.locator('h1').first()).toBeVisible()
+  await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /.+/)
+  if (!path.startsWith('/app/')) {
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', new RegExp(`\\${new URL(path, 'http://127.0.0.1:5173').pathname}import { expect, test, type Page, type ConsoleMessage, type Request, type Response } from '@playwright/test'
+import axe from 'axe-core'
+
+const publicRoutes = ['/', '/services', '/performance', '/seo', '/accessibility', '/ai', '/methodology', '/usability', '/technical', '/pricing', '/about', '/case-studies', '/contact']
+const applicationRoutes = ['/app/dashboard', '/app/websites', '/app/audits', '/app/audits/audit-wikipedia', '/app/recommendations', '/app/reports', '/app/history', '/app/settings']
+const routeName = (path: string) => path === '/' ? 'home' : path.replace(/^\//, '').replace(/\//g, '-')
+
+type BrowserAxe = { run: (context: Document, options: { resultTypes: string[] }) => Promise<{ violations: Array<{ id: string }> }> }
+
+async function assertRenderedPage(page: Page, path: string) {
+  const consoleErrors: string[] = []
+  const pageErrors: string[] = []
+  const failedRequests: string[] = []
+  const badSameOriginResponses: string[] = []
+  const onConsole = (message: ConsoleMessage) => { if (message.type() === 'error') consoleErrors.push(message.text()) }
+  const onPageError = (error: Error) => pageErrors.push(error.message)
+  const onRequestFailed = (request: Request) => {
+    if (request.failure()?.errorText === 'net::ERR_ABORTED') return
+    if (new URL(request.url()).origin === new URL(page.url()).origin) failedRequests.push(`${request.method()} ${request.url()} — ${request.failure()?.errorText ?? 'unknown failure'}`)
+  }
+  const onResponse = (response: Response) => {
+    if (response.status() >= 400) {
+      const target = new URL(response.url())
+      if (target.origin === new URL(page.url()).origin) badSameOriginResponses.push(`${response.status()} ${response.url()}`)
+    }
+  }
+  page.on('console', onConsole); page.on('pageerror', onPageError); page.on('requestfailed', onRequestFailed); page.on('response', onResponse)
+  await page.goto(path, { waitUntil: 'domcontentloaded' })
+  await page.waitForLoadState('networkidle').catch(() => undefined)
+  await page.evaluate(async () => { if (document.fonts?.ready) await document.fonts.ready })
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await expect(page.locator('body')).toBeVisible()
+))
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute('content', /Ottimo$/)
+  }
   const overflow = await page.evaluate(() => ({ width: document.documentElement.scrollWidth, viewport: window.innerWidth }))
   expect(overflow.width, `Horizontal overflow on ${path}: ${overflow.width}px > ${overflow.viewport}px`).toBeLessThanOrEqual(overflow.viewport)
   const axeResults = await page.evaluate(async (source) => {
