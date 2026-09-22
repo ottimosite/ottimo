@@ -32,7 +32,7 @@ async function assertRenderedPage(page: Page, path: string) {
   page.on('response', onResponse)
 
   await page.goto(path, { waitUntil: 'domcontentloaded' })
-  await page.waitForLoadState('networkidle').catch(() => undefined)
+  await page.waitForTimeout(100)
   await page.evaluate(async () => { if (document.fonts?.ready) await document.fonts.ready })
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await expect(page.locator('body')).toBeVisible()
