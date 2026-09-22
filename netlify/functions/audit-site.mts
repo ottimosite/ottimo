@@ -39,11 +39,20 @@ export default async (request: Request) => {
     telemetry.record(createTelemetry('audit.requested', { targetHost: (() => { try { return new URL(input.url!).hostname } catch { return undefined } })() }))
 
     const pageEngine = new AuditEngine(
-      new PlaywrightPageCollector(async () => playwrightChromium.launch({
-        executablePath: await chromium.executablePath(),
-        args: chromium.args,
-        headless: chromium.headless,
-      })),
+      new PlaywrightPageCollector(async () => {
+        // Netlify production uses the serverless Chromium binary. Netlify Dev on
+        // Windows/Linux/macOS should use Playwright's locally installed browser
+        // instead; the Sparticuz Lambda binary is not a local-development browser.
+        if (process.env.NETLIFY_DEV) {
+          return playwrightChromium.launch({ headless: true })
+        }
+
+        return playwrightChromium.launch({
+          executablePath: await chromium.executablePath(),
+          args: chromium.args,
+          headless: chromium.headless,
+        })
+      }),
     )
 
     const report = await new SiteAuditEngine(pageEngine).audit({
