@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { categoryLabels, seedAudits } from '../../data/mock'
+import { categoryLabels } from '../../data/mock'
 import { ServerAuditProvider } from '../../services/server-audit'
-import { storage } from '../../services/storage'
 import { localRepository } from '../../services/local-repository'
 import type { Audit, Category, Severity, Status } from '../../types/domain'
 import { Badge, Button, Card, Progress } from '../../components/ui'
@@ -66,8 +65,8 @@ export function NewAudit() {
             ? { ...item, lastAuditId: audit.id, healthModel: audit.healthModel }
             : item,
         )
-        storage.saveWebsites(updatedWebsites)
-        storage.saveAudits([...seedAudits, ...storage.audits(), audit])
+        localRepository.saveWebsites(updatedWebsites)
+        localRepository.addAudit(audit)
         navigate('/app/audits/' + audit.id, { replace: true })
       } catch (cause) {
         setError(cause instanceof Error ? cause.message : 'Ottimo could not complete the audit.')
