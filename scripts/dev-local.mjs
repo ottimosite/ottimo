@@ -1,3 +1,4 @@
+/* global process, setTimeout, console */
 import { spawn } from 'node:child_process'
 
 const npmCommand = process.platform === 'win32' ? 'npm.cmd' : 'npm'
