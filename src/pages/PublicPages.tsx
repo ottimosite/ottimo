@@ -123,8 +123,34 @@ type PublicPath = keyof typeof pageContent
 function usePublicMetadata(title: string, description: string) {
   useEffect(() => {
     document.title = `${title} — Ottimo`
-    const meta = document.querySelector<HTMLMetaElement>('meta[name="description"]')
-    if (meta) meta.content = description
+
+    const upsertMeta = (attribute: 'name' | 'property', key: string, content: string) => {
+      let meta = document.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`)
+      if (!meta) {
+        meta = document.createElement('meta')
+        meta.setAttribute(attribute, key)
+        document.head.appendChild(meta)
+      }
+      meta.content = content
+    }
+
+    upsertMeta('name', 'description', description)
+    upsertMeta('property', 'og:title', `${title} — Ottimo`)
+    upsertMeta('property', 'og:description', description)
+    upsertMeta('property', 'og:type', 'website')
+    upsertMeta('name', 'twitter:card', 'summary')
+    upsertMeta('name', 'twitter:title', `${title} — Ottimo`)
+    upsertMeta('name', 'twitter:description', description)
+
+    const canonicalUrl = new URL(window.location.pathname || '/', window.location.origin).toString()
+    upsertMeta('property', 'og:url', canonicalUrl)
+    let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+    if (!canonical) {
+      canonical = document.createElement('link')
+      canonical.rel = 'canonical'
+      document.head.appendChild(canonical)
+    }
+    canonical.href = canonicalUrl
   }, [title, description])
 }
 
