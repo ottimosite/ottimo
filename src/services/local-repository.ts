@@ -13,6 +13,18 @@ export const localRepository = {
     return stored.length ? stored : seedWebsites
   },
 
+  saveAudits(audits: Audit[]): void {
+    storage.saveAudits(audits)
+  },
+
+  saveWebsites(websites: Website[]): void {
+    storage.saveWebsites(websites)
+  },
+
+  addAudit(audit: Audit): void {
+    storage.saveAudits([...seedAudits, ...storage.audits(), audit])
+  },
+
   findAudit(id: string): Audit | undefined {
     return localRepository.audits().find(audit => audit.id === id)
   },
