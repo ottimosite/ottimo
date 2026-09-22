@@ -389,6 +389,7 @@
 .faq-list { width: 100%; }
 @media (max-width: 600px) {
   .landing-section-inner { width: calc(100% - 44px); }
+}
 
 @media (max-width: 900px) {
   .public-trust-row { grid-template-columns: 1fr 1fr; }
