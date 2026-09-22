@@ -123,8 +123,33 @@ type PublicPath = keyof typeof pageContent
 function usePublicMetadata(title: string, description: string) {
   useEffect(() => {
     document.title = `${title} — Ottimo`
-    const meta = document.querySelector<HTMLMetaElement>('meta[name="description"]')
-    if (meta) meta.content = description
+
+    const upsertMeta = (name: string, content: string) => {
+      let meta = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`)
+      if (!meta) {
+        meta = document.createElement('meta')
+        meta.name = name
+        document.head.appendChild(meta)
+      }
+      meta.content = content
+    }
+
+    upsertMeta('description', description)
+    upsertMeta('og:title', `${title} — Ottimo`)
+    upsertMeta('og:description', description)
+    upsertMeta('og:type', 'website')
+    upsertMeta('twitter:card', 'summary')
+    upsertMeta('twitter:title', `${title} — Ottimo`)
+    upsertMeta('twitter:description', description)
+
+    const canonicalUrl = new URL(window.location.pathname || '/', window.location.origin).toString()
+    let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+    if (!canonical) {
+      canonical = document.createElement('link')
+      canonical.rel = 'canonical'
+      document.head.appendChild(canonical)
+    }
+    canonical.href = canonicalUrl
   }, [title, description])
 }
 
