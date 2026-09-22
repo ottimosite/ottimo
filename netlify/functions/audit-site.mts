@@ -43,7 +43,7 @@ export default async (request: Request) => {
         // Netlify production uses the serverless Chromium binary. Netlify Dev on
         // Windows/Linux/macOS should use Playwright's locally installed browser
         // instead; the Sparticuz Lambda binary is not a local-development browser.
-        if (process.env.NETLIFY_DEV) {
+        if (process.env.NETLIFY_DEV || process.env.OTTIMO_LOCAL_AUDIT === 'true') {
           return playwrightChromium.launch({ headless: true })
         }
 
