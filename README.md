@@ -16,17 +16,23 @@ npm install
 npm run dev
 ```
 
-This starts **Netlify Dev in front of Vite**, so the browser application and the local Netlify Functions run together. This is the mode to use when testing the live audit path.
+This starts Vite and a standalone Netlify Functions server together. Vite proxies `/.netlify/functions/*` to the local Functions server, so the browser uses the same endpoint as production without needing the Netlify Dev proxy.
 
-Open the URL printed by Netlify Dev (normally `http://localhost:8888`). The live audit endpoint is available at:
+Open `http://127.0.0.1:5173`. The live audit endpoint is available through the Vite proxy at:
 
 ```text
 /.netlify/functions/audit-site
 ```
 
-The repository pins the Netlify CLI version used by the development script through `npx`, so a global Netlify CLI installation is not required.
+The repository pins the Netlify CLI version used by the local Functions server through `npx`, so a global Netlify CLI installation is not required.
 
 Netlify CLI 27.8.0 requires Node.js 22.13.0 or newer. Keep local Node aligned with the Node 22 runtime configured for Netlify.
+
+On first setup, make sure Playwright's Chromium browser is installed:
+
+```bash
+npx playwright install chromium
+```
 
 ### Frontend-only Vite mode
 
@@ -46,7 +52,7 @@ To run the Netlify Functions server separately:
 npm run dev:functions
 ```
 
-For normal development, prefer `npm run dev` so the Netlify proxy and Vite application are available together.
+For normal development, prefer `npm run dev` so the Vite application and local Functions server are available together.
 
 The demo itself requires no API keys, database or external SaaS services. A live audit does require outbound network access from the local machine because Playwright must navigate to the requested website.
 
@@ -63,7 +69,7 @@ npm run test:e2e
 npm run lint
 ```
 
-`npm run test:e2e` starts the full Netlify Dev environment and runs Chromium against representative rendered journeys. In CI, the Quality Gate installs Chromium and also captures a landing-page screenshot for inspection. Browser accessibility checks use the repository's existing `axe-core` dependency.
+`npm run test:e2e` starts the full local Vite + Netlify Functions environment and runs Chromium against representative rendered journeys. In CI, the Quality Gate installs Chromium and also captures a landing-page screenshot for inspection. Browser accessibility checks use the repository's existing `axe-core` dependency.
 
 ## Architecture
 
