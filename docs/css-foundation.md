@@ -79,7 +79,7 @@ New layout contracts must be added to their feature owner rather than to a final
 
 ## Legacy override-layer removal
 
-The superseded `overrides.css` and `menu-overrides.css` layers have been removed. Their remaining legitimate rules were redistributed to their owning layers: `shell.css` for shell spacing, `platform.css` for platform preview sizing, `public-site.css` for shared public structure, and `lead-home.css` for landing-page composition. Foundational document behaviour remains in `global.css`.
+The superseded `overrides.css` and `menu-overrides.css` layers have been removed. Their remaining legitimate rules were redistributed to their owning layers: `shell.css` for shell spacing, `platform.css` for platform preview sizing, `public-site.css` for shared public structure, and `lead-home.css` for landing-page composition. Foundational document behaviour is now owned by `base.css`; `global.css` was retired in #211.
 
 New CSS must not recreate these concerns as a later override layer.
 
