@@ -39,30 +39,61 @@
   --text: var(--color-ink);
 
   /* Spacing */
-  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
-  --space-5: 20px; --space-6: 24px; --space-7: 28px; --space-8: 32px;
-  --space-9: 40px; --space-10: 48px; --space-11: 56px; --space-12: 64px;
-  --space-13: 72px; --space-14: 80px; --space-15: 96px; --space-16: 112px; --space-17: 128px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 28px;
+  --space-8: 32px;
+  --space-9: 40px;
+  --space-10: 48px;
+  --space-11: 56px;
+  --space-12: 64px;
+  --space-13: 72px;
+  --space-14: 80px;
+  --space-15: 96px;
+  --space-16: 112px;
+  --space-17: 128px;
 
   /* Layout */
-  --container-content: 1220px; --container-application: 1440px; --container-narrow: 860px;
-  --page-gutter: 30px; --page-gutter-mobile: 22px; --sidebar-width: 246px;
-  --sidebar-width-tablet: 220px; --header-height: 82px; --app-header-height: 72px;
+  --container-content: 1220px;
+  --container-application: 1440px;
+  --container-narrow: 860px;
+  --page-gutter: 30px;
+  --page-gutter-mobile: 22px;
+  --sidebar-width: 246px;
+  --sidebar-width-tablet: 220px;
+  --header-height: 82px;
+  --app-header-height: 72px;
 
   /* Shape */
-  --radius-sm: 8px; --radius-md: 9px; --radius-lg: 12px; --radius-xl: 18px;
-  --radius-2xl: 20px; --radius-pill: 999px;
+  --radius-sm: 8px;
+  --radius-md: 9px;
+  --radius-lg: 12px;
+  --radius-xl: 18px;
+  --radius-2xl: 20px;
+  --radius-pill: 999px;
 
   /* Typography */
   --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --shadow: var(--shadow-brand);
-  --text-xs: .65rem; --text-sm: .72rem; --text-md: .78rem; --text-body: .9rem; --text-lg: 1.08rem;
+    --text-xs: .65rem;
+  --text-sm: .72rem;
+  --text-md: .78rem;
+  --text-body: .9rem;
+  --text-lg: 1.08rem;
 
   /* Focus */
-  --focus-width: 3px; --focus-offset: 2px; --focus-color: var(--color-lime);
+  --focus-width: 3px;
+  --focus-offset: 2px;
+  --focus-color: var(--color-lime);
 
   /* Motion */
-  --motion-fast: .18s; --motion-standard: .25s; --ease-standard: ease;
+  --motion-fast: .18s;
+  --motion-standard: .25s;
+  --ease-standard: ease;
 
   /* Elevation */
   --shadow-brand: 14px 14px 0 rgba(18, 61, 46, 0.08);
