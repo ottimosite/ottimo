@@ -1,6 +1,7 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Badge, Card } from '../components/ui'
+import { categoryLabels } from '../data/mock'
 import { wikipediaAudit } from '../data/fixtures/wikipedia'
 
 const coverage = [
