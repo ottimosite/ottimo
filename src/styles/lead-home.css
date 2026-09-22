@@ -389,3 +389,14 @@
 .faq-list { width: 100%; }
 @media (max-width: 600px) {
   .landing-section-inner { width: calc(100% - 44px); }
+
+@media (max-width: 900px) {
+  .public-trust-row { grid-template-columns: 1fr 1fr; }
+  .public-trust-row > div:nth-child(2) { border-right: 0; }
+  .public-trust-row > div:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 600px) {
+  .public-trust-row { grid-template-columns: 1fr; padding-inline: 22px; }
+  .public-trust-row > div { border-right: 0; border-bottom: 1px solid var(--line); }
+  .public-trust-row > div:last-child { border-bottom: 0; }
+}
