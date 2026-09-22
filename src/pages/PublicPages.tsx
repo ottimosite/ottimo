@@ -124,23 +124,23 @@ function usePublicMetadata(title: string, description: string) {
   useEffect(() => {
     document.title = `${title} — Ottimo`
 
-    const upsertMeta = (name: string, content: string) => {
-      let meta = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`)
+    const upsertMeta = (attribute: 'name' | 'property', key: string, content: string) => {
+      let meta = document.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`)
       if (!meta) {
         meta = document.createElement('meta')
-        meta.name = name
+        meta.setAttribute(attribute, key)
         document.head.appendChild(meta)
       }
       meta.content = content
     }
 
-    upsertMeta('description', description)
-    upsertMeta('og:title', `${title} — Ottimo`)
-    upsertMeta('og:description', description)
-    upsertMeta('og:type', 'website')
-    upsertMeta('twitter:card', 'summary')
-    upsertMeta('twitter:title', `${title} — Ottimo`)
-    upsertMeta('twitter:description', description)
+    upsertMeta('name', 'description', description)
+    upsertMeta('property', 'og:title', `${title} — Ottimo`)
+    upsertMeta('property', 'og:description', description)
+    upsertMeta('property', 'og:type', 'website')
+    upsertMeta('name', 'twitter:card', 'summary')
+    upsertMeta('name', 'twitter:title', `${title} — Ottimo`)
+    upsertMeta('name', 'twitter:description', description)
 
     const canonicalUrl = new URL(window.location.pathname || '/', window.location.origin).toString()
     let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
