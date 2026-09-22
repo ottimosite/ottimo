@@ -1,15 +1,4 @@
 /* Shared application and content primitives. Pages should compose these classes rather than inventing one-off layout rules. */
-.action-list { display:grid; gap:0; margin-top:8px; }
-.action { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:18px; padding:17px 0; border-bottom:1px solid var(--line); color:var(--ink); }
-.action:last-child { border-bottom:0; }
-.action strong,.action small { display:block; }
-.action strong { color:var(--forest); }
-.action small { margin-top:4px; color:var(--muted); }
-.action:hover strong { text-decoration:underline; text-underline-offset:4px; }
-.dot { width:9px; height:9px; border-radius:50%; display:inline-block; margin-right:10px; background:var(--muted); }
-.dot.critical,.dot.high { background:var(--coral); }
-.dot.medium { background:var(--green); }
-
 
 
 .filters { display:grid; grid-template-columns:minmax(220px,1fr) repeat(3,minmax(120px,.45fr)); gap:10px; margin-bottom:20px; }
