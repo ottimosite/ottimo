@@ -148,15 +148,15 @@ function LeadCapture() {
   return <form className="lead-form" id="start" onSubmit={submit}>
     <div className="lead-form-heading">
       <span className="eyebrow">Start with your website</span>
-      <h2>See what needs attention first.</h2>
-      <p>Enter your website address. Ottimo will take you straight into the audit setup so you can choose the scope before anything runs.</p>
+      <h2>Start with a Website Check.</h2>
+      <p>Enter your website address and start the audit setup. You can review the scope before anything runs.</p>
     </div>
     <div className="lead-fields">
       <label>Website URL<input required value={url} onChange={event => { setUrl(event.target.value); setError('') }} placeholder="yourbusiness.co.uk" /></label>
-      <button className="btn btn-primary" type="submit">Analyse my website <span aria-hidden="true">↗</span></button>
+      <button className="btn btn-primary" type="submit">Start my Website Check <span aria-hidden="true">↗</span></button>
     </div>
     {error && <p className="error" role="alert">{error}</p>}
-    <small>No account is required to start. Ottimo only presents evidence it can support; unavailable measurements stay unavailable.</small>
+    <small>Start with the website. Review the scope before running anything. Evidence that cannot be supported stays unavailable.</small>
   </form>
 }
 
@@ -177,11 +177,11 @@ export function Home() {
       <div className="hero-kicker">Website performance · search · accessibility · UX · technical quality · AI readiness</div>
       <div className="lead-hero-grid">
         <div>
-          <span className="eyebrow">Website optimisation, without the guesswork</span>
-          <h1>Know what’s holding your website back.<br /><em>Know what to fix next.</em></h1>
-          <p className="hero-copy">Ottimo examines performance, search, accessibility, experience, technical quality and AI readiness — then turns the evidence into a prioritised plan your team can act on.</p>
+          <span className="eyebrow">Website intelligence & optimisation</span>
+          <h1>Make your website work better.<br /><em>Know what to fix next.</em></h1>
+          <p className="hero-copy">Ottimo brings performance, search, accessibility, experience, technical quality and AI readiness into one evidence-led view — so your team can understand the problem, decide what matters and act on it.</p>
           <div className="hero-actions">
-            <a className="btn btn-primary" href="#start">Analyse my website <span aria-hidden="true">↗</span></a>
+            <a className="btn btn-primary" href="#start">Start my Website Check <span aria-hidden="true">↗</span></a>
             <a className="text-link" href="#method">See how it works ↓</a>
           </div>
           <div className="ethos"><strong>Find the problems.</strong><strong>Understand the impact.</strong><strong>Fix what matters.</strong><strong>Verify the change.</strong></div>
@@ -204,7 +204,7 @@ export function Home() {
     <TrustRow />
 
     <section className="education-strip">
-      <div><span className="eyebrow">The problem with isolated scores</span><h2>A website is one experience, even when the tools are not.</h2><p>Performance, search, accessibility and usability overlap. Ottimo gives teams a shared evidence layer so improvement can happen in the right order.</p></div>
+      <div><span className="eyebrow">The problem with isolated signals</span><h2>Your website is one system, even when the signals are not.</h2><p>Performance, search, accessibility and usability overlap. Ottimo connects those signals so your team can see what is happening, understand why it matters and work on the right thing next.</p></div>
       <div className="education-steps">
         <article><b>01</b><h3>Discover</h3><p>Map the website and record what can actually be observed.</p></article>
         <article><b>02</b><h3>Decide</h3><p>Connect evidence to impact, effort and the next useful action.</p></article>
@@ -213,7 +213,7 @@ export function Home() {
     </section>
 
     <section className="method-section" id="method">
-      <div className="method-lead"><span className="eyebrow">The Ottimo loop</span><h2>From website signal to verified improvement.</h2><p>Ottimo is deliberately built around a repeatable operating loop rather than a one-off report.</p></div>
+      <div className="method-lead"><span className="eyebrow">Measure → Understand → Improve → Prove</span><h2>Turn website evidence into verified improvement.</h2><p>Ottimo is built around a repeatable loop: measure what can be observed, explain what it means, improve what matters and prove what changed.</p></div>
       <ol className="method-steps">
         <li><span>01</span><div><h3>Discover</h3><p>Map pages, resources, structure and supported technical signals.</p></div></li>
         <li><span>02</span><div><h3>Understand</h3><p>Trace important conclusions back to the evidence that supports them.</p></div></li>
@@ -223,15 +223,15 @@ export function Home() {
     </section>
 
     <section className="coverage-section" id="coverage">
-      <div className="section-intro"><span className="eyebrow">What Ottimo covers</span><h2>Six lenses. One digital experience.</h2><p>Use the areas independently when you need depth, or together when you need to understand the website as a whole.</p></div>
+      <div className="section-intro"><span className="eyebrow">What Ottimo covers</span><h2>Six lenses. One website.</h2><p>Look at one area when you need depth, or connect them when you need to understand the website as a whole.</p></div>
       <div className="coverage-grid">{coverage.map(([title, body], index) => <article className="coverage-item" key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{body}</p><Link to={`/app/${title === 'Search visibility' ? 'seo' : title === 'Experience' ? 'usability' : title === 'Technical quality' ? 'technical' : title.toLowerCase()}`}>Explore in the platform →</Link></article>)}</div>
     </section>
 
     <section className="case-study-lead" aria-labelledby="audit-example-title">
       <div>
         <span className="eyebrow">See the product, not a mockup</span>
-        <h2 id="audit-example-title">See how Ottimo turns evidence into an action.</h2>
-        <p>This is a deterministic example from the Wikipedia fixture. It shows the shape of an Ottimo audit without pretending the saved snapshot is a live measurement.</p>
+        <h2 id="audit-example-title">See how Ottimo turns evidence into the next action.</h2>
+        <p>This working example uses a deterministic fixture. It shows how Ottimo connects a finding, its evidence and its next action without presenting the snapshot as a live customer measurement.</p>
         <Link className="text-link" to="/app/audits/audit-wikipedia">Explore the working audit →</Link>
       </div>
       <div className="case-score audit-example-card">
@@ -307,7 +307,7 @@ export function InfoPage({ path }: { path: PublicPath }) {
       <span className="eyebrow">{content.eyebrow}</span>
       <h1>{content.title}</h1>
       <p>{content.intro}</p>
-      <div className="hero-actions"><Link className="btn btn-primary" to="/#start">Analyse my website</Link><Link className="text-link" to="/methodology">How we work →</Link></div>
+      <div className="hero-actions"><Link className="btn btn-primary" to="/#start">Start my Website Check</Link><Link className="text-link" to="/methodology">How we work →</Link></div>
     </div>
     <div className="public-info-grid">
       {content.sections.map(([title, body, proof], index) => <article key={title}><span>0{index + 1}</span><h2>{title}</h2><p>{body}</p><strong>{proof}</strong></article>)}
@@ -319,3 +319,4 @@ export function InfoPage({ path }: { path: PublicPath }) {
     <section className="callout"><span className="eyebrow">Start with a website</span><h2>See what Ottimo can actually find.</h2><p>Explore the working audit experience and decide what deserves attention next.</p><Link className="btn btn-primary" to="/app/audits/new">Start a demo audit</Link></section>
   </div>
 }
+
