@@ -29,6 +29,7 @@ export default function App() {
 			<Route path="/about" element={<InfoPage path="/about" />} />
 			<Route path="/case-studies" element={<InfoPage path="/case-studies" />} />
 			<Route path="/contact" element={<InfoPage path="/contact" />} />
+			<Route path="/example-audit" element={<PublicAuditExample />} />
 			<Route path="/concepts" element={<ConceptsIndex />} />
 			<Route path="/concepts/reliability" element={<ConceptPage theme="reliability" />} />
 			<Route path="/concepts/speed" element={<ConceptPage theme="speed" />} />
