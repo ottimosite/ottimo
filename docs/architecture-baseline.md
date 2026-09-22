@@ -17,9 +17,13 @@ It deliberately does **not** change runtime behaviour or audit evidence semantic
 
 `src/main.tsx` currently imports these stylesheets in this order:
 
-1. `global.css`
-2. `components.css`
-3. `platform.css`
+1. `tokens.css`
+2. `base.css`
+3. `shell.css`
+4. `shared-components.css`
+5. `public-site.css`
+6. `components.css`
+7. `platform.css`
 4. `concepts.css`
 7. `lead-home.css`
 8. `public-refresh.css`
@@ -66,10 +70,10 @@ The following class names are defined in multiple stylesheets and require owners
 
 ### High-frequency shared concepts
 
-- `eyebrow` — global, platform, overrides, concepts, lead-home, audit-overview, performance-metrics
-- `btn` — global, platform, lead-home, audit-overview, onboarding
-- `card` — global, components, platform, audit-overview, audit-expansion
-- `page-heading` — global, components, platform, audit-overview
+- `eyebrow` — shared/components, platform, concepts, lead-home, audit-overview, performance-metrics
+- `btn` — shared components, platform, lead-home, audit-overview, onboarding
+- `card` — shared components, platform, audit-overview, audit-expansion
+- `page-heading` — components, platform, audit-overview
 - `section-head` — components, platform, audit-overview, audit-expansion
 - `muted` — components, platform, audit-overview, performance-metrics
 - `text-link` — concepts, lead-home, public-refresh, public-services
@@ -81,7 +85,7 @@ The following class names are defined in multiple stylesheets and require owners
 - `app-content` — shell ownership established; legacy platform/override duplication reduced in #182
 - `hero` — public-site ownership established; legacy override duplication removed in #182
 - `content-page` — public-site ownership established; legacy override duplication removed in #182
-- `content-hero` — global, public-refresh
+- `content-hero` — public-site/public-refresh
 - `side-cta` — global, overrides
 
 ### Application/audit overlap
@@ -125,8 +129,8 @@ These may represent legitimate variants, but ownership is currently distributed 
 
 Confirmed observations:
 
-1. `src/main.tsx` relies on global stylesheet import order.
-2. `overrides.css` and `menu-overrides.css` both redefine application/public shell concepts already present in `global.css`.
+1. `src/main.tsx` still relies partly on stylesheet import order.
+2. `overrides.css` and `menu-overrides.css` were superseded and removed; their legitimate rules now have owning layers.
 3. `application-layout.css` was previously imported last specifically to override earlier layout rules; it was removed in #184.
 4. The tactical layer contained 27 `!important` declarations; those declarations were removed with the stylesheet.
 5. Remaining `!important` declarations are limited to other documented contracts in `audit-overview.css`, `onboarding.css` and `quality.css`.
@@ -229,6 +233,7 @@ The following are **candidates for investigation only**:
 - `overrides.css` — removed in #182
 - `menu-overrides.css` — removed in #182
 - `application-layout.css` — removed in #184
+- `global.css` — retired in #211
 - portions of `lead-home.css` that overlap the newer `public-refresh.css`
 - duplicated primitives in `global.css`, `components.css` and `platform.css`
 - compatibility declarations in `application-layout.css` once its consumers have migrated
