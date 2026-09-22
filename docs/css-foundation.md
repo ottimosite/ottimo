@@ -49,7 +49,7 @@ Feature styles may extend these primitives, but must not redefine their base con
 
 ## Public-site ownership
 
-The shared public-site structure is owned by `src/styles/public-site.css`. It contains generic marketing/content-page structure such as hero framing, content pages, callouts and footer structure. Landing-page composition remains in `lead-home.css`; service-page composition remains in `public-services.css`; the newer marketing refinement layer remains in `public-refresh.css` until those feature-specific slices are independently consolidated.
+The shared public-site structure is owned by `src/styles/public-site.css`. It contains generic marketing/content-page structure such as hero framing, content pages, callouts and footer structure. Landing-page composition is owned by `lead-home.css`; service-page composition remains in `public-services.css`; `public-refresh.css` is reserved for genuinely reusable public marketing and information-page presentation.
 
 Application-only selectors must not be introduced into this layer. Public pages should remain renderable without application feature styles.
 
@@ -62,24 +62,23 @@ Landing-page composition is owned by `src/styles/lead-home.css`. Landing-only he
 
 The application feature layer is split by feature rather than by generic visual primitive:
 
-- `platform.css` owns reusable application/platform surfaces and platform-page composition. Audit-only evidence and AI decision presentation must not be added here.
-- `audit-overview.css` owns the audit overview surface, including the authoritative `.audit-stat-grid`, interpretation surface and audit-specific decision presentation.
-- `audit-expansion.css` owns deeper audit evidence, command-centre, evidence explorer and resource-detail presentation. It consumes the audit overview's shared audit-stat contract rather than redefining it.
-- `performance-metrics.css` owns performance metric explanation and status presentation; the audit interpretation surface is owned by `audit-overview.css`.
+- `platform-pages.css` owns platform-page composition.
+- `audit.css` owns the complete audit feature surface: overview, evidence, command centre, evidence explorer, resource details, decision flow and report presentation.
+- `performance-metrics.css` owns performance metric explanation and status presentation; audit-specific interpretation and decision presentation remain owned by `audit.css`.
 - `standards.css` owns standards/criterion presentation.
 - `onboarding.css` owns audit setup/loading states.
 
-When a selector is used by more than one audit sub-surface, establish one authoritative definition in the owning audit feature stylesheet rather than adding a later override.
+When a selector is used by more than one audit sub-surface, establish one authoritative definition in `audit.css` rather than adding a later override.
 
 ## Tactical application-layout retirement
 
-The tactical `application-layout.css` layer introduced during #166 has now been retired in #184. Its remaining audit issue-header contract is owned by `audit-overview.css`; command-centre contracts remain in `audit-expansion.css`, shared issue presentation remains in `platform.css`, and landing audit-preview structures remain in `lead-home.css`.
+The tactical `application-layout.css` layer introduced during #166 has now been retired in #184. Its remaining audit issue-header and command-centre contracts are owned by `audit.css`, shared application presentation belongs to the current shared/feature owners, and landing audit-preview structures remain in `lead-home.css`.
 
 New layout contracts must be added to their feature owner rather than to a final global override stylesheet.
 
 ## Legacy override-layer removal
 
-The superseded `overrides.css` and `menu-overrides.css` layers have been removed. Their remaining legitimate rules were redistributed to their owning layers: `shell.css` for shell spacing, `platform.css` for platform preview sizing, `public-site.css` for shared public structure, and `lead-home.css` for landing-page composition. Foundational document behaviour is now owned by `base.css`; `global.css` was retired in #211.
+The superseded `overrides.css` and `menu-overrides.css` layers have been removed. Their remaining legitimate rules were redistributed to their owning layers: `shell.css` for shell spacing, `platform-pages.css` for platform-page composition, `public-site.css` for shared public structure, and `lead-home.css` for landing-page composition. Foundational document behaviour is now owned by `base.css`; `global.css` was retired in #211.
 
 New CSS must not recreate these concerns as a later override layer.
 
