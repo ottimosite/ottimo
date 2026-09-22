@@ -1,0 +1,8 @@
+/* Dashboard feature presentation. */
+
+@media(max-width:1000px) {
+  .hero-metrics { grid-template-columns:1fr 1fr; }
+}
+@media(max-width:760px) {
+  .hero-metrics { grid-template-columns:1fr; }
+}
