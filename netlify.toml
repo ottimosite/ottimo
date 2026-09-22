@@ -12,7 +12,6 @@
   to = "/index.html"
   status = 200
 
-
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
@@ -22,7 +21,6 @@
   timeout = 55
   memory = 2048
 
- 
 [[headers]]
   for = "/*"
   [headers.values]
