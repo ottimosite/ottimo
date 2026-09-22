@@ -1,6 +1,6 @@
 # Ottimo CSS Architecture Baseline
 
-> Baseline taken from `master` after the CSS ownership migrations through PR #211. This document records the current migration state; it is not a proposal to rewrite the styling system.
+> Baseline updated for the CSS ownership migrations through PR #244 and the current feature-boundary work in #245. This document records the current migration state; it is not a proposal to rewrite the styling system.
 
 ## Purpose
 
@@ -17,21 +17,24 @@ New CSS should not be added to a legacy file merely because that file is current
 `src/main.tsx` currently imports these global stylesheets, in this order:
 
 1. `tokens.css`
-2. `shell.css`
-3. `shared-components.css`
-4. `public-site.css`
-5. `components.css`
-6. `platform.css`
-7. `concepts.css`
-8. `lead-home.css`
-9. `public-refresh.css`
-10. `public-services.css`
-11. `audit-overview.css`
-12. `audit-expansion.css`
-13. `standards.css`
-14. `performance-metrics.css`
-15. `onboarding.css`
-16. `quality.css`
+2. `base.css`
+3. `shell.css`
+4. `shared-components.css`
+5. `public-site.css`
+6. `components.css`
+7. `recommendations.css`
+8. `dashboard.css`
+9. `platform-pages.css`
+10. `concepts.css`
+11. `lead-home.css`
+12. `public-refresh.css`
+13. `public-services.css`
+14. `audit-overview.css`
+15. `audit-expansion.css`
+16. `standards.css`
+17. `performance-metrics.css`
+18. `onboarding.css`
+19. `quality.css`
 
 The ordering is currently functional but still acts as a significant part of the cascade contract. The target is for ownership and specificity to make this ordering much less fragile.
 
@@ -88,28 +91,15 @@ PR #193 established the single sans-serif direction. Future CSS migration must p
 
 ### 1. Remaining legacy ownership
 
-The former `global.css` layer has now been retired. Remaining architectural work is concentrated in mixed application/component stylesheets, particularly `platform.css`, `components.css`, and the public/audit feature layers.
+The former `global.css`, `platform.css`, and other superseded compatibility layers have now been retired. Remaining architectural work is concentrated in feature boundaries and the small amount of mixed presentation still in `components.css`, plus consolidation of public and audit styles.
 
 ### 2. Duplicate shared primitives
 
-Current cross-file overlap includes examples such as:
-
-- `.card` — shared components, global and platform layers
-- `.section-head` — shared components and platform
-- `.recommendation` / `.rec-meta` — global and components
-- `.app-content` — shell, global and platform
-- `.website-context` and related navigation selectors — shell and global
-- `.auth-account` — shell and platform
-- form controls such as `input`, `select`, `textarea` — shell/global/platform
-- `.site-header nav a` — shell and public-site
-
-These are migration candidates. The exact authoritative definition must be established from rendered usage before deleting any rule.
+Shared primitives are now substantially consolidated. `shared-components.css` is authoritative for reusable cards, buttons, headings and section-level primitives, while feature styles own domain-specific presentation. Any remaining overlap must be verified from rendered usage before deletion.
 
 ### 3. Public-layer overlap
 
-The landing page currently spans `lead-home.css` and `public-refresh.css), with selectors such as `.lead-hero h1`, `.preview-action`, `.preview-note` and `.coverage-item` appearing across both layers.
-
-The desired outcome is a single clear public feature owner per component, not another override stylesheet.
+The landing page is owned by `lead-home.css`. `public-refresh.css` is reserved for genuinely reusable public marketing and information-page presentation. PR #245 moves landing-only trust, conversion, audit-preview, audit-output and FAQ presentation out of the refresh layer so it cannot become a second landing-page override layer.
 
 ### 4. Specificity dependencies
 
@@ -119,7 +109,7 @@ The correct response was to fix ownership/specificity in the feature stylesheet,
 
 ### 5. Legacy compatibility surface
 
-`components.css` and `platform.css` still contain a mixture of older and newer patterns. Rules should continue to migrate into the appropriate shared or feature owner rather than accumulating new generic application rules.
+`components.css` remains a small compatibility/mixed layer and should only retain genuinely shared presentation. Feature-specific rules should continue moving to explicit owners such as `recommendations.css`, `lead-home.css`, audit styles and onboarding.
 
 ## Target architecture
 
@@ -166,11 +156,11 @@ The migration should proceed in small PRs:
 
 1. **Baseline/inventory** — this document.
 2. **Foundation extraction** — completed through #197.
-3. **Shared primitive consolidation** — completed in the current migration slices for cards, recommendations and action-queue ownership.
+3. **Shared primitive consolidation** — substantially completed through the shared card/heading work and PR #244 recommendation ownership.
 4. **Shell isolation** — completed through #201/#203.
 5. **Public consolidation** — reduce overlap between `lead-home.css` and `public-refresh.css`.
 6. **Audit consolidation** — continue establishing a coherent audit presentation boundary.
-7. **Application feature cleanup** — migrate remaining `platform.css`/component rules.
+7. **Application feature cleanup** — migrate remaining mixed component rules and verify `dashboard.css`/`platform-pages.css` feature boundaries.
 8. **Delete obsolete rules/files** — only after usage is proven absent.
 9. **Quality hardening** — add checks that prevent duplicate ownership and cascade regressions.
 
@@ -206,6 +196,6 @@ This baseline does **not**:
 
 ## Next implementation slice
 
-The next implementation slice should inspect the remaining mixed application layer, with `platform.css` as the primary candidate, and move clearly feature-owned rules into their existing feature stylesheets. Each move should be independently verified before deletion from the mixed layer.
+The current implementation slice is #245: consolidate landing-page ownership out of `public-refresh.css` and update this architecture record to the current repository state. After it lands, continue with the next coherent feature boundary rather than selector-by-selector cleanup, prioritising audit consolidation and then remaining application feature ownership.
 
-`global.css` is retired. The success criterion is not merely fewer lines of CSS; it is a more predictable ownership graph with explicit shared/application/feature boundaries.
+`global.css` and `platform.css` are retired. The success criterion is not merely fewer lines of CSS; it is a predictable ownership graph with explicit shared/application/feature boundaries.
