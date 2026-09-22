@@ -14,7 +14,10 @@ async function assertRenderedPage(page: Page, path: string) {
   const badSameOriginResponses: string[] = []
   const onConsole = (message: ConsoleMessage) => { if (message.type() === 'error') consoleErrors.push(message.text()) }
   const onPageError = (error: Error) => pageErrors.push(error.message)
-  const onRequestFailed = (request: Request) => {\n    if (request.failure()?.errorText === 'net::ERR_ABORTED') return\n    if (new URL(request.url()).origin === new URL(page.url()).origin) failedRequests.push(`${request.method()} ${request.url()} — ${request.failure()?.errorText ?? 'unknown failure'}`)\n  }
+  const onRequestFailed = (request: Request) => {
+    if (request.failure()?.errorText === 'net::ERR_ABORTED') return
+    if (new URL(request.url()).origin === new URL(page.url()).origin) failedRequests.push(`${request.method()} ${request.url()} — ${request.failure()?.errorText ?? 'unknown failure'}`)
+  }
   const onResponse = (response: Response) => {
     if (response.status() >= 400) {
       const target = new URL(response.url())
