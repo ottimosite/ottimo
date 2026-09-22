@@ -4,7 +4,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npx --yes netlify-cli@27.8.0 dev --no-open",
+    "dev:vite": "vite",
+    "dev:functions": "npx --yes netlify-cli@27.8.0 functions:serve",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",
