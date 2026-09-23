@@ -1,5 +1,3 @@
-import type { TenantResolver } from './supabase-auth'
-
 export interface WorkspaceRecord {
   id: string
   name: string
@@ -28,7 +26,7 @@ export interface WorkspaceRepository {
   createWebsite(workspaceId: string, userId: string, name: string, url: string): Promise<WebsiteRecord>
 }
 
-export class SupabaseWorkspaceRepository implements WorkspaceRepository, TenantResolver {
+export class SupabaseWorkspaceRepository implements WorkspaceRepository {
   constructor(private readonly config: SupabaseTenantRepositoryConfig) {}
 
   async findWorkspaceForUser(userId: string): Promise<WorkspaceRecord | undefined> {
