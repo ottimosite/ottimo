@@ -16,19 +16,13 @@ npm install
 npm run dev
 ```
 
-This starts Vite and a standalone Netlify Functions server together. Vite proxies `/.netlify/functions/*` to the local Functions server, so the browser uses the same endpoint as production without needing the Netlify Dev proxy.
+This starts Vite and a standalone Netlify Functions server together. Vite proxies `/.netlify/functions/*` to the local Functions server.
 
-Open `http://127.0.0.1:5173`. The live audit endpoint is available through the Vite proxy at:
+Open `http://127.0.0.1:5173`.
 
-```text
-/.netlify/functions/audit-site
-```
+Ottimo standardises on Node.js 24 for local development, CI and Netlify. Keep local Node aligned with the Node 24 runtime.
 
-The repository pins the Netlify CLI version used by the local Functions server through `npx`, so a global Netlify CLI installation is not required.
-
-Netlify CLI 27.8.0 requires Node.js 22.13.0 or newer. Ottimo standardises on Node.js 24 for local development, CI and Netlify. Keep local Node aligned with the Node 24 runtime configured for Netlify.
-
-On first setup, make sure Playwright's Chromium browser is installed:
+On first setup, install Playwright's Chromium browser:
 
 ```bash
 npx playwright install chromium
@@ -36,25 +30,49 @@ npx playwright install chromium
 
 ### Frontend-only Vite mode
 
-When you only need the React/Vite frontend and do not need serverless functions:
-
 ```bash
 npm run dev:vite
 ```
 
-This serves the frontend directly from Vite, normally at `http://localhost:5173`. The live audit provider will not work in this mode because Vite does not provide `/.netlify/functions/*`.
+Use this when you only need the React frontend. Serverless audit endpoints are not available in this mode.
 
 ### Functions-only debugging
-
-To run the Netlify Functions server separately:
 
 ```bash
 npm run dev:functions
 ```
 
-For normal development, prefer `npm run dev` so the Vite application and local Functions server are available together.
+For normal development, prefer `npm run dev`.
 
-The demo itself requires no API keys, database or external SaaS services. A live audit does require outbound network access from the local machine because Playwright must navigate to the requested website.
+## Local Supabase development
+
+Ottimo has a version-controlled Supabase database workflow for local schema development and testing.
+
+The complete guide is [docs/local-supabase-development.md](docs/local-supabase-development.md).
+
+Quick start:
+
+```bash
+npx supabase db start
+npx supabase db reset
+npx supabase test db
+```
+
+Local Supabase runs independently from the hosted project and is disposable. Docker Desktop or another Docker-compatible runtime is required.
+
+The canonical database changes live in `supabase/migrations/`. Database contracts live in `supabase/tests/`.
+
+For database work, use:
+
+```bash
+npx supabase db reset
+npx supabase test db
+npm test
+npm run lint
+npm run build
+```
+
+Do not use the hosted database as the normal development database. Hosted migrations are deployed deliberately after review and merge.
 
 ## Commands
 
@@ -69,24 +87,20 @@ npm run test:e2e
 npm run lint
 ```
 
-`npm run test:e2e` starts the full local Vite + Netlify Functions environment and runs Chromium against representative rendered journeys. In CI, the Quality Gate installs Chromium and also captures a landing-page screenshot for inspection. Browser accessibility checks use the repository's existing `axe-core` dependency.
+`npm run test:e2e` starts the full local Vite + Netlify Functions environment and runs Chromium against representative rendered journeys.
 
 ## Architecture
 
 - React + TypeScript + Vite
 - React Router for public/app routes
-- Lightweight CSS design system instead of a large UI framework
+- Lightweight CSS design system
 - Typed domain models in `src/types`
 - Replaceable audit boundary: `AuditProvider`
-- Deterministic local `MockAuditProvider` backed by a captured real-site fixture
-- Local repositories via `localStorage`
+- Deterministic local `MockAuditProvider`
 - Server-side authenticated tenant repository
-- Provider-independent durable storage contract with a Netlify production adapter
-- Authenticated tenant repository boundary via `SessionVerifier`
-- Durable server storage through the `ServerStorageAdapter` contract
-- Native SVG/CSS-style data presentation; no charting library
-- Vitest + Testing Library for automated tests
-- Playwright + axe-core for rendered-page quality checks
+- Provider-independent durable storage contract
+- Vitest + Testing Library
+- Playwright + axe-core
 
 ## Project structure
 
@@ -99,62 +113,43 @@ src/
   pages/            public website pages
   services/         audit, authentication, persistence and runtime integrations
   styles/           global responsive design system
-  types/             domain models
+  types/            domain models
   tests/             unit/component tests
 tests/
   e2e/              rendered browser journeys
+supabase/
+  migrations/       canonical database schema changes
+  tests/             pgTAP database contracts
 ```
 
 ## Demo behaviour
 
-The app starts with a saved snapshot of a real public website: Wikipedia. The default fixture is captured from `https://www.wikipedia.org/` and stored locally so the UI and CI never depend on a live third-party request. New audits still use the local provider until the live audit provider is selected.
+The app starts with a saved snapshot of a real public website: Wikipedia. The default fixture is stored locally so the UI and CI do not depend on a live third-party request.
 
-The snapshot is deliberately conservative: structural observations are retained as evidence, while browser performance measurements are represented as unavailable rather than invented. This keeps the demo useful without presenting fixture data as a live Lighthouse or Core Web Vitals result.
+The snapshot is deliberately conservative: structural observations are retained as evidence, while unavailable browser measurements remain unavailable rather than being invented.
 
 ## Wikipedia real-site snapshot
 
-The deterministic fixture lives in `src/data/fixtures/wikipedia.ts`. It records the public Wikipedia portal observed on 20 September 2026, including its title, multilingual structure, language links and captured scope. The fixture is a testing snapshot, not a claim that the live site is unchanged.
+The deterministic fixture lives in `src/data/fixtures/wikipedia.ts`. It records the public Wikipedia portal observed on 20 September 2026.
 
-To refresh it, capture the public `https://www.wikipedia.org/` portal again, record the new capture date and source revision/observations, update the fixture, and update its tests. Do not make CI fetch Wikipedia directly.
+To refresh it, capture the public portal again, record the new capture date and source observations, update the fixture and update its tests. Do not make CI fetch Wikipedia directly.
 
 ## Production persistence
 
-The server-side persistence path is provider-independent at the repository boundary:
+The server-side persistence path uses provider-independent repository boundaries and Netlify Blobs for the current production durable-storage adapter.
 
-1. `AuthenticatedTenantRepository` verifies the session before tenant operations.
-2. `DurableServerStorageAdapter` validates versioned tenant envelopes.
-3. `NetlifyBlobObjectStore` maps that contract to Netlify Blobs.
-4. `createProductionRepository()` composes the authenticated production repository.
-
-Netlify production uses a site-wide strongly consistent store. Preview and branch deployments use deploy-scoped storage so non-production data is isolated from production. The runtime receives Netlify storage configuration from the platform; no storage credentials are committed to the repository.
-
-Set `OTTIMO_SESSION_SECRET` as a server-side environment variable with at least 32 characters. Local tests inject their own secret and never require Netlify credentials.
+Production secrets and storage credentials are managed through the deployment environment and are never committed.
 
 ## Authentication boundary
 
-The authenticated application uses a replaceable server-session boundary. Production deployments can enable it with `VITE_AUTH_REQUIRED=true`. The browser never stores session secrets or credentials.
+The authenticated application uses a server-side session boundary. The browser never stores session secrets or server credentials.
 
-- `OTTIMO_SESSION_SECRET`: server-only HMAC session verification secret (minimum 32 characters).
-- `OTTIMO_AUTH_LOGIN_URL`: server-side identity-provider login URL used by the auth login redirect.
-- `VITE_AUTH_LOGIN_URL`: optional public override for the login entry point; defaults to Ottimo's server auth-login function.
-- The authenticated workspace checks `/.netlify/functions/auth-session` before rendering workspace data.
-- Sign-out clears the `ottimo_session` HttpOnly cookie through the server endpoint.
-- Local/demo development keeps the existing demo workspace when `VITE_AUTH_REQUIRED` is not enabled.
-
-The auth layer intentionally does not choose an identity provider. The provider is responsible for authenticating the user and establishing the signed `ottimo_session` cookie expected by the server verifier.
-
-## Persistence boundary
-
-Production-facing tenant persistence is split into two provider-independent layers:
-
-1. `AuthenticatedTenantRepository` verifies the server session before accessing tenant data.
-2. `DurableServerStorageAdapter` validates and persists versioned envelopes through an injected durable object store.
-
-A platform-specific server integration can provide the durable object store without leaking vendor types into the domain or repository layer. Local tests and development can continue to use deterministic in-memory adapters. Production secrets and storage credentials must remain environment-managed.
-
-## Future integrations
-
-The current service boundaries are designed so real Lighthouse/PageSpeed/crawler, authentication, durable storage, billing, AI, reporting and monitoring providers can replace the local providers without rewriting the UI.
+- `OTTIMO_SESSION_SECRET`: server-only HMAC session verification secret.
+- `OTTIMO_AUTH_LOGIN_URL`: server-side identity-provider login URL.
+- `VITE_AUTH_LOGIN_URL`: optional public login entry-point override.
+- The authenticated workspace checks `/.netlify/functions/auth-session`.
+- Sign-out clears the `ottimo_session` HttpOnly cookie.
+- Local/demo development retains the demo workspace unless authentication is explicitly enabled.
 
 ## Performance and accessibility checklist
 
@@ -164,29 +159,12 @@ The current service boundaries are designed so real Lighthouse/PageSpeed/crawler
 - Keyboard-friendly controls
 - Reduced-motion support
 - Minimal third-party dependencies
-- Route-based application structure ready for lazy loading
+- Route-based application structure
 - No external fonts required
 - Stable dimensions and simple CSS visualisations
-- Deterministic local data for reproducible tests
+- Deterministic local data
 - Rendered desktop/mobile smoke coverage
-- Automated axe-core accessibility checks on representative public content
-
-## Environment
-
-Production secrets and platform configuration must be managed through the deployment environment rather than committed to source control.
-Copy `.env.example` only when adding environment-specific integrations. The local demo does not need environment variables. Production storage credentials, when required by the selected server platform, must be configured through the platform environment rather than committed to repository.
-
-## Real-site acceptance scenarios
-
-The audit engine has deterministic acceptance contracts under `src/audit-engine/acceptance/`. These remain synthetic structural fixtures for edge-case coverage, while the default product/demo snapshot uses the captured real Wikipedia site described above.
-
-When adding a scenario:
-1. Model the smallest representative page/crawl structure that exercises the regression.
-2. Keep observed values explicit; use `undefined` for unavailable browser measurements.
-3. Assert the evidence contract (URL, status, redirect chain, resource data, discovery state) rather than presentation markup.
-4. Include the failure mode and audit stage in the test name.
-5. Do not add fabricated traffic, conversion, acquisition or other business telemetry.
-6. Keep external origins represented only as fixture data; acceptance tests must not require third-party network access.
+- Automated axe-core accessibility checks
 
 ## Engineering workflow
 
@@ -194,16 +172,6 @@ GitHub is the single source of truth for Ottimo planning and delivery. See [docs
 
 ## Production security boundary
 
-The deployed browser surface applies baseline security headers through `netlify.toml`:
+The deployed browser surface applies baseline security headers through `netlify.toml`.
 
-- Content Security Policy limits executable content and prevents cross-origin framing.
-- `X-Content-Type-Options: nosniff` prevents MIME sniffing.
-- `Referrer-Policy: strict-origin-when-cross-origin` limits cross-origin referrer detail.
-- `Permissions-Policy` disables browser capabilities Ottimo does not require.
-- `X-Frame-Options: DENY` provides a legacy-compatible framing defence alongside CSP.
-
-The CSP intentionally permits inline styles because the existing application styling pipeline uses them in the built UI; executable scripts remain same-origin. Same-origin network access is retained because the production UI communicates with its own serverless audit/runtime endpoints.
-
-Session tokens remain signed with HMAC-SHA-256 and are verified with the Web Crypto verification primitive. Verification rejects malformed, expired, structurally invalid and unexpected session claims before a tenant session is accepted.
-
-An application-level error boundary contains unexpected render failures and provides an accessible recovery action. It does not treat a runtime failure as an audit result and does not modify persisted evidence.
+Session tokens remain signed with HMAC-SHA-256 and are verified server-side. An application-level error boundary contains unexpected render failures without treating them as audit results or modifying persisted evidence.
