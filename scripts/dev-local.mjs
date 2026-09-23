@@ -1,4 +1,4 @@
-/* global process, setTimeout, console */
+/* global process, setTimeout, setInterval, clearInterval, console */
 import { spawn } from 'node:child_process'
 import { createConnection } from 'node:net'
 
