@@ -2,43 +2,61 @@
 
 Ottimo's application identity and tenant metadata are managed by Supabase Auth + PostgreSQL.
 
-## Migration workflow
+## Repository workflow
 
-The schema is version-controlled under `supabase/migrations/`.
+The `supabase/` directory is version-controlled. Configuration, migrations and database tests belong in Git; local CLI state under `supabase/.temp/` and `supabase/.branches/` is ignored.
 
-For local development, install the Supabase CLI, initialise/link the project, then run:
+Hosted project:
+- project: `ottimo`
+- project ref: `syeipxngeyvyynezsvxc`
+- region: `eu-west-1`
 
-```bash
-supabase start
-supabase db reset
-supabase test db
+The project reference is not a credential. Never commit a database password, access token, or server secret key.
+
+## Local setup
+
+On Windows with Node 24:
+
+```powershell
+npm install -D supabase@2.117.0
+npx supabase --version
+npx supabase login
+npx supabase link --project-ref syeipxngeyvyynezsvxc
 ```
 
-For the remote project, migrations are deployed deliberately with:
+Local database commands require a Docker-compatible runtime:
 
-```bash
-supabase link --project-ref <project-ref>
-supabase db push
+```powershell
+npx supabase db start
+npx supabase db reset
+npx supabase test db
 ```
 
-Do not make schema changes directly in the remote Dashboard after migrations are established. Keep schema history in Git.
+## Hosted database deployment
+
+Before changing the hosted database, preview the migration:
+
+```powershell
+npx supabase db push --dry-run
+```
+
+Review the output. Only then apply the versioned migrations:
+
+```powershell
+npx supabase db push
+```
+
+Do not use `db reset --linked` against the hosted project.
 
 ## Security boundary
 
-- Supabase Auth owns user identity, sessions and email verification.
-- `public.profiles` mirrors only the application lifecycle state needed by Ottimo.
-- `workspaces` and `workspace_members` establish explicit tenant ownership.
-- `websites` belong to a workspace.
-- `audit_records` carry both workspace and website ownership.
-- Every application table has RLS enabled.
-- Browser access is not granted merely because a table exists in `public`; grants are explicit.
-- Privileged server access must use server-only Supabase credentials.
-- The service role must never be shipped to the browser.
+- Supabase Auth owns identity, sessions and email verification.
+- `profiles` mirrors the Ottimo application lifecycle.
+- `workspaces` and `workspace_members` establish tenant ownership.
+- `websites` belong to workspaces.
+- `audit_records` belong to both a workspace and website.
+- Application tables use RLS.
+- Privileged server credentials remain server-only.
+- The service-role/secret key must never reach browser code.
 
-The first migration deliberately keeps Data API access narrow. Ottimo's server boundary can use privileged server-side access while retaining RLS as a database defence-in-depth layer.
-
-## Current limitation
-
-The repository does not yet contain the Supabase CLI project configuration or remote project reference. Those should be added when the local Supabase workflow is established.
-
-The authoritative tenant resolver will be wired to this schema in the follow-up server-boundary work rather than introducing another blob-backed identity map.
+The hosted database has not been changed by adding this repository workflow. Database deployment remains a deliberate operational step after local validation and a dry run.
