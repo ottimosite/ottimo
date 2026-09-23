@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { SupabaseWorkspaceRepository } from './supabase-tenant-repository'
 
 describe('Supabase workspace repository', () => {
-  it('resolves the first workspace membership for an authenticated user', async () => {
+  it('resolves a tenant only when the user has exactly one workspace', async () => {
     const fetchMock = vi.spyOn(globalThis, 'fetch')
       .mockResolvedValueOnce(new Response(JSON.stringify([{ workspace_id: 'workspace-1' }]), { status: 200 }))
       .mockResolvedValueOnce(new Response(JSON.stringify([{
@@ -20,7 +20,7 @@ describe('Supabase workspace repository', () => {
     await expect(repository.resolveTenant('user-1')).resolves.toBe('workspace-1')
     expect(fetchMock).toHaveBeenNthCalledWith(
       1,
-      'https://example.supabase.co/rest/v1/workspace_members?select=workspace_id&user_id=eq.user-1&limit=1',
+      'https://example.supabase.co/rest/v1/workspace_members?select=workspace_id&user_id=eq.user-1',
       expect.objectContaining({
         headers: expect.objectContaining({
           apikey: 'server-secret',
