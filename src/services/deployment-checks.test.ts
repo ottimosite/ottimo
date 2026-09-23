@@ -3,7 +3,7 @@ import { deploymentReady, validateDeploymentEnvironment } from './deployment-che
 
 describe('deployment checks', () => {
   it('accepts declared runtime configuration', () => {
-    const checks = validateDeploymentEnvironment({ NODE_VERSION: '22' })
+    const checks = validateDeploymentEnvironment({ NODE_VERSION: '24' })
     expect(deploymentReady(checks)).toBe(true)
   })
 
