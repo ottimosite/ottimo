@@ -7,12 +7,12 @@ Ottimo is deployed as a Vite single-page application.
 - Production branch: `master`
 - Build command: `npm run build`
 - Publish directory: `dist`
-- Node.js: 22
+- Node.js: 24
 - Hosting: Netlify
 
 The repository remains the source of truth. Production deployments are created from `master`; feature branches and pull requests should use Netlify Deploy Previews.
 
-## React Router fallback
+## Current React Router fallback
 
 Ottimo uses client-side routing. `netlify.toml` configures a rewrite from all paths to `/index.html`, allowing direct navigation and refreshes on routes such as `/services`, `/app/dashboard`, `/app/audits/new`, and `/app/audits/:id`.
 
