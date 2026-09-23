@@ -19,7 +19,7 @@ const critical = '<style>body{margin:0;font-family:system-ui,sans-serif;color:#1
 function render(path, page) {
   const canonical = path === '/' ? '/' : path
   let html = shell
-  html = html.replace(/<title>.*?<\\/title>/, '<title>' + page.title + '</title>')
+  html = html.replace(/<title>.*?<\/title>/, '<title>' + page.title + '</title>')
   html = html.replace(/<meta name="description" content="[^"]*">/, '<meta name="description" content="' + page.description + '">')
   html = html.replace(/<meta name="robots" content="[^"]*">/, '<meta name="robots" content="index,follow">')
   html = html.replace('</head>', '<link rel="canonical" href="' + canonical + '"><meta property="og:title" content="' + page.title + '"><meta property="og:description" content="' + page.description + '"><meta property="og:type" content="website"><meta property="og:url" content="' + canonical + '">' + critical + '</head>')
