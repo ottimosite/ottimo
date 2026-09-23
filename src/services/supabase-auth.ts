@@ -14,6 +14,8 @@ export interface SupabaseAuthConfig {
   publishableKey: string
 }
 
+export type TenantResolver = (userId: string) => Promise<string | undefined>
+
 export function readAuthCookie(request: Request): string | undefined {
   const raw = request.headers.get('cookie')
   if (!raw) return undefined
@@ -43,7 +45,10 @@ function normaliseUrl(url: string): string {
 }
 
 export class SupabaseRequestAuthenticator implements SessionVerifier {
-  constructor(private readonly config: SupabaseAuthConfig) {}
+  constructor(
+    private readonly config: SupabaseAuthConfig,
+    private readonly resolveTenant: TenantResolver,
+  ) {}
 
   async verify(request: Request): Promise<AuthenticatedSession | undefined> {
     const accessToken = readAuthCookie(request)
@@ -64,10 +69,13 @@ export class SupabaseRequestAuthenticator implements SessionVerifier {
     const expiresAt = readJwtExpiry(accessToken)
     if (!expiresAt || Date.parse(expiresAt) <= Date.now()) return undefined
 
+    const tenantId = await this.resolveTenant(user.id)
+    if (!tenantId) return undefined
+
     return {
       sessionId: readJwtClaim(accessToken, 'session_id') ?? 'supabase-session',
       userId: user.id,
-      tenantId: user.id,
+      tenantId,
       expiresAt,
     }
   }
