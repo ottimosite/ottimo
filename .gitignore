@@ -35,3 +35,5 @@ yarn-error.log*
 # Local Ottimo files
 /src/components/.old
 /.netlify
+/supabase/.temp/
+/supabase/.branches/
