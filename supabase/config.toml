@@ -1,0 +1,4 @@
+# Ottimo local Supabase configuration.
+# The hosted project is linked locally with:
+#   npx supabase link --project-ref syeipxngeyvyynezsvxc
+project_id = "ottimo"
