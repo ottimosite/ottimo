@@ -32,4 +32,4 @@ for (const [path, page] of Object.entries(routes)) {
   await mkdir(dirname(target), { recursive: true })
   await writeFile(target, render(path, page), 'utf8')
 }
-console.log('Generated public HTML:', Object.keys(routes).join(', '))
+process.stdout.write(`Generated public HTML: ${Object.keys(routes).join(', ')}\n`)
