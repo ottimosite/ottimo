@@ -32,16 +32,21 @@ export class SupabaseWorkspaceRepository implements WorkspaceRepository, TenantR
   constructor(private readonly config: SupabaseTenantRepositoryConfig) {}
 
   async findWorkspaceForUser(userId: string): Promise<WorkspaceRecord | undefined> {
-    const memberships = await this.request<Array<{ workspace_id: string }>>(
-      '/rest/v1/workspace_members?select=workspace_id&user_id=eq.' + encodeURIComponent(userId) + '&limit=1',
-    )
-    const workspaceId = memberships[0]?.workspace_id
-    if (!workspaceId) return undefined
+    const workspaces = await this.findWorkspacesForUser(userId)
+    return workspaces.length === 1 ? workspaces[0] : undefined
+  }
 
-    const workspaces = await this.request<WorkspaceRecord[]>(
-      '/rest/v1/workspaces?select=id,name,created_by,created_at&id=eq.' + encodeURIComponent(workspaceId) + '&limit=1',
+  async findWorkspacesForUser(userId: string): Promise<WorkspaceRecord[]> {
+    const memberships = await this.request<Array<{ workspace_id: string }>>(
+      '/rest/v1/workspace_members?select=workspace_id&user_id=eq.' + encodeURIComponent(userId),
     )
-    return workspaces[0]
+    const workspaceIds = memberships.map(item => item.workspace_id)
+    if (workspaceIds.length === 0) return []
+
+    const filter = workspaceIds.map(id => '"' + id.replaceAll('"', '""') + '"').join(',')
+    return await this.request<WorkspaceRecord[]>(
+      '/rest/v1/workspaces?select=id,name,created_by,created_at&id=in.(' + encodeURIComponent(filter) + ')',
+    )
   }
 
   async findWebsite(workspaceId: string, websiteId: string): Promise<WebsiteRecord | undefined> {
