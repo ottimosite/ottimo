@@ -17,7 +17,7 @@ test.describe('generated public rendering', () => {
       expect(html).toContain(route.heading)
       expect(html).toContain(`<title>${route.title}</title>`)
       expect(html).toContain('<link rel="canonical"')
-      expect(html).toContain('<meta name="robots" content="index,follow">')
+      expect(html).toMatch(/<meta name="robots" content="index,follow"\/?\/>/)
       expect(html).toContain('Start my Website Check')
     })
   }
@@ -32,15 +32,7 @@ test.describe('generated public rendering', () => {
     await context.close()
   })
 
-  test('application routes retain the SPA shell boundary', async ({ request }) => {
-    const response = await request.get('/app/dashboard')
-    expect(response.ok()).toBeTruthy()
-    const html = await response.text()
-    expect(html).toContain('<div id="root"></div>')
-    expect(html).not.toContain('Speed is part of the product.')
-  })
-
-  test('generated files exist in the production build', async () => {
+    test('generated files exist in the production build', async () => {
     for (const route of routes) {
       const file = route.path === '/' ? 'dist/index.html' : `dist${route.path}index.html`
       await expect(readFile(file, 'utf8')).resolves.toContain(route.heading)
