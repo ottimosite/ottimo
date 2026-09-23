@@ -3,12 +3,12 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "22"
+  NODE_VERSION = "24"
 
-# Ottimo is a client-side React Router application. Serve index.html
-# for application routes so direct navigation and refreshes work in production.
+# Generated public routes are emitted as real HTML files. Keep the SPA fallback
+# scoped to the authenticated application so public pages remain directly crawlable.
 [[redirects]]
-  from = "/*"
+  from = "/app/*"
   to = "/index.html"
   status = 200
 
