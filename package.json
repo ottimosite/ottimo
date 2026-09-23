@@ -2,6 +2,9 @@
   "name": "ottimo",
   "private": true,
   "version": "1.0.0",
+  "engines": {
+    "node": ">=24 <25"
+  },
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev-local.mjs",

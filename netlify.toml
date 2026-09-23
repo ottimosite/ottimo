@@ -3,7 +3,7 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "22"
+  NODE_VERSION = "24"
 
 # Ottimo is a client-side React Router application. Serve index.html
 # for application routes so direct navigation and refreshes work in production.

@@ -26,7 +26,7 @@ Open `http://127.0.0.1:5173`. The live audit endpoint is available through the V
 
 The repository pins the Netlify CLI version used by the local Functions server through `npx`, so a global Netlify CLI installation is not required.
 
-Netlify CLI 27.8.0 requires Node.js 22.13.0 or newer. Keep local Node aligned with the Node 22 runtime configured for Netlify.
+Netlify CLI 27.8.0 requires Node.js 22.13.0 or newer. Ottimo standardises on Node.js 24 for local development, CI and Netlify. Keep local Node aligned with the Node 24 runtime configured for Netlify.
 
 On first setup, make sure Playwright's Chromium browser is installed:
 
