@@ -1,62 +1,88 @@
-# Supabase database boundary
+# Supabase database development
 
-Ottimo's application identity and tenant metadata are managed by Supabase Auth + PostgreSQL.
+Ottimo uses Supabase Auth and PostgreSQL for application identity, workspace and audit data.
 
-## Repository workflow
+For the complete local-development workflow, see [docs/local-supabase-development.md](../docs/local-supabase-development.md).
 
-The `supabase/` directory is version-controlled. Configuration, migrations and database tests belong in Git; local CLI state under `supabase/.temp/` and `supabase/.branches/` is ignored.
+## Repository structure
 
-Hosted project:
-- project: `ottimo`
-- project ref: `syeipxngeyvyynezsvxc`
-- region: `eu-west-1`
-
-The project reference is not a credential. Never commit a database password, access token, or server secret key.
-
-## Local setup
-
-On Windows with Node 24:
-
-```powershell
-npm install -D supabase@2.117.0
-npx supabase --version
-npx supabase login
-npx supabase link --project-ref syeipxngeyvyynezsvxc
+```text
+supabase/
+├── config.toml
+├── migrations/       # canonical schema changes
+└── tests/            # pgTAP database contracts
 ```
 
-Local database commands require a Docker-compatible runtime:
+The repository is the source of truth for database changes. Local CLI state under `supabase/.temp/` and `supabase/.branches/` is ignored and must not be committed.
 
-```powershell
+## Quick start
+
+Requirements:
+
+- Node.js 24
+- npm
+- Docker Desktop or another Docker-compatible runtime
+
+From the repository root:
+
+```bash
+npm install
 npx supabase db start
 npx supabase db reset
 npx supabase test db
 ```
 
-## Hosted database deployment
+Use `npx supabase status` to inspect local service URLs and keys.
 
-Before changing the hosted database, preview the migration:
+## Local development
 
-```powershell
+Local Supabase is disposable and isolated from the hosted project. Use `npx supabase db reset` to reconstruct the database from the migrations in Git.
+
+The current application still has local/demo persistence and authentication boundaries that are being evolved toward the Supabase-backed application path. Do not assume every current UI operation is already using local Supabase.
+
+## Schema changes
+
+For active-development changes:
+
+1. Define the intended canonical schema.
+2. Add or modify the appropriate migration.
+3. Run `npx supabase db reset`.
+4. Run `npx supabase test db`.
+5. Update application code and tests.
+6. Run the application quality checks.
+7. Open a PR.
+
+Do not retain obsolete tables, columns, enums or helper functions solely for compatibility.
+
+## Hosted deployment
+
+Preview before applying:
+
+```bash
 npx supabase db push --dry-run
 ```
 
-Review the output. Only then apply the versioned migrations:
+After review and merge, deploy the versioned migrations:
 
-```powershell
+```bash
 npx supabase db push
 ```
 
-Do not use `db reset --linked` against the hosted project.
+Never use `db reset --linked` against the hosted project.
 
-## Security boundary
+## Security
 
-- Supabase Auth owns identity, sessions and email verification.
-- `profiles` mirrors the Ottimo application lifecycle.
-- `workspaces` and `workspace_members` establish tenant ownership.
-- `websites` belong to workspaces.
-- `audit_records` belong to both a workspace and website.
-- Application tables use RLS.
-- Privileged server credentials remain server-only.
-- The service-role/secret key must never reach browser code.
+- The hosted project reference is not a credential.
+- Never commit database passwords or access tokens.
+- Never expose Supabase secret/service-role credentials to browser code.
+- Browser-facing configuration must use a public/publishable credential appropriate to the current client integration.
+- Server-only credentials remain server-side.
+- RLS is part of the schema contract and is tested with database changes.
 
-The hosted database has not been changed by adding this repository workflow. Database deployment remains a deliberate operational step after local validation and a dry run.
+## Current hosted project
+
+- Project: `ottimo`
+- Ref: `syeipxngeyvyynezsvxc`
+- Region: `eu-west-1`
+
+The project reference may be committed; credentials may not.
