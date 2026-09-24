@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 import { readFile } from 'node:fs/promises'
 
 const routes = [
-  { path: '/', title: 'Ottimo — Make your website work better. Know what to fix next.', heading: 'Make your website work better. Know what to fix next.' },
+  { path: '/', title: 'Make your website work better. Know what to fix next. — Ottimo', heading: 'Make your website work better. Know what to fix next.' },
   { path: '/services/', title: 'Services — Ottimo', heading: 'One website. One improvement system.' },
   { path: '/example-audit/', title: 'Sample audit — Ottimo', heading: 'See the evidence before you run your own audit.' },
   { path: '/methodology/', title: 'Methodology — Ottimo', heading: 'Measure first. Explain clearly. Improve progressively.' },
