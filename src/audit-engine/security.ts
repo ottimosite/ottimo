@@ -47,8 +47,10 @@ const mappedIpv4FromIpv6 = (ip: string): string | null => {
   const value = normaliseAddress(ip)
   if (isIP(value) !== 6) return null
 
-  const mappedDotted = value.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/)
-  if (mappedDotted) return mappedDotted[1]
+  if (value.startsWith('::ffff:')) {
+    const mapped = value.slice('::ffff:'.length)
+    if (isIP(mapped) === 4) return mapped
+  }
 
   const parts = value.split(':')
   const expanded: string[] = []
