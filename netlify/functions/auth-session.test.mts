@@ -26,16 +26,16 @@ describe('auth-session function', () => {
       const response = await handler(new Request('https://ottimo.test'))
       expect(response.status).toBe(503)
     } finally {
-      if (previous.url) process.env.SUPABASE_URL = previous.url
-      if (previous.publishable) process.env.SUPABASE_PUBLISHABLE_KEY = previous.publishable
-      if (previous.secret) process.env.SUPABASE_SECRET_KEY = previous.secret
+      if (previous.url) vi.stubEnv('SUPABASE_URL', previous.url
+      if (previous.publishable) vi.stubEnv('SUPABASE_PUBLISHABLE_KEY', previous.publishable
+      if (previous.secret) vi.stubEnv('SUPABASE_SECRET_KEY', previous.secret
     }
   })
 
   it('denies requests without a valid Supabase session', async () => {
-    process.env.SUPABASE_URL = 'https://example.supabase.co'
-    process.env.SUPABASE_PUBLISHABLE_KEY = 'public-key'
-    process.env.SUPABASE_SECRET_KEY = 'service-role-key'
+    vi.stubEnv('SUPABASE_URL', 'https://example.supabase.co')
+    vi.stubEnv('SUPABASE_PUBLISHABLE_KEY', 'public-key')
+    vi.stubEnv('SUPABASE_SECRET_KEY', 'service-role-key')
     const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('unauthorized', { status: 401 }))
 
     const response = await handler(new Request('https://ottimo.test', {
