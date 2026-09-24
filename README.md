@@ -144,12 +144,20 @@ Production secrets and storage credentials are managed through the deployment en
 
 The authenticated application uses a server-side session boundary. The browser never stores session secrets or server credentials.
 
-- `OTTIMO_SESSION_SECRET`: server-only HMAC session verification secret.
-- `OTTIMO_AUTH_LOGIN_URL`: server-side identity-provider login URL.
-- `VITE_AUTH_LOGIN_URL`: optional public login entry-point override.
-- The authenticated workspace checks `/.netlify/functions/auth-session`.
-- Sign-out clears the `ottimo_session` HttpOnly cookie.
-- Local/demo development retains the demo workspace unless authentication is explicitly enabled.
+Production authentication is provider-managed through Supabase Auth:
+
+- `SUPABASE_URL`: server-only Supabase project URL.
+- `SUPABASE_PUBLISHABLE_KEY`: server-held publishable Auth key used for Auth API calls.
+- `SUPABASE_SECRET_KEY`: server-only privileged key used for workspace/tenant persistence.
+- `/.netlify/functions/auth-start`: accepts an email and requests a provider-managed passwordless email.
+- `/.netlify/functions/auth-resend`: repeats the provider-managed email request through the same enumeration-resistant boundary.
+- `/.netlify/functions/auth-verify?token_hash=...&type=email`: verifies the provider token server-side and establishes the `ottimo_auth` HttpOnly session cookie.
+- `/.netlify/functions/auth-session`: verifies the provider session and requires a confirmed email plus an Ottimo workspace.
+- `/.netlify/functions/auth-signout`: revokes the provider session and clears the local HttpOnly cookie.
+
+The Supabase Confirm signup / Magic Link email template must send its `TokenHash` to the Ottimo verification endpoint rather than exposing a provider session in a URL fragment. Supabase's provider-managed token lifecycle remains authoritative; Ottimo does not create, persist or log verification tokens.
+
+The start/resend boundary intentionally returns an opaque accepted response for provider account-state errors, while Supabase and the server boundary enforce request throttling. No real email delivery or provider credentials are required by the automated tests.
 
 ## Performance and accessibility checklist
 
