@@ -1,4 +1,4 @@
-import { clientIp, requestEmailVerification } from './supabase-email-auth'
+import { requestEmailVerification, type AuthRateLimiter } from './supabase-email-auth'
 import { TenantRepository, type TenantPrincipal } from './persistence'
 import { SupabaseWorkspaceRepository } from './supabase-tenant-repository'
 import { transitionLifecycle, type LifecycleState } from './account-lifecycle'
@@ -62,7 +62,7 @@ export async function startOnboarding(
   config: OnboardingConfig,
   input: OnboardingInput,
   storage: ConstructorParameters<typeof TenantRepository>[0],
-  rateLimiter?: Parameters<typeof requestEmailVerification>[2],
+  rateLimiter?: AuthRateLimiter,
 ): Promise<OnboardingResult> {
   const email = input.email.trim().toLowerCase()
   const websiteUrl = normaliseUrl(input.websiteUrl)
@@ -70,7 +70,7 @@ export async function startOnboarding(
   if (!validEmail(email)) throw new Error('ONBOARDING_EMAIL_INVALID')
   if (!validWebsiteUrl(websiteUrl)) throw new Error('ONBOARDING_WEBSITE_INVALID')
 
-  const user = await createUnconfirmedUser(config, email)
+  const limiter = rateLimiter ?? { allow: () => true }\n  if (!limiter.allow(input.rateLimitKey)) throw new Error('ONBOARDING_RATE_LIMITED')\n\n  const user = await createUnconfirmedUser(config, email)
 
   // Existing accounts are deliberately opaque. They receive the same
   // passwordless email flow and can continue through their existing workspace.
