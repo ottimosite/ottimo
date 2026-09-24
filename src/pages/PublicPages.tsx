@@ -79,7 +79,7 @@ function LeadCapture() {
       const normalised = url.startsWith('http') ? url : `https://${url}`
       const parsed = new URL(normalised)
       if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error('Enter a valid website address.')
-      navigate(`/app/audits/new?url=${encodeURIComponent(normalised)}`)
+      navigate(`/start?url=${encodeURIComponent(normalised)}`)
     } catch (submissionError) {
       setError(submissionError instanceof Error ? submissionError.message : 'Enter a valid website address.')
     }
