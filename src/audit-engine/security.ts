@@ -41,7 +41,7 @@ const blocked6 = (ip: string) => {
   )
 }
 
-const normaliseAddress = (ip: string): string => ip.replace(/^\\[/, '').replace(/\\]$/, '').toLowerCase()
+const normaliseAddress = (ip: string): string => ip.replace(/^\[/, '').replace(/\]$/, '').toLowerCase()
 
 const mappedIpv4FromIpv6 = (ip: string): string | null => {
   const value = normaliseAddress(ip)
@@ -60,11 +60,13 @@ const mappedIpv4FromIpv6 = (ip: string): string | null => {
   }
 
   if (expanded.length !== 8) return null
-  if (expanded.slice(0, 6).map(part => part.padStart(4, '0')).join(':') !== '0000:0000:0000:0000:0000:ffff') return null
+  if (expanded.slice(0, 6).map(part => part.padStart(4, '0')).join(':') !== '0000:0000:0000:0000:0000:ffff') {
+    return null
+  }
 
   const high = Number.parseInt(expanded[6], 16)
   const low = Number.parseInt(expanded[7], 16)
-  return \`${high >> 8}.${high & 255}.${low >> 8}.${low & 255}\`
+  return [high >> 8, high & 255, low >> 8, low & 255].join('.')
 }
 
 export const isBlockedAddress = (ip: string): boolean => {
@@ -87,7 +89,7 @@ const BLOCKED_HOSTNAMES = new Set([
 ])
 
 const hasBlockedHostname = (hostname: string): boolean => {
-  const normalised = hostname.toLowerCase().replace(/\\.$/, '')
+  const normalised = hostname.toLowerCase().replace(/\.$/, '')
   return (
     BLOCKED_HOSTNAMES.has(normalised) ||
     normalised.endsWith('.localhost') ||
@@ -116,7 +118,9 @@ export function assertSafeUrlShape(rawUrl: string): URL {
   if (hasBlockedHostname(url.hostname)) {
     throw new AuditSecurityError('Internal audit targets are not permitted.')
   }
-  if (isIP(url.hostname) && isBlockedAddress(url.hostname)) {
+
+  const literalHostname = normaliseAddress(url.hostname)
+  if (isIP(literalHostname) && isBlockedAddress(literalHostname)) {
     throw new AuditSecurityError('The audit target resolves to a private or reserved network address.')
   }
 
