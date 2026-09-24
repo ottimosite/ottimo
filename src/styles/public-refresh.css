@@ -463,8 +463,11 @@
 }
 
 
-/* Lime trust/expectation panels need a dark eyebrow for WCAG contrast. */
-.methodology-trust .eyebrow,
+/* Keep eyebrow text readable against each panel's actual background. */
+.methodology-trust .eyebrow {
+  color: var(--lime);
+}
+
 .plans-expectations .eyebrow {
   color: var(--forest);
 }
