@@ -17,105 +17,17 @@ const pageContent = {
   '/services': {
     eyebrow: 'Services',
     title: 'One website. One improvement system.',
-    intro: 'Ottimo connects performance, search, accessibility, experience and technical quality so your team can work from the same evidence.',
-    sections: [
-      ['Performance engineering', 'Find the resources, rendering work and bottlenecks that slow down important journeys.', 'Measure the cost of delay before deciding what to optimise.'],
-      ['Search & discovery', 'Improve the technical foundations that help search systems find, understand and trust important content.', 'Connect crawlability, structure and content signals instead of chasing a single score.'],
-      ['Accessibility & experience', 'Make important journeys usable by more people and easier for everyone to understand.', 'Treat accessibility and usability as product quality, not compliance theatre.'],
-      ['AI-ready foundations', 'Structure useful information so people and future interfaces can discover and use it with confidence.', 'Build from authoritative content and evidence rather than adding AI for its own sake.'],
-    ],
-  },
-  '/performance': {
-    eyebrow: 'Performance',
-    title: 'Speed is part of the product.',
-    intro: 'A fast website is not a vanity metric. It gives people a quicker path to the information, confidence and action they came for.',
-    sections: [
-      ['Find the bottleneck', 'Separate asset weight, rendering work, network delay and page structure so optimisation starts with evidence.', 'Measure what can be measured and label the rest honestly.'],
-      ['Prioritise the journey', 'Focus on the pages and moments that matter instead of optimising every byte equally.', 'Tie technical work to customer-facing outcomes without inventing business causation.'],
-      ['Verify the change', 'Re-run comparable audits and make improvement visible over time.', 'Keep previous evidence so a faster page can be distinguished from a different test.'],
-    ],
-  },
-  '/seo': {
-    eyebrow: 'Search visibility',
-    title: 'Make the important pages easier to find and understand.',
-    intro: 'Technical SEO should give search systems a reliable map of your website and give people useful answers when they arrive.',
-    sections: [
-      ['Discoverability', 'Check crawl paths, indexing signals, sitemaps, links and canonical relationships.', 'Find structural blockers before changing content blindly.'],
-      ['Understanding', 'Use headings, metadata, structured information and clear page identity to reduce ambiguity.', 'Make the page understandable to both people and machines.'],
-      ['Evidence over folklore', 'Separate observed technical signals from assumptions about rankings or traffic.', 'Ottimo never turns an audit finding into an unsupported promise of search performance.'],
-    ],
-  },
-  '/accessibility': {
-    eyebrow: 'Accessibility',
-    title: 'Build an experience more people can actually use.',
-    intro: 'Accessibility is product quality: clear structure, usable controls, sufficient contrast, keyboard access and content that does not depend on one way of interacting.',
-    sections: [
-      ['Structure', 'Use semantic landmarks, headings, names and relationships that make the interface understandable.', 'Give assistive technology the same useful structure a visual user receives.'],
-      ['Interaction', 'Check focus, keyboard paths, forms, controls and predictable behaviour.', 'A successful interaction should not depend on a mouse, touch gesture or perfect vision.'],
-      ['Sustainable quality', 'Turn findings into concrete fixes and verify them after implementation.', 'Accessibility improves when it is part of the engineering loop rather than a final audit.'],
-    ],
-  },
-  '/ai': {
-    eyebrow: 'AI readiness',
-    title: 'Use AI where it creates leverage, not noise.',
-    intro: 'AI becomes useful when the underlying website is clear, structured and trustworthy. Ottimo treats AI readiness as an extension of good digital foundations.',
-    sections: [
-      ['Useful knowledge', 'Identify the information your business needs people and machines to understand.', 'Start with authoritative facts, services, policies and relationships.'],
-      ['Structured context', 'Improve page identity, semantics and machine-readable signals that make information easier to consume.', 'Good structure benefits search, accessibility and AI interfaces at the same time.'],
-      ['Responsible integration', 'Use AI for investigation, explanation and workflow assistance without presenting guesses as evidence.', 'Keep generated guidance traceable to the observations that support it.'],
-    ],
+    intro: 'Ottimo connects performance, search, accessibility, experience, technical quality and AI-ready foundations so your team can work from the same evidence.',
   },
   '/methodology': {
     eyebrow: 'Methodology',
     title: 'Measure first. Explain clearly. Improve progressively.',
-    intro: 'Ottimo is designed around an evidence loop: discover what exists, understand what matters, act on the strongest opportunities and verify what changed.',
-    sections: [
-      ['01 · Discover', 'Map the website and capture the signals that can actually be observed.', 'Unknown stays unknown.'],
-      ['02 · Understand', 'Connect findings to affected pages, evidence, impact and implementation context.', 'A developer and a decision-maker should be able to trace the same conclusion.'],
-      ['03 · Prioritise', 'Turn findings into an ordered set of actions based on impact, effort, dependencies and evidence.', 'The goal is a useful next step, not a longer dashboard.'],
-      ['04 · Verify', 'Compare later audits and retain the history of what changed.', 'Improvement is only useful when it can be checked.'],
-    ],
+    intro: 'Ottimo follows an evidence loop: discover what exists, understand what matters, prioritise the useful next action and verify what changed.',
   },
   '/pricing': {
     eyebrow: 'Plans',
     title: 'Start with evidence. Scale when the work demands it.',
-    intro: 'Ottimo is being designed around progressive adoption: understand your website first, then add the workflow and monitoring capabilities your team actually needs.',
-    sections: [
-      ['Explore', 'Use the audit experience to understand the current state of a website and identify useful next steps.', 'Designed for discovery and evaluation.'],
-      ['Improve', 'Build a repeatable workflow around findings, actions, verification and longitudinal history.', 'Designed for teams actively improving a website.'],
-      ['Partner', 'Bring integrations, scheduled audits, reporting and ongoing intelligence into one operating rhythm.', 'Designed for sustained optimisation programmes.'],
-    ],
-  },
-  '/about': {
-    eyebrow: 'About Ottimo',
-    title: 'Make the web work better.',
-    intro: 'Ottimo exists to make digital improvement less noisy: faster experiences, clearer evidence, more inclusive interfaces and better decisions.',
-    sections: [
-      ['Fast', 'The product itself should respect your time.', 'Lightweight interfaces are part of the promise.'],
-      ['Accessible', 'Quality should include people who navigate the web differently.', 'Accessibility belongs in the engineering loop.'],
-      ['Clear', 'Technical findings should become understandable decisions.', 'Explain the evidence, the impact and the next action.'],
-      ['Useful', 'An audit is only valuable if it changes what someone does next.', 'Ottimo is built around improvement, not reporting for its own sake.'],
-    ],
-  },
-  '/case-studies': {
-    eyebrow: 'Evidence library',
-    title: 'Proof should be earned, not invented.',
-    intro: 'The current public experience uses deterministic fixtures and clearly labelled examples. Real client outcomes belong here only when they can be verified and attributed responsibly.',
-    sections: [
-      ['What we show', 'Observed evidence, implementation changes and comparable before/after measurements.', 'No invented traffic, conversion or revenue claims.'],
-      ['How we verify', 'Use repeatable audits and retain the evidence behind the conclusion.', 'A result should remain understandable after the campaign or project ends.'],
-      ['What comes next', 'As the platform matures, verified client stories can connect technical improvements with measured outcomes.', 'Evidence first, storytelling second.'],
-    ],
-  },
-  '/contact': {
-    eyebrow: 'Contact',
-    title: 'Bring us the website problem you can actually see.',
-    intro: 'Tell us what is slow, difficult to use, hard to find or difficult for your team to understand. Start with the evidence and we can work from there.',
-    sections: [
-      ['Website review', 'Share the website and the journey or problem you want to understand.', 'Useful context beats a generic “make it better” brief.'],
-      ['Technical improvement', 'Bring a known performance, accessibility, SEO or engineering problem.', 'Ottimo can help turn it into an evidence-led action plan.'],
-      ['Ongoing optimisation', 'For teams improving continuously, the platform is designed around history, actions and verification.', 'The operating model grows with the website.'],
-    ],
+    intro: 'Ottimo is designed for progressive adoption: understand the current state first, then add the workflow and monitoring capabilities your team actually needs.',
   },
 } as const
 
@@ -197,19 +109,19 @@ function TrustRow() {
 }
 
 export function Home() {
-  usePublicMetadata('Know what is holding your website back.', 'Ottimo audits performance, search, accessibility, experience, technical quality and AI readiness, then turns the evidence into a prioritised improvement plan.')
+  usePublicMetadata('Make your website work better. Know what to fix next.', 'Ottimo audits performance, search, accessibility, experience, technical quality and AI-ready foundations, then turns supported evidence into a prioritised improvement plan.')
 
   return <div className="public-home lead-home">
     <section className="hero lead-hero">
-      <div className="hero-kicker">Website performance · search · accessibility · UX · technical quality · AI readiness</div>
+      <div className="hero-kicker">Performance · visibility · accessibility · experience · technical quality · AI-ready foundations</div>
       <div className="lead-hero-grid">
         <div>
           <span className="eyebrow">Website intelligence & optimisation</span>
           <h1>Make your website work better.<br /><em>Know what to fix next.</em></h1>
           <p className="hero-copy">Ottimo brings performance, search, accessibility, experience, technical quality and AI readiness into one evidence-led view — so your team can understand the problem, decide what matters and act on it.</p>
           <div className="hero-actions">
-            <a className="btn btn-primary" href="#start">Start my Website Check <span aria-hidden="true">↗</span></a>
-            <a className="text-link" href="#method">See how it works ↓</a>
+            <a className="btn btn-primary" href="#start">Analyse your website <span aria-hidden="true">↗</span></a>
+            <a className="text-link" href="#method">See how it works →</a>
           </div>
           <div className="ethos"><strong>Find the problems.</strong><strong>Understand the impact.</strong><strong>Fix what matters.</strong><strong>Verify the change.</strong></div>
         </div>
@@ -259,7 +171,7 @@ export function Home() {
         <span className="eyebrow">See the product, not a mockup</span>
         <h2 id="audit-example-title">See how Ottimo turns evidence into the next action.</h2>
         <p>This working example uses a deterministic fixture. It shows how Ottimo connects a finding, its evidence and its next action without presenting the snapshot as a live customer measurement.</p>
-        <Link className="text-link" to="/example-audit">Explore the working audit example →</Link>
+        <Link className="text-link" to="/example-audit">Open the sample audit →</Link>
       </div>
       <div className="case-score audit-example-card">
         <div className="audit-example-header"><span>Illustrative audit</span><strong>Deterministic fixture</strong></div>
@@ -381,29 +293,199 @@ export function PublicAuditExample() {
       <Link className="btn btn-primary" to="/app/audits/audit-wikipedia">Explore the audit workflow</Link>
     </section>
 
-    <section className="callout"><span className="eyebrow">Ready to use your website</span><h2>Start with a Website Check.</h2><p>Enter a public website and review the audit setup before the live browser inspection runs.</p><Link className="btn btn-primary" to="/#start">Start my Website Check</Link></section>
+    <section className="callout"><span className="eyebrow">Ready to use your website</span><h2>Start with a Website Check.</h2><p>Enter a public website and review the audit setup before the live browser inspection runs.</p><Link className="btn btn-primary" to="/#start">Analyse your website <span aria-hidden="true">↗</span></Link></section>
+  </div>
+}
+
+function PublicPageHero({ eyebrow, title, intro, children }: { eyebrow: string; title: string; intro: string; children?: React.ReactNode }) {
+  return <div className="public-page-hero">
+    <span className="eyebrow">{eyebrow}</span>
+    <h1>{title}</h1>
+    <p>{intro}</p>
+    {children}
+  </div>
+}
+
+function PublicPageCta({ label = 'Analyse your website' }: { label?: string }) {
+  return <section className="public-page-cta">
+    <div>
+      <span className="eyebrow">Start with your website</span>
+      <h2>See what Ottimo can actually find.</h2>
+      <p>Enter a public website, review the audit scope and decide what to investigate before anything runs.</p>
+    </div>
+    <Link className="btn btn-primary" to="/#start">{label} <span aria-hidden="true">↗</span></Link>
+  </section>
+}
+
+function ServicesPage() {
+  usePublicMetadata(pageContent['/services'].title, pageContent['/services'].intro)
+
+  return <div className="public-focused-page services-page">
+    <PublicPageHero eyebrow="Services" title={pageContent['/services'].title} intro={pageContent['/services'].intro}>
+      <div className="hero-actions">
+        <Link className="btn btn-primary" to="/#start">Analyse your website <span aria-hidden="true">↗</span></Link>
+        <Link className="text-link" to="/example-audit">See a sample audit →</Link>
+      </div>
+    </PublicPageHero>
+
+    <section className="focused-section">
+      <div className="focused-section-heading">
+        <span className="eyebrow">What Ottimo examines</span>
+        <h2>Six lenses. One website.</h2>
+        <p>These are not six disconnected products. They are different ways of understanding the same digital property and deciding what deserves attention next.</p>
+      </div>
+      <div className="lens-grid">
+        {coverage.map(([title, body], index) => <article key={title}>
+          <span className="lens-number">0{index + 1}</span>
+          <h3>{title}</h3>
+          <p>{body}</p>
+        </article>)}
+      </div>
+    </section>
+
+    <section className="focused-section services-flow">
+      <div className="focused-section-heading">
+        <span className="eyebrow">From signal to decision</span>
+        <h2>Find the problem. Explain it. Decide what happens next.</h2>
+      </div>
+      <ol className="flow-grid">
+        <li><span>01</span><div><h3>Discover</h3><p>Map pages, resources, structure and the technical signals Ottimo can actually observe.</p></div></li>
+        <li><span>02</span><div><h3>Understand</h3><p>Connect findings to evidence, affected scope, impact and implementation context.</p></div></li>
+        <li><span>03</span><div><h3>Prioritise</h3><p>Turn supported findings into an ordered set of useful actions rather than an undifferentiated list.</p></div></li>
+        <li><span>04</span><div><h3>Verify</h3><p>Compare later audits so improvement is measured rather than assumed.</p></div></li>
+      </ol>
+    </section>
+
+    <section className="services-evidence-band">
+      <div>
+        <span className="eyebrow">The output</span>
+        <h2>A report that gives the decision-maker the answer and the developer the evidence.</h2>
+        <p>Ottimo starts with a clear summary, then lets people move progressively into findings, evidence, affected pages, technical context and verification.</p>
+      </div>
+      <div className="evidence-output-list">
+        <span>Executive summary</span>
+        <span>Priority findings</span>
+        <span>Evidence and confidence</span>
+        <span>Next actions and verification</span>
+      </div>
+    </section>
+
+    <PublicPageCta />
+  </div>
+}
+
+function MethodologyPage() {
+  usePublicMetadata(pageContent['/methodology'].title, pageContent['/methodology'].intro)
+
+  return <div className="public-focused-page methodology-page">
+    <PublicPageHero eyebrow="Methodology" title={pageContent['/methodology'].title} intro={pageContent['/methodology'].intro}>
+      <div className="hero-actions">
+        <Link className="btn btn-primary" to="/example-audit">See the evidence <span aria-hidden="true">↗</span></Link>
+        <Link className="text-link" to="/#start">Analyse your website →</Link>
+      </div>
+    </PublicPageHero>
+
+    <section className="focused-section">
+      <div className="focused-section-heading">
+        <span className="eyebrow">The evidence model</span>
+        <h2>Ottimo tells you what it knows — and what it does not.</h2>
+        <p>A trustworthy audit does not fill every empty space with a number. Evidence has a state, and the state stays visible.</p>
+      </div>
+      <div className="evidence-state-grid">
+        <article><span>Measured</span><h3>Directly observed.</h3><p>The audit collected or calculated evidence that supports the statement.</p></article>
+        <article><span>Inferred</span><h3>Derived from evidence.</h3><p>The conclusion is useful, but Ottimo makes clear that it is an interpretation rather than a direct measurement.</p></article>
+        <article><span>Unavailable</span><h3>Not safely observable.</h3><p>The evidence could not be obtained or retained, so Ottimo does not pretend that absence is a zero.</p></article>
+      </div>
+    </section>
+
+    <section className="focused-section methodology-loop">
+      <div className="focused-section-heading">
+        <span className="eyebrow">The improvement loop</span>
+        <h2>Every finding should lead somewhere.</h2>
+      </div>
+      <ol className="methodology-steps">
+        <li><span>01</span><h3>Discover</h3><p>Capture what exists and what can actually be observed.</p></li>
+        <li><span>02</span><h3>Understand</h3><p>Explain why a finding matters and trace it back to its evidence.</p></li>
+        <li><span>03</span><h3>Prioritise</h3><p>Choose the next useful action using impact, effort, dependencies and confidence.</p></li>
+        <li><span>04</span><h3>Verify</h3><p>Re-audit and compare so a claimed improvement can be checked.</p></li>
+      </ol>
+    </section>
+
+    <section className="focused-section finding-contract">
+      <div className="focused-section-heading">
+        <span className="eyebrow">A useful finding</span>
+        <h2>What should an Ottimo conclusion contain?</h2>
+      </div>
+      <div className="finding-contract-grid">
+        <article><span>01</span><strong>What was observed?</strong><p>State the concrete signal rather than starting with a recommendation.</p></article>
+        <article><span>02</span><strong>Why does it matter?</strong><p>Explain the relevance without claiming an outcome the evidence cannot prove.</p></article>
+        <article><span>03</span><strong>What should happen next?</strong><p>Turn the supported finding into a practical investigation or implementation step.</p></article>
+        <article><span>04</span><strong>How can it be verified?</strong><p>Define the evidence that should change when the work is complete.</p></article>
+      </div>
+    </section>
+
+    <section className="methodology-trust">
+      <div>
+        <span className="eyebrow">The Ottimo standard</span>
+        <h2>We would rather say “unknown” than give you a made-up number.</h2>
+      </div>
+      <p>That principle applies to measurements, rankings, traffic, conversions, user behaviour and any other conclusion the audit cannot support.</p>
+    </section>
+
+    <PublicPageCta label="Analyse your website" />
+  </div>
+}
+
+function PlansPage() {
+  usePublicMetadata(pageContent['/pricing'].title, pageContent['/pricing'].intro)
+
+  return <div className="public-focused-page plans-page">
+    <PublicPageHero eyebrow="Plans" title={pageContent['/pricing'].title} intro={pageContent['/pricing'].intro}>
+      <div className="hero-actions">
+        <Link className="btn btn-primary" to="/#start">Analyse your website <span aria-hidden="true">↗</span></Link>
+        <Link className="text-link" to="/methodology">How the evidence works →</Link>
+      </div>
+    </PublicPageHero>
+
+    <section className="focused-section">
+      <div className="focused-section-heading">
+        <span className="eyebrow">Progressive adoption</span>
+        <h2>Start with understanding. Add workflow when you need it.</h2>
+        <p>Ottimo's product model is deliberately progressive. The stages below describe how capability expands; they are not final commercial prices or promises of features that are not yet released.</p>
+      </div>
+      <div className="plan-grid">
+        <article><span>01 · Explore</span><h3>Understand the current state.</h3><p>Use the audit experience to see what Ottimo can observe, what remains unavailable and which findings deserve attention.</p><strong>For discovery and evaluation.</strong></article>
+        <article><span>02 · Improve</span><h3>Turn findings into repeatable work.</h3><p>Build a workflow around recommendations, actions, re-audits, verification and the history of what changed.</p><strong>For teams actively improving a website.</strong></article>
+        <article><span>03 · Partner</span><h3>Make optimisation an operating rhythm.</h3><p>Add integrations, scheduled audits, reporting and ongoing intelligence as the website and team demand them.</p><strong>For sustained optimisation programmes.</strong></article>
+      </div>
+    </section>
+
+    <section className="plans-expectations">
+      <div>
+        <span className="eyebrow">Whatever the stage</span>
+        <h2>The evidence model does not change.</h2>
+      </div>
+      <div className="expectation-list">
+        <span>Observed evidence stays distinguishable from inference.</span>
+        <span>Unavailable evidence stays unavailable.</span>
+        <span>Recommendations remain connected to findings.</span>
+        <span>Improvement is verified rather than assumed.</span>
+      </div>
+    </section>
+
+    <section className="plans-status">
+      <span className="eyebrow">Current product status</span>
+      <h2>The audit experience comes first.</h2>
+      <p>Ottimo is currently focused on making the public audit experience and evidence model useful before introducing a full commercial lifecycle. This page intentionally does not invent prices, entitlements or availability that have not been finalised.</p>
+      <Link className="text-link" to="/example-audit">See the working audit example →</Link>
+    </section>
+
+    <PublicPageCta label="Start with an audit" />
   </div>
 }
 
 export function InfoPage({ path }: { path: PublicPath }) {
-  const content = pageContent[path]
-  usePublicMetadata(content.title, content.intro)
-
-  return <div className="content-page public-info-page">
-    <div className="content-hero">
-      <span className="eyebrow">{content.eyebrow}</span>
-      <h1>{content.title}</h1>
-      <p>{content.intro}</p>
-      <div className="hero-actions"><Link className="btn btn-primary" to="/#start">Start my Website Check</Link><Link className="text-link" to="/methodology">How we work →</Link></div>
-    </div>
-    <div className="public-info-grid">
-      {content.sections.map(([title, body, proof], index) => <article key={title}><span>0{index + 1}</span><h2>{title}</h2><p>{body}</p><strong>{proof}</strong></article>)}
-    </div>
-    <section className="public-info-proof">
-      <div><span className="eyebrow">What you can expect</span><h2>Evidence that leads somewhere.</h2><p>Ottimo keeps observations, inference and unavailable evidence separate, then connects supported findings to actions and later verification.</p></div>
-      <div className="public-info-proof-list"><span>Measure what can be measured.</span><span>Explain what the evidence means.</span><span>Prioritise the next useful action.</span><span>Verify the change.</span></div>
-    </section>
-    <section className="callout"><span className="eyebrow">Start with a website</span><h2>See what Ottimo can actually find.</h2><p>Explore the working audit experience and decide what deserves attention next.</p><Link className="btn btn-primary" to="/app/audits/new">Start a demo audit</Link></section>
-  </div>
+  if (path === '/services') return <ServicesPage />
+  if (path === '/methodology') return <MethodologyPage />
+  return <PlansPage />
 }
-
