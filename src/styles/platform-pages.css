@@ -82,4 +82,4 @@
 .auth-state h1 { margin:0; }
 .auth-state p { color:var(--ink-soft); max-width:58ch; }
 @media(max-width:900px){ .capability-link-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
-@media(max-width:520px){ .capability-link-grid { grid-template-columns:1fr; } .auth-account span { display:none; } }
+@media(max-width:520px){ .capability-link-grid { grid-template-columns:1fr; } }
