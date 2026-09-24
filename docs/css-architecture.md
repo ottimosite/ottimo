@@ -1,20 +1,18 @@
-# Ottimo CSS Architecture Baseline
+# Ottimo CSS Architecture
 
-> Baseline updated for the CSS ownership migrations through PR #244 and the current feature-boundary work in #245. This document records the current migration state; it is not a proposal to rewrite the styling system.
+> Current-state architecture record for issue #167. This is a controlled refactor, not a visual rewrite.
 
 ## Purpose
-
-Issue #167 is a controlled refactor, not a visual rewrite. The repository already contains part of the intended architecture. The job now is to finish that migration without creating another override layer.
 
 The governing rule is:
 
 **one concern → one owner → one predictable cascade path**
 
-New CSS should not be added to a legacy file merely because that file is currently imported.
+CSS should be owned by the layer or feature that renders it. Shared primitives belong in one shared layer; feature presentation stays with the feature; browser foundations stay small and stable.
 
 ## Current import surface
 
-`src/main.tsx` currently imports these global stylesheets, in this order:
+`src/main.tsx` currently imports these global stylesheets in this order:
 
 1. `tokens.css`
 2. `base.css`
@@ -25,193 +23,140 @@ New CSS should not be added to a legacy file merely because that file is current
 7. `recommendations.css`
 8. `dashboard.css`
 9. `platform-pages.css`
-10. `concepts.css`
-11. `lead-home.css`
-12. `public-refresh.css`
-13. `public-services.css`
-14. `audit.css`
-16. `standards.css`
-17. `performance-metrics.css`
-18. `onboarding.css`
-19. `quality.css`
+10. `lead-home.css`
+11. `public-refresh.css`
+12. `public-services.css`
+13. `audit.css`
+14. `standards.css`
+15. `performance-metrics.css`
+16. `onboarding.css`
+17. `quality.css`
 
-The ordering is currently functional but still acts as a significant part of the cascade contract. The target is for ownership and specificity to make this ordering much less fragile.
+`global.css`, `platform.css`, `overrides.css`, `menu-overrides.css` and the former `concepts.css` layer are retired. The old Concepts pages are unreachable because all `/concepts*` routes redirect to `/methodology`; the unused `ConceptPages.tsx` implementation has also been removed.
 
-## Current inventory (measured on 24 September 2026)
+The import order remains an explicit contract, but ownership and specificity should make it predictable rather than requiring ad-hoc override layers.
 
-The following figures are generated from the current stylesheet surface rather than copied from historical migration notes.
+## Current inventory
+
+Measured from the current stylesheet source on 24 September 2026.
 
 | Stylesheet | Bytes | Selector occurrences | Media queries | !important | Current role |
 |---|---:|---:|---:|---:|---|
 | `tokens.css` | 2,578 | 1 | 0 | 0 | Design tokens |
-| `base.css` | 1,534 | 22 | 1 | 0 | Browser/base foundation |
-| `shell.css` | 9,046 | 114 | 5 | 0 | Application/public shell |
-| `shared-components.css` | 6,428 | 81 | 4 | 0 | Shared primitives |
-| `public-site.css` | 5,846 | 67 | 5 | 0 | Public shared presentation |
-| `components.css` | 3,048 | 30 | 2 | 0 | Remaining compatibility/shared presentation |
-| `recommendations.css` | 7,042 | 80 | 8 | 0 | Recommendation feature |
-| `dashboard.css` | 194 | 4 | 2 | 0 | Dashboard feature |
-| `platform-pages.css` | 7,067 | 78 | 6 | 0 | Platform feature pages |
-| `concepts.css` | 5,699 | 65 | 1 | 0 | Concepts feature |
-| `lead-home.css` | 21,361 | 248 | 17 | 0 | Public landing feature |
-| `public-refresh.css` | 11,618 | 105 | 4 | 0 | Public information/shared presentation |
-| `public-services.css` | 2,235 | 32 | 2 | 0 | Public services feature |
-| `audit.css` | 26,541 | 321 | 22 | 0 | Audit feature |
-| `standards.css` | 695 | 8 | 1 | 0 | Standards feature |
-| `performance-metrics.css` | 1,550 | 20 | 1 | 0 | Performance feature |
-| `onboarding.css` | 5,639 | 74 | 2 | 0 | Onboarding feature |
-| `quality.css` | 545 | 6 | 2 | 4 | Quality/reduced-motion contracts |
+| `base.css` | 1,534 | 40 | 1 | 0 | Browser/base foundation |
+| `shell.css` | 8,866 | 112 | 5 | 0 | Application/public shell |
+| `shared-components.css` | 6,495 | 87 | 4 | 0 | Shared primitives and application components |
+| `public-site.css` | 5,777 | 69 | 5 | 0 | Public shared presentation |
+| `components.css` | 3,048 | 29 | 2 | 0 | Remaining shared application presentation |
+| `recommendations.css` | 7,042 | 74 | 8 | 0 | Recommendation feature |
+| `dashboard.css` | 194 | 2 | 2 | 0 | Dashboard feature |
+| `platform-pages.css` | 6,738 | 78 | 6 | 0 | Platform feature pages |
+| `lead-home.css` | 21,294 | 255 | 17 | 0 | Public landing feature |
+| `public-refresh.css` | 11,618 | 130 | 4 | 0 | Public information/shared presentation |
+| `public-services.css` | 2,235 | 33 | 2 | 0 | Public services feature |
+| `audit.css` | 26,531 | 338 | 22 | 0 | Audit feature |
+| `standards.css` | 695 | 7 | 1 | 0 | Standards feature |
+| `performance-metrics.css` | 1,550 | 19 | 1 | 0 | Performance feature |
+| `onboarding.css` | 5,629 | 73 | 2 | 0 | Onboarding feature |
+| `quality.css` | 545 | 11 | 2 | 4 | Focus/reduced-motion/forced-colour contracts |
 
-**Measured total:** 118,649 bytes, 1,440 selector occurrences, 85 media-query occurrences and 4 `!important` declarations.
+**Measured total:** 112,369 source bytes, 1,358 selector occurrences, 84 media-query occurrences and 4 `!important` declarations.
 
-These are source-level architecture metrics, not compressed production bundle measurements. They make structural changes measurable and repeatable.
-## What has already been achieved
+These are source-level architecture metrics, not compressed production bundle measurements.
 
-### Tokens
+## Ownership model
 
-`tokens.css` is already the correct foundation for design tokens. It owns the primary custom-property vocabulary and should remain the authoritative source.
+### Foundation
 
-### Shared components
-
-`shared-components.css` already establishes a small shared component layer. This is the correct direction for primitives such as cards and section headings.
+- `tokens.css` owns design tokens and compatibility aliases.
+- `base.css` owns browser normalization, document defaults, global focus foundation and reduced-motion extensions that are genuinely foundational.
 
 ### Shell
 
-`shell.css` has a clear application-shell purpose. It should remain responsible for navigation, application chrome and shell layout rather than becoming a general-purpose application stylesheet.
+`shell.css` owns public navigation, authenticated navigation, responsive menus, skip-link behaviour and the application frame.
 
-### Public feature ownership
+The global focus reset is owned by `base.css`; shell does not duplicate it.
 
-`lead-home.css`, `public-services.css` and related public styles already provide meaningful feature boundaries. These should be consolidated rather than replaced.
+### Shared components
 
-### Audit feature ownership
+`shared-components.css` is the authoritative owner for reusable primitives including:
 
-`audit.css` already indicate that audit presentation now has one explicit feature boundary in `audit.css`.
+- `.btn`
+- `.card`
+- `.eyebrow`
+- `.muted`
+- `.section-head`
+- shared form/layout/finding/table/action/audit-list presentation
 
-### Typography
+Feature styles may scope or extend these primitives, but must not redefine the shared primitive itself.
 
-PR #193 established the single sans-serif direction. Future CSS migration must preserve that baseline and must not reintroduce serif/Georgia presentation styles.
+### Feature styles
 
-## Main architectural problems remaining
+Feature-owned presentation lives in explicit stylesheets:
 
-### 1. Remaining legacy ownership
+- `lead-home.css` — landing experience
+- `public-services.css` — services
+- `public-refresh.css` — public information/shared presentation
+- `recommendations.css` — recommendations
+- `dashboard.css` — dashboard
+- `platform-pages.css` — platform pages
+- `audit.css` — audit/report presentation
+- `standards.css` — standards
+- `performance-metrics.css` — performance
+- `onboarding.css` — onboarding
 
-The former `global.css`, `platform.css`, and other superseded compatibility layers have now been retired. Remaining architectural work is concentrated in feature boundaries and the small amount of mixed presentation still in `components.css`, while completing application feature ownership.
+`components.css` is intentionally small and should retain only genuinely shared application presentation that has not yet earned a more explicit owner.
 
-### 2. Duplicate shared primitives
+## Duplicate-selector contract
 
-Shared primitives are now substantially consolidated. `shared-components.css` is authoritative for reusable cards, buttons, headings and section-level primitives, while feature styles own domain-specific presentation. Any remaining overlap must be verified from rendered usage before deletion.
+The architecture check now detects exact cross-file selector duplication after normalising whitespace and respecting commas inside functional selectors such as `:where(...)`.
 
-### 3. Public-layer overlap
+A duplicate is permitted only when its ownership is explicitly documented as a layered contract:
 
-The landing page is owned by `lead-home.css`. `public-refresh.css` is reserved for genuinely reusable public marketing and information-page presentation. PR #245 moves landing-only trust, conversion, audit-preview, audit-output and FAQ presentation out of the refresh layer so it cannot become a second landing-page override layer.
+- `*`, `*::before`, `*::after` — `base.css` + `quality.css` for reduced-motion behaviour.
+- `input`, `select`, `textarea` — `base.css` + `shared-components.css`; base supplies inherited form typography while shared components supplies control presentation.
+- `.btn` — `base.css` + `shared-components.css`; base supplies the reduced-motion extension.
+- `.site-header .brand` — `base.css` + `shell.css`; base supplies reduced-motion behaviour while shell owns the presentation.
+- `.progress span` — `base.css` + `components.css`; base supplies the reduced-motion extension while components owns the progress presentation.
 
-### 4. Specificity dependencies
+Everything else that becomes an exact cross-file duplicate fails the architecture check. Scoped selectors such as `.audit-overview .score-list` are not treated as duplicate primitive definitions.
 
-The recent hero-grid fix is an instructive example. A generic responsive declaration was overridden by a more-specific landing-page selector.
+## !important contract
 
-The correct response was to fix ownership/specificity in the feature stylesheet, not to introduce another global override.
+There are currently four `!important` declarations, all in `quality.css` and all part of the reduced-motion contract:
 
-### 5. Legacy compatibility surface
+- `scroll-behavior`
+- `animation-duration`
+- `animation-iteration-count`
+- `transition-duration`
 
-`components.css` remains a small compatibility/mixed layer and should only retain genuinely shared presentation. Feature-specific rules should continue moving to explicit owners such as `recommendations.css`, `lead-home.css`, audit styles and onboarding.
-
-## Target architecture
-
-The intended dependency direction is:
-
-```text
-tokens / foundations
-        ↓
-reset + base
-        ↓
-shared components
-        ↓
-application shell
-        ↓
-feature styles
-        ├── public
-        ├── audit
-        ├── onboarding
-        └── other application features
-        ↓
-narrow route-specific exceptions
-```
-
-A feature may consume lower layers. Lower layers must not depend on feature styles.
-
-### Ownership rules
-
-- Tokens belong in `tokens.css`.
-- Global browser/base behaviour belongs in a small foundation/base layer.
-- Shared UI primitives have one authoritative definition.
-- Shell/navigation rules belong to the shell.
-- Public landing/service rules belong to public feature styles.
-- Audit presentation rules belong to audit feature styles.
-- Onboarding rules belong to onboarding.
-- Route-specific exceptions must be narrowly scoped to the route/feature.
-- Domain logic does not belong in CSS or presentation components.
-- Do not use `!important` to repair uncertain ownership.
-- Do not create a new override file to resolve a conflict.
-- Do not add a selector to a legacy stylesheet simply because it is already imported.
-
-## Migration order
-
-The migration should proceed in small PRs:
-
-1. **Baseline/inventory** — this document.
-2. **Foundation extraction** — completed through #197.
-3. **Shared primitive consolidation** — substantially completed through the shared card/heading work and PR #244 recommendation ownership.
-4. **Shell isolation** — completed through #201/#203.
-5. **Public consolidation** — reduce overlap between `lead-home.css` and `public-refresh.css`.
-6. **Audit consolidation** — completed through #247/#248 with a single `audit.css` owner.
-7. **Application feature cleanup** — migrate remaining mixed component rules and verify `dashboard.css`/`platform-pages.css` feature boundaries.
-8. **Delete obsolete rules/files** — only after usage is proven absent.
-9. **Quality hardening** — add checks that prevent duplicate ownership and cascade regressions.
-
-Each migration PR should preserve the same rendered behaviour unless a deliberate product change is explicitly part of the PR.
+The architecture check keeps a maximum of four. New `!important` declarations therefore require an explicit architectural decision rather than being introduced as cascade compensation.
 
 ## Verification contract
 
-Every CSS migration should validate:
+The CSS architecture slice is considered verified only when the repository gates pass:
 
 - `npm test`
 - `npm run lint`
+- `npm run test:css-architecture`
 - `npm run build`
-- `npm run test:e2e`
-- representative public desktop/mobile rendering
-- representative application desktop/mobile rendering
-- keyboard focus behaviour
-- reduced-motion behaviour
-- no new console errors
-- no new horizontal overflow
-- typography remains on the #193 sans-serif contract
+- Chromium/E2E rendered QA
+- public performance budget
+- representative public and application desktop/mobile checks
+- keyboard focus
+- reduced motion
+- horizontal-overflow checks
+- no new browser console/request errors
 
-## Non-goals
+The rendered application acceptance for `/app/audits/new` and `/app/audits` is covered by #303/#304. The public five-page rendering and accessibility acceptance is covered by the Phase 1 quality work.
 
-This baseline does **not**:
+## What remains for #167
 
-- rewrite the site;
-- introduce CSS modules or another styling framework;
-- redesign the visual system;
-- remove styles based solely on apparent duplication;
-- change audit evidence semantics;
-- change authentication/storage behaviour;
-- claim that the stylesheet migration is complete.
+The structural migration and the main quality-hardening work are substantially complete. The final decision is now evidence-based:
 
-## Current implementation slice
+1. keep the explicit stylesheet ownership and import contract;
+2. keep duplicate-selector and `!important` regression checks;
+3. keep architecture documentation measured against current source;
+4. reassess the parent issue after the current PR's full repository gates and rendered QA pass.
 
-The next slice is **quality hardening and architecture verification**.
-
-It establishes a small automated contract around the architecture already present on `master`:
-
-- `src/main.tsx` must retain the deliberate stylesheet layer order;
-- retired stylesheet names must not return;
-- `.btn`, `.card`, `.eyebrow`, `.muted` and `.section-head` must remain authoritative in `shared-components.css`;
-- the repository-wide `!important` count must not increase above the current four declarations, which are confined to the reduced-motion contract in `quality.css`;
-- source-level CSS inventory metrics are printed on every quality run.
-
-This is deliberately a guardrail, not a CSS rewrite. The check does not treat every repeated selector as a defect because feature styles legitimately extend shared primitives. It catches ownership regressions at architectural boundaries that can be checked deterministically.
-
-The current refactor slice also removed three legacy compensation declarations from `shell.css`, `audit.css` and `onboarding.css` without changing their intended visual contracts.
-
-`global.css` and the historical `platform.css` layer are retired. The success criterion is not merely fewer lines of CSS; it is a predictable ownership graph with explicit shared/application/feature boundaries.
+No Phase 2 work is part of this refactor slice.
