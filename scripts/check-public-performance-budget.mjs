@@ -1,5 +1,5 @@
 import { gzipSync } from 'node:zlib'
-import { readFile, stat } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 const dist = join(process.cwd(), 'dist')
