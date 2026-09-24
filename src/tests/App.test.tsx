@@ -31,7 +31,7 @@ describe('app', () => {
   it.each([
     ['/services', /one website\. one improvement system/i, /six lenses\. one website/i],
     ['/example-audit', /see the evidence before you analyse your own website/i, /finding → evidence → action/i],
-    ['/methodology', /measure first\. explain clearly\. improve progressively/i, /measured, inferred and unavailable/i],
+    ['/methodology', /measure first\. explain clearly\. improve progressively/i, /evidence has a state/i],
     ['/pricing', /start with evidence\. scale when the work demands it/i, /explore/i],
   ])('gives %s distinct, useful public content', (path, heading, content) => {
     render(<MemoryRouter initialEntries={[path]}><App /></MemoryRouter>)
