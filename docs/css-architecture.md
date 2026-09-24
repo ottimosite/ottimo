@@ -62,7 +62,7 @@ The following figures are generated from the current stylesheet surface rather t
 | `onboarding.css` | 5,639 | 74 | 2 | 0 | Onboarding feature |
 | `quality.css` | 545 | 6 | 2 | 4 | Quality/reduced-motion contracts |
 
-**Measured total:** 118,666 bytes, 1,356 selector occurrences, 85 media-query occurrences and 4 `!important` declarations.
+**Measured total:** 118,649 bytes, 1,440 selector occurrences, 85 media-query occurrences and 4 `!important` declarations.
 
 These are source-level architecture metrics, not compressed production bundle measurements. They make structural changes measurable and repeatable.
 ## What has already been achieved
