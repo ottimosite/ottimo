@@ -37,7 +37,7 @@ const authoritativePrimitives = new Map([
 const maxImportant = 4;
 
 function stripComments(source) {
-  return source.replace(/\/\*[\\s\\S]*?\*\//g, '');
+  return source.replace(/\/\*[\s\S]*?\*\//g, '');
 }
 
 function selectors(source) {
@@ -54,8 +54,8 @@ function metrics(source) {
   return {
     bytes: source.length,
     rules: selectors(source).length,
-    mediaQueries: (clean.match(/@media\\b/g) ?? []).length,
-    important: (clean.match(/!important\\b/g) ?? []).length,
+    mediaQueries: (clean.match(/@media\b/g) ?? []).length,
+    important: (clean.match(/!important\b/g) ?? []).length,
   };
 }
 
