@@ -72,13 +72,14 @@ export async function requestEmailVerification(
   rateLimiter: AuthRateLimiter = defaultAuthRateLimiter,
   rateLimitKey = 'anonymous',
 ): Promise<EmailAuthResult> {
-  if (!isEmail(email)) throw new Error('AUTH_EMAIL_INVALID')
+  const normalisedEmail = email.trim().toLowerCase()
+  if (!isEmail(normalisedEmail)) throw new Error('AUTH_EMAIL_INVALID')
   if (!rateLimiter.allow(rateLimitKey)) {
     return { accepted: false, providerStatus: 429 }
   }
 
   const response = await providerRequest(config, '/auth/v1/otp', {
-    email: email.trim().toLowerCase(),
+    email: normalisedEmail,
     create_user: true,
   })
 
