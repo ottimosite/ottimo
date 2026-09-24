@@ -2,7 +2,10 @@ import { describe, expect, it, vi, afterEach } from 'vitest'
 import handler from '../../netlify/functions/auth-session'
 
 describe('auth-session function', () => {
-  afterEach(() => vi.restoreAllMocks())
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllEnvs()
+  })
 
   it('rejects unsupported methods', async () => {
     const response = await handler(new Request('https://ottimo.test', { method: 'POST' }))
