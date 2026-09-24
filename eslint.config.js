@@ -10,6 +10,7 @@ const testGlobals={describe:'readonly',it:'readonly',expect:'readonly',beforeEac
 export default defineConfig([
   { ignores:['dist','node_modules','.netlify'] }, js.configs.recommended,
   { files:['src/**/*.{ts,tsx}'], languageOptions:{parser:tsParser,globals:{...browserGlobals}}, plugins:{'@typescript-eslint':tsPlugin,'react-hooks':reactHooks,'react-refresh':reactRefresh}, rules:{...reactHooks.configs['recommended-latest'].rules,'react-refresh/only-export-components':['warn',{allowConstantExport:true}],'no-unused-vars':'off','no-undef':'off'} },
+  { files:['scripts/**/*.mjs'], languageOptions:{globals:{process:'readonly',Buffer:'readonly',console:'readonly'}} },
   { files:['public/sw.js'], languageOptions:{globals:workerGlobals} },
   { files:['src/tests/**/*.{ts,tsx}'], languageOptions:{globals:{...browserGlobals,...testGlobals}} }
 ])
