@@ -41,9 +41,12 @@ export default async (request: Request) => {
     if (result.providerStatus === 429) {
       return json(429, { error: 'Too many requests. Please try again later.' })
     }
+    if (result.providerStatus >= 500) {
+      return json(503, { error: 'Authentication provider is temporarily unavailable.' })
+    }
 
-    // Deliberately use the same successful response for provider acceptance
-    // and provider account-state errors to avoid an account-enumeration oracle.
+    // Deliberately use the same successful response for provider account-state
+    // errors to avoid an account-enumeration oracle.
     return json(202, { accepted: true })
   } catch {
     return json(400, { error: 'Invalid email address.' })
