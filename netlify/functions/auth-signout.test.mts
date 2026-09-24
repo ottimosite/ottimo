@@ -2,7 +2,10 @@ import { describe, expect, it, vi, afterEach } from 'vitest'
 import handler from '../../netlify/functions/auth-signout'
 
 describe('auth-signout function', () => {
-  afterEach(() => vi.restoreAllMocks())
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllEnvs()
+  })
 
   it('rejects unsupported methods', async () => {
     const response = await handler(new Request('https://ottimo.test'))
