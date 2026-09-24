@@ -88,7 +88,7 @@ function LeadCapture() {
   return <form className="lead-form" id="start" onSubmit={submit}>
     <div className="lead-form-heading">
       <span className="eyebrow">Start with your website</span>
-      <h2>Start with a Website Check.</h2>
+      <h2>Analyse your website.</h2>
       <p>Enter your website address and start the audit setup. You can review the scope before anything runs.</p>
     </div>
     <div className="lead-fields">
@@ -119,7 +119,7 @@ export function Home() {
         <div>
           <span className="eyebrow">Website intelligence & optimisation</span>
           <h1>Make your website work better.<br /><em>Know what to fix next.</em></h1>
-          <p className="hero-copy">Ottimo brings performance, search, accessibility, experience, technical quality and AI readiness into one evidence-led view — so your team can understand the problem, decide what matters and act on it.</p>
+          <p className="hero-copy">Ottimo brings performance, search, accessibility, experience, technical quality and AI-ready foundations into one evidence-led view — so your team can understand the problem, decide what matters and act on it.</p>
           <div className="hero-actions">
             <a className="btn btn-primary" href="#start">Analyse your website <span aria-hidden="true">↗</span></a>
             <a className="text-link" href="#method">See how it works →</a>
@@ -135,7 +135,7 @@ export function Home() {
           </div>
           <div className="preview-evidence"><span>Evidence</span><b>Observed resource</b><small>Support: page + resource timing</small></div>
           <div className="preview-action"><span>Next action</span><strong>Inspect the blocking resource →</strong></div>
-          <p className="preview-note">Findings are labelled as measured, inferred or unavailable. Unknown is a valid result.</p>
+          <p className="preview-note">Findings are labelled as measured, inferred or unavailable. Unavailable is a valid result.</p>
           <Link className="preview-link" to="/methodology">See how Ottimo explains findings →</Link>
         </div>
       </div>
