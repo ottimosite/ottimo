@@ -13,8 +13,8 @@ describe('auth-signout function', () => {
   })
 
   it('clears the authentication cookie and revokes the provider session', async () => {
-    process.env.SUPABASE_URL = 'https://example.supabase.co'
-    process.env.SUPABASE_PUBLISHABLE_KEY = 'public-key'
+    vi.stubEnv('SUPABASE_URL', 'https://example.supabase.co')
+    vi.stubEnv('SUPABASE_PUBLISHABLE_KEY', 'public-key')
     const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(null, { status: 204 }))
 
     const response = await handler(new Request('https://ottimo.test', {
@@ -32,8 +32,8 @@ describe('auth-signout function', () => {
   })
 
   it('still clears the local cookie when provider revocation fails', async () => {
-    process.env.SUPABASE_URL = 'https://example.supabase.co'
-    process.env.SUPABASE_PUBLISHABLE_KEY = 'public-key'
+    vi.stubEnv('SUPABASE_URL', 'https://example.supabase.co')
+    vi.stubEnv('SUPABASE_PUBLISHABLE_KEY', 'public-key')
     vi.spyOn(globalThis, 'fetch').mockRejectedValue(new Error('provider unavailable'))
 
     const response = await handler(new Request('https://ottimo.test', {
