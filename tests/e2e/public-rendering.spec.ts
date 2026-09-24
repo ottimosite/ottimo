@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises'
 const routes = [
   { path: '/', title: 'Make your website work better. Know what to fix next. — Ottimo', heading: 'Make your website work better. Know what to fix next.' },
   { path: '/services/', title: 'Services — Ottimo', heading: 'One website. One improvement system.' },
-  { path: '/example-audit/', title: 'Sample audit — Ottimo', heading: 'See the evidence before you run your own audit.' },
+  { path: '/example-audit/', title: 'Sample audit — Ottimo', heading: 'See the evidence before you analyse your own website.' },
   { path: '/methodology/', title: 'Methodology — Ottimo', heading: 'Measure first. Explain clearly. Improve progressively.' },
   { path: '/pricing/', title: 'Plans — Ottimo', heading: 'Start with evidence. Scale when the work demands it.' },
 ]
