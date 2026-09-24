@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
+import type { ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Badge, Card } from '../components/ui'
 import { categoryLabels } from '../data/mock'
@@ -297,7 +298,7 @@ export function PublicAuditExample() {
   </div>
 }
 
-function PublicPageHero({ eyebrow, title, intro, children }: { eyebrow: string; title: string; intro: string; children?: React.ReactNode }) {
+function PublicPageHero({ eyebrow, title, intro, children }: { eyebrow: string; title: string; intro: string; children?: ReactNode }) {
   return <div className="public-page-hero">
     <span className="eyebrow">{eyebrow}</span>
     <h1>{title}</h1>
