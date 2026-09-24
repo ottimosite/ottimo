@@ -40,7 +40,7 @@ function validEmail(value: string): boolean {
   return value.length >= 3 && value.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
 }
 
-async function createUnconfirmedUser(config: OnboardingConfig, email: string): Promise<{ id: string } | undefined> {
+async function createUnconfirmedUser(config: OnboardingConfig, email: string): Promise<{ user?: { id: string }; status: number }> {
   const response = await fetch(config.url.replace(/\/+$/, '') + '/auth/v1/admin/users', {
     method: 'POST',
     headers: {
