@@ -49,7 +49,7 @@ They need a shared language between business context and technical evidence with
 3. **Promise** — make the website work better and know what to fix next.
 4. **Method** — Measure → Understand → Improve → Prove.
 5. **Proof** — observed evidence, explicit uncertainty, concrete actions and later verification.
-6. **CTA** — Start my Website Check.
+6. **CTA** — Analyse your website.
 
 ## Six coverage areas
 
@@ -77,7 +77,7 @@ Never replace unavailable evidence with a plausible-looking number.
 ## CTA hierarchy
 
 ### Primary
-**Start my Website Check**
+**Analyse your website**
 
 Moves the visitor into audit setup.
 
