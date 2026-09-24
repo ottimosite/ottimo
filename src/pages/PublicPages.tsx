@@ -239,15 +239,15 @@ export function Home() {
 }
 
 export function PublicAuditExample() {
-  usePublicMetadata('Working audit example', 'Explore a deterministic Ottimo audit example showing evidence, uncertainty, prioritisation and verification without presenting fictional customer results as live measurements.')
+  usePublicMetadata('Sample audit', 'Explore a deterministic Ottimo sample audit showing evidence, uncertainty, prioritisation and verification without presenting fictional customer results as live measurements.')
 
   return <div className="public-audit-example content-page">
     <div className="content-hero">
-      <span className="eyebrow">Working audit example</span>
-      <h1>See the evidence before you run your own audit.</h1>
+      <span className="eyebrow">Sample audit</span>
+      <h1>See the evidence before you analyse your own website.</h1>
       <p>This example uses Ottimo's captured Wikipedia fixture. It is deliberately labelled as a deterministic snapshot so you can see the product model without mistaking fixture data for a live customer measurement.</p>
       <div className="hero-actions">
-        <Link className="btn btn-primary" to="/app/audits/audit-wikipedia">Open the working audit</Link>
+        <Link className="btn btn-primary" to="/app/audits/audit-wikipedia">Open the working audit <span aria-hidden="true">↗</span></Link>
         <Link className="text-link" to="/methodology">Read the methodology →</Link>
       </div>
     </div>
@@ -294,7 +294,7 @@ export function PublicAuditExample() {
       <Link className="btn btn-primary" to="/app/audits/audit-wikipedia">Explore the audit workflow</Link>
     </section>
 
-    <section className="callout"><span className="eyebrow">Ready to use your website</span><h2>Start with a Website Check.</h2><p>Enter a public website and review the audit setup before the live browser inspection runs.</p><Link className="btn btn-primary" to="/#start">Analyse your website <span aria-hidden="true">↗</span></Link></section>
+    <section className="callout"><span className="eyebrow">Ready to use your website</span><h2>Analyse your website.</h2><p>Enter a public website and review the audit setup before the live browser inspection runs.</p><Link className="btn btn-primary" to="/#start">Analyse your website <span aria-hidden="true">↗</span></Link></section>
   </div>
 }
 
