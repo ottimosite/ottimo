@@ -18,11 +18,11 @@ async function resourceSize(source) {
 const scripts = await Promise.all(scriptSources.map(resourceSize))
 const stylesheets = await Promise.all(stylesheetSources.map(resourceSize))
 const inlineStyles = [...html.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)]
-  .map(match => Buffer.byteLength(match[1], 'utf8'))
+  .map(match => match[1])
 
 const javascriptBytes = scripts.reduce((total, asset) => total + asset.gzipBytes, 0)
 const cssBytes = stylesheets.reduce((total, asset) => total + asset.gzipBytes, 0) +
-  inlineStyles.reduce((total, value) => total + gzipSync(Buffer.from(String(value))).byteLength, 0)
+  inlineStyles.reduce((total, value) => total + gzipSync(Buffer.from(value, 'utf8')).byteLength, 0)
 
 const javascriptBudget = 150 * 1024
 const cssBudget = 100 * 1024
