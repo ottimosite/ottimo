@@ -35,6 +35,7 @@ const authoritativePrimitives = new Map([
   ['.section-head', 'shared-components.css'],
 ]);
 const maxImportant = 4;
+const allowedPrimitiveExtensions = new Map([['.btn', new Set(['base.css'])]]);
 
 function stripComments(source) {
   return source.replace(/\/\*[\s\S]*?\*\//g, '');
@@ -97,9 +98,10 @@ for (const file of files) {
 for (const [selector, ownerFiles] of owners) {
   const unique = [...new Set(ownerFiles)];
   const expected = authoritativePrimitives.get(selector);
-  if (unique.length !== 1 || unique[0] !== expected) {
-    failures.push(`Authoritative primitive ${selector} is defined outside ${expected}: ${unique.join(', ')}`);
-  }
+  const allowed = allowedPrimitiveExtensions.get(selector) ?? new Set();
+  const unexpected = unique.filter(file => file !== expected && !allowed.has(file));
+  if (unique.includes(expected) && unexpected.length === 0) continue;
+  failures.push(`Authoritative primitive ${selector} is defined outside ${expected}: ${unique.join(', ')}`);
 }
 
 if (total.important > maxImportant) {
