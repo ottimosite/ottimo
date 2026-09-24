@@ -15,7 +15,8 @@
     "test": "vitest run",
     "lint": "eslint .",
     "test:e2e": "playwright test",
-    "test:performance": "node scripts/check-public-performance-budget.mjs"
+    "test:performance": "node scripts/check-public-performance-budget.mjs",
+    "test:css-architecture": "node scripts/check-css-architecture.mjs"
   },
   "dependencies": {
     "@netlify/blobs": "^11.1.0",
