@@ -58,9 +58,9 @@
 .app-top strong{color:var(--forest);font-size:.88rem}
 .app-content{width:100%;max-width:var(--container-application);margin:0 auto;padding:48px 42px 90px}
 .app-content #main{min-height:0}
-.auth-account{display:flex;align-items:center;gap:12px}
-.auth-account span{color:var(--muted);font-size:.72rem;font-weight:800}
-.auth-account button{min-height:40px;padding:8px 12px;border:1px solid var(--line);border-radius:var(--radius-md);background:#fff;color:var(--forest);font-size:.72rem;font-weight:800}
+.auth-account{display:flex;align-items:center;gap:10px}
+.auth-account span{color:var(--muted);font-size:.75rem}
+.auth-account button{min-height:40px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);cursor:pointer}
 
 :where(a,button,input,select,textarea,summary):focus-visible{outline:var(--focus-width) solid var(--focus-color);outline-offset:var(--focus-offset)}
 main:focus{outline:none}
@@ -83,7 +83,7 @@ main:focus{outline:none}
  .site-header>.header-actions .btn-primary{flex:1}
  .site-header>nav{order:4;display:none;width:100%;flex-direction:column;align-items:stretch;gap:3px;padding:10px 0 2px;border-top:1px solid var(--line)}
  .site-header.menu-open>nav{display:flex}
- .site-header>nav a{min-height:44px;padding:11px 13px;border-radius:12px}
+ .site-header>nav a{min-height:44px;display:flex;align-items:center;padding:11px 13px;border-radius:12px}
  .site-header>nav a[aria-current="page"]{background:var(--lime)}
  .site-header .menu-toggle{display:flex}
  .sidebar{display:block;position:sticky;top:0;width:100%;height:auto;min-height:66px;padding:12px 16px;z-index:30}
