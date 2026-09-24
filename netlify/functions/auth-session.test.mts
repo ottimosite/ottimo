@@ -13,23 +13,12 @@ describe('auth-session function', () => {
   })
 
   it('fails closed when Supabase configuration is missing', async () => {
-    const previous = {
-      url: process.env.SUPABASE_URL,
-      publishable: process.env.SUPABASE_PUBLISHABLE_KEY,
-      secret: process.env.SUPABASE_SECRET_KEY,
-    }
-    delete process.env.SUPABASE_URL
-    delete process.env.SUPABASE_PUBLISHABLE_KEY
-    delete process.env.SUPABASE_SECRET_KEY
+    vi.stubEnv('SUPABASE_URL', '')
+    vi.stubEnv('SUPABASE_PUBLISHABLE_KEY', '')
+    vi.stubEnv('SUPABASE_SECRET_KEY', '')
 
-    try {
-      const response = await handler(new Request('https://ottimo.test'))
-      expect(response.status).toBe(503)
-    } finally {
-      if (previous.url) vi.stubEnv('SUPABASE_URL', previous.url
-      if (previous.publishable) vi.stubEnv('SUPABASE_PUBLISHABLE_KEY', previous.publishable
-      if (previous.secret) vi.stubEnv('SUPABASE_SECRET_KEY', previous.secret
-    }
+    const response = await handler(new Request('https://ottimo.test'))
+    expect(response.status).toBe(503)
   })
 
   it('denies requests without a valid Supabase session', async () => {
