@@ -64,7 +64,7 @@ export class SupabaseRequestAuthenticator implements SessionVerifier {
     if (!response.ok) return undefined
 
     const user = await response.json() as SupabaseUser
-    if (!user.id) return undefined
+    if (!user.id || (!user.email_confirmed_at && !user.confirmed_at)) return undefined
 
     const expiresAt = readJwtExpiry(accessToken)
     if (!expiresAt || Date.parse(expiresAt) <= Date.now()) return undefined
