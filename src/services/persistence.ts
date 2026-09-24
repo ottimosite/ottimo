@@ -1,4 +1,5 @@
 import type { Audit, Website } from '../types/domain'
+import { assertAuditReleased, type LifecycleState } from './account-lifecycle'
 
 export const STORAGE_SCHEMA_VERSION = 1 as const
 
@@ -18,6 +19,8 @@ export interface PersistentRepository {
   listWebsites(principal: TenantPrincipal): Promise<Website[]>
   listAudits(principal: TenantPrincipal): Promise<Audit[]>
   listAuditsForWebsite(principal: TenantPrincipal, websiteId: string): Promise<Audit[]>
+  getLifecycle(principal: TenantPrincipal): Promise<LifecycleState | undefined>
+  saveLifecycle(principal: TenantPrincipal, state: LifecycleState): Promise<void>
   saveWebsite(principal: TenantPrincipal, website: Website): Promise<void>
   saveAudit(principal: TenantPrincipal, audit: Audit): Promise<void>
 }
@@ -27,7 +30,7 @@ export interface ServerStorageAdapter {
   write<T>(key: string, value: PersistedEnvelope<T>): Promise<void>
 }
 
-export function tenantKey(principal: TenantPrincipal, resource: 'websites' | 'audits', id?: string): string {
+export function tenantKey(principal: TenantPrincipal, resource: 'websites' | 'audits' | 'lifecycle', id?: string): string {
   const suffix = id ? `/${id}` : ''
   return `tenant/${principal.tenantId}/${resource}${suffix}`
 }
@@ -55,6 +58,13 @@ export class TenantRepository implements PersistentRepository {
 
   async listAudits(principal: TenantPrincipal): Promise<Audit[]> {
     requirePrincipal(principal)
+    const lifecycle = await this.getLifecycle(principal)
+    if (!lifecycle) return []
+    assertAuditReleased(lifecycle)
+    return this.readAudits(principal)
+  }
+
+  private async readAudits(principal: TenantPrincipal): Promise<Audit[]> {
     const envelope = await this.adapter.read<Audit[]>(tenantKey(principal, 'audits'))
     return envelope?.tenantId === principal.tenantId ? envelope.data : []
   }
@@ -63,6 +73,22 @@ export class TenantRepository implements PersistentRepository {
     requirePrincipal(principal)
     const audits = await this.listAudits(principal)
     return audits.filter(audit => audit.websiteId === websiteId)
+  }
+
+  async getLifecycle(principal: TenantPrincipal): Promise<LifecycleState | undefined> {
+    requirePrincipal(principal)
+    const envelope = await this.adapter.read<LifecycleState>(tenantKey(principal, 'lifecycle'))
+    return envelope?.tenantId === principal.tenantId ? envelope.data : undefined
+  }
+
+  async saveLifecycle(principal: TenantPrincipal, state: LifecycleState): Promise<void> {
+    requirePrincipal(principal)
+    await this.adapter.write(tenantKey(principal, 'lifecycle'), {
+      schemaVersion: STORAGE_SCHEMA_VERSION,
+      tenantId: principal.tenantId,
+      updatedAt: state.updatedAt,
+      data: state,
+    })
   }
 
   async saveWebsite(principal: TenantPrincipal, website: Website): Promise<void> {
@@ -78,7 +104,7 @@ export class TenantRepository implements PersistentRepository {
 
   async saveAudit(principal: TenantPrincipal, audit: Audit): Promise<void> {
     requirePrincipal(principal)
-    const existing = await this.listAudits(principal)
+    const existing = await this.readAudits(principal)
     await this.adapter.write(tenantKey(principal, 'audits'), {
       schemaVersion: STORAGE_SCHEMA_VERSION,
       tenantId: principal.tenantId,
