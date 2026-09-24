@@ -73,6 +73,23 @@ describe('Supabase server authentication boundary', () => {
     fetchMock.mockRestore()
   })
 
+  it('denies a provider-authenticated user whose email is not verified', async () => {
+    const accessToken = token({ sub: 'user-1', exp: futureExpiry })
+    const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(JSON.stringify({ id: 'user-1', email_confirmed_at: null, confirmed_at: null }), { status: 200 }),
+    )
+    const authenticator = new SupabaseRequestAuthenticator(
+      { url: 'https://example.supabase.co', publishableKey: 'public-key' },
+      async () => 'tenant-1',
+    )
+
+    await expect(authenticator.verify(new Request('https://ottimo.test', {
+      headers: { cookie: supabaseAuthCookieName + '=' + accessToken },
+    }))).resolves.toBeUndefined()
+
+    fetchMock.mockRestore()
+  })
+
   it('denies expired, invalid-provider and tenantless sessions', async () => {
     const expired = token({ sub: 'user-1', exp: Math.floor(Date.now() / 1000) - 1 })
     const fetchMock = vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response(JSON.stringify({ id: 'user-1' }), { status: 200 }))
