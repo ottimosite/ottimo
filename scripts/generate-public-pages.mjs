@@ -33,7 +33,7 @@ const routes = {
   '/example-audit': {
     title: 'Sample audit — Ottimo',
     description: 'Explore a deterministic Ottimo audit example showing evidence, uncertainty, prioritisation and verification without presenting fixture data as a live customer measurement.',
-    h1: 'See the evidence before you run your own audit.',
+    h1: 'See the evidence before you analyse your own website.',
     intro: 'This working example uses a deterministic fixture so you can see how Ottimo connects findings, evidence, uncertainty and next actions.',
     body: '<section><h2>Finding → evidence → action.</h2><p>The sample audit shows how a finding is explained, what evidence supports it and what could happen next.</p></section><section><h2>Coverage stays explicit.</h2><p>Measured and unavailable evidence remain distinguishable. Ottimo does not turn missing evidence into a zero just to complete a dashboard.</p></section><section><h2>Improvement needs a second piece of evidence.</h2><p>A later comparable audit can show whether a finding was resolved, improved, regressed or remains inconclusive.</p></section>'
   },
