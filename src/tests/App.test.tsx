@@ -7,7 +7,7 @@ describe('app', () => {
   it('renders the product landing page around a clear improvement proposition', () => {
     render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>)
     expect(screen.getByRole('heading', { name: /make your website work better\. know what to fix next\./i })).toBeInTheDocument()
-    expect(screen.getAllByRole('link', { name: /start my website check/i }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('link', { name: /analyse your website/i }).length).toBeGreaterThan(0)
     expect(screen.getByRole('heading', { name: /six lenses\. one website/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /turn website evidence into verified improvement/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /a report you can understand/i })).toBeInTheDocument()
