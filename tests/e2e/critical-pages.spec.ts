@@ -179,3 +179,103 @@ test.describe('onboarding and audit workspace', () => {
     errors.assertClean()
   })
 })
+
+
+test.describe('application rendered acceptance', () => {
+  const applicationRoutes = ['/app/audits/new', '/app/audits']
+  const viewports = [
+    { width: 1440, height: 1000 },
+    { width: 389, height: 844 },
+  ]
+
+  test('keeps representative application routes usable without horizontal overflow', async ({ browser }) => {
+    const baseURL = test.info().project.use.baseURL as string
+
+    for (const viewport of viewports) {
+      const context = await browser.newContext({
+        baseURL,
+        viewport,
+        reducedMotion: 'no-preference',
+      })
+      const page = await context.newPage()
+
+      try {
+        for (const route of applicationRoutes) {
+          await page.goto(route)
+          await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+
+          const layout = await page.evaluate(() => ({
+            viewportWidth: window.innerWidth,
+            scrollWidth: document.documentElement.scrollWidth,
+            overflow: document.documentElement.scrollWidth > window.innerWidth,
+          }))
+
+          expect(layout.viewportWidth).toBe(viewport.width)
+          expect(layout.overflow, `horizontal overflow on ${route} at ${viewport.width}px`).toBe(false)
+        }
+      } finally {
+        await context.close()
+      }
+    }
+  })
+
+  test('keeps keyboard focus visible on representative application controls', async ({ page }) => {
+    for (const route of applicationRoutes) {
+      await page.goto(route)
+
+      const control = page.getByRole('button').first()
+      await expect(control).toBeVisible()
+      await control.focus()
+
+      const focus = await control.evaluate(element => {
+        const style = getComputedStyle(element)
+        const rect = element.getBoundingClientRect()
+        return {
+          outlineStyle: style.outlineStyle,
+          outlineWidth: style.outlineWidth,
+          outlineOffset: style.outlineOffset,
+          visible: rect.width > 0 && rect.height > 0,
+        }
+      })
+
+      expect(focus.visible).toBe(true)
+      expect(focus.outlineStyle).not.toBe('none')
+      expect(parseFloat(focus.outlineWidth)).toBeGreaterThan(0)
+    }
+  })
+
+  test('honours reduced-motion preferences on representative application routes', async ({ browser }) => {
+    const baseURL = test.info().project.use.baseURL as string
+    const context = await browser.newContext({
+      baseURL,
+      viewport: { width: 1440, height: 1000 },
+      reducedMotion: 'reduce',
+    })
+    const page = await context.newPage()
+
+    try {
+      for (const route of applicationRoutes) {
+        await page.goto(route)
+
+        const motion = await page.evaluate(() => {
+          const elements = Array.from(document.querySelectorAll('button, a, input, select, textarea, [role="button"]'))
+          const animated = elements
+            .map(element => {
+              const style = getComputedStyle(element)
+              return {
+                transitionDuration: style.transitionDuration,
+                animationDuration: style.animationDuration,
+              }
+            })
+            .filter(({ transitionDuration, animationDuration }) => transitionDuration !== '0s' || animationDuration !== '0s')
+
+          return animated
+        })
+
+        expect(motion, `animated controls remain on ${route} with reduced motion`).toEqual([])
+      }
+    } finally {
+      await context.close()
+    }
+  })
+})
