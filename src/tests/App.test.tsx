@@ -7,7 +7,7 @@ describe('app', () => {
   it('renders the product landing page around a clear improvement proposition', () => {
     render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>)
     expect(screen.getByRole('heading', { name: /make your website work better\. know what to fix next\./i })).toBeInTheDocument()
-    expect(screen.getAllByRole('link', { name: /start my website check/i }).length).toBeGreaterThan(0)
+    expect(screen.getAllByRole('link', { name: /analyse your website/i }).length).toBeGreaterThan(0)
     expect(screen.getByRole('heading', { name: /six lenses\. one website/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /turn website evidence into verified improvement/i })).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: /a report you can understand/i })).toBeInTheDocument()
@@ -24,16 +24,19 @@ describe('app', () => {
   it('shows a useful error when the audit form has an invalid URL', () => {
     render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>)
     fireEvent.change(screen.getByPlaceholderText('yourbusiness.co.uk'), { target: { value: '%%%' } })
-    fireEvent.click(screen.getAllByRole('button', { name: /start my website check/i })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: /analyse your website/i })[0])
     expect(screen.getByRole('alert')).toHaveTextContent(/invalid url/i)
   })
 
-  it('gives public information pages distinct, useful content', () => {
-    render(<MemoryRouter initialEntries={['/performance']}><App /></MemoryRouter>)
-    expect(screen.getByRole('heading', { name: /make important pages faster for real people/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /start with the signal, not the story/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /useful outcomes, not vanity metrics/i })).toBeInTheDocument()
-    expect(screen.getByText(/resource and asset analysis/i)).toBeInTheDocument()
+  it.each([
+    ['/services', /one website\. one improvement system/i, /six lenses\. one website/i],
+    ['/example-audit', /see the evidence before you analyse your own website/i, /finding → evidence → action/i],
+    ['/methodology', /measure first\. explain clearly\. improve progressively/i, /evidence has a state/i],
+    ['/pricing', /start with evidence\. scale when the work demands it/i, /explore/i],
+  ])('gives %s distinct, useful public content', (path, heading, content) => {
+    render(<MemoryRouter initialEntries={[path]}><App /></MemoryRouter>)
+    expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
+    expect(screen.getByText(content)).toBeInTheDocument()
   })
 
   it('uses grouped application navigation and a streamlined audit start surface', () => {

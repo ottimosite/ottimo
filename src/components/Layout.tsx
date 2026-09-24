@@ -6,9 +6,9 @@ import { useAuth } from '../features/auth/AuthBoundary'
 
 const publicLinks = [
   ['/services', 'Services'],
+  ['/example-audit', 'Sample audit'],
   ['/methodology', 'Methodology'],
   ['/pricing', 'Plans'],
-  ['/about', 'About'],
 ] as const
 
 const navigationGroups = [
@@ -103,7 +103,7 @@ export function PublicLayout() {
   const toggleRef = useRef<HTMLButtonElement>(null)
   const closeMenu = useCallback(() => setMenuOpen(false), [])
   useMenuFocus(menuOpen, closeMenu, toggleRef, 'primary-navigation')
-  return <><SkipLink /><header className={`site-header ${menuOpen ? 'menu-open' : ''}`}><Link className="brand" to="/" onClick={closeMenu}>OTTIMO<span aria-hidden="true">.</span></Link><MenuToggle buttonRef={toggleRef} open={menuOpen} controls="primary-navigation" onClick={() => setMenuOpen(open => !open)} /><nav id="primary-navigation" aria-label="Primary">{publicLinks.map(([to, label]) => <NavLink key={to} to={to} end onClick={closeMenu}>{label}</NavLink>)}</nav><div className="header-actions"><Link className="btn btn-ghost" to="/contact" onClick={closeMenu}>Contact</Link><Link className="btn btn-primary" to="/#start" onClick={closeMenu}>Analyse website</Link></div></header><main id="main" tabIndex={-1}><Outlet /></main><footer><div className="footer-brand">OTTIMO.</div><p>Fast. Accessible. Clear. Useful.</p><p>Website performance, visibility and experience — connected by evidence.</p><div className="footer-links"><Link to="/services">Services</Link><Link to="/methodology">Methodology</Link><Link to="/case-studies">Evidence</Link><Link to="/contact">Contact</Link><Link to="/concepts">Concept lab</Link></div></footer></>
+  return <><SkipLink /><header className={`site-header ${menuOpen ? 'menu-open' : ''}`}><Link className="brand" to="/" onClick={closeMenu}>OTTIMO<span aria-hidden="true">.</span></Link><MenuToggle buttonRef={toggleRef} open={menuOpen} controls="primary-navigation" onClick={() => setMenuOpen(open => !open)} /><nav id="primary-navigation" aria-label="Primary">{publicLinks.map(([to, label]) => <NavLink key={to} to={to} end onClick={closeMenu}>{label}</NavLink>)}</nav><div className="header-actions"><Link className="btn btn-primary" to="/#start" onClick={closeMenu}>Analyse your website <span aria-hidden="true">↗</span></Link></div></header><main id="main" tabIndex={-1}><Outlet /></main><footer><div className="footer-brand">OTTIMO.</div><p>Fast. Accessible. Clear. Useful.</p><p>Website performance, visibility and experience — connected by evidence.</p><div className="footer-links"><Link to="/services">Services</Link><Link to="/example-audit">Sample audit</Link><Link to="/methodology">Methodology</Link><Link to="/pricing">Plans</Link></div></footer></>
 }
 
 function AuthAccountControl() {

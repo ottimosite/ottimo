@@ -1,14 +1,12 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { PublicLayout, AppLayout } from './components/Layout'
 import { Home, InfoPage, PublicAuditExample } from './pages/PublicPages'
-import { PublicServicePage } from './pages/PublicServicePages'
 import { Dashboard } from './features/dashboard/Dashboard'
 import { Websites } from './features/websites/Websites'
 import { AuditList, NewAudit } from './features/audits/Audits'
 import { AuditOverview } from './features/audits/AuditOverview'
 import { Recommendations } from './features/recommendations/Recommendations'
 import { CategoryPage, HistoryPage, InsightsPage, ReportsPage, SettingsPage, WebsiteDetail } from './features/platform/PlatformPages'
-import { ConceptPage, ConceptsIndex } from './pages/ConceptPages'
 import { AuditOnboarding } from './features/audits/AuditOnboarding'
 import { AuthProvider, ProtectedWorkspace } from './features/auth/AuthBoundary'
 export default function App() {
@@ -18,22 +16,24 @@ export default function App() {
 		</Route>
 		<Route element={<PublicLayout />}>
 			<Route path="/services" element={<InfoPage path="/services" />} />
-			<Route path="/performance" element={<PublicServicePage slug="performance" />} />
-			<Route path="/seo" element={<PublicServicePage slug="seo" />} />
-			<Route path="/accessibility" element={<PublicServicePage slug="accessibility" />} />
-			<Route path="/ai" element={<PublicServicePage slug="ai" />} />
 			<Route path="/methodology" element={<InfoPage path="/methodology" />} />
-			<Route path="/usability" element={<PublicServicePage slug="usability" />} />
-			<Route path="/technical" element={<PublicServicePage slug="technical" />} />
 			<Route path="/pricing" element={<InfoPage path="/pricing" />} />
-			<Route path="/about" element={<InfoPage path="/about" />} />
-			<Route path="/case-studies" element={<InfoPage path="/case-studies" />} />
-			<Route path="/contact" element={<InfoPage path="/contact" />} />
 			<Route path="/example-audit" element={<PublicAuditExample />} />
-			<Route path="/concepts" element={<ConceptsIndex />} />
-			<Route path="/concepts/reliability" element={<ConceptPage theme="reliability" />} />
-			<Route path="/concepts/speed" element={<ConceptPage theme="speed" />} />
-			<Route path="/concepts/friendly" element={<ConceptPage theme="friendly" />} />
+
+			{/* Legacy public routes stay recoverable without remaining part of the active IA. */}
+			<Route path="/performance" element={<Navigate to="/services" replace />} />
+			<Route path="/seo" element={<Navigate to="/services" replace />} />
+			<Route path="/accessibility" element={<Navigate to="/services" replace />} />
+			<Route path="/ai" element={<Navigate to="/services" replace />} />
+			<Route path="/usability" element={<Navigate to="/services" replace />} />
+			<Route path="/technical" element={<Navigate to="/services" replace />} />
+			<Route path="/about" element={<Navigate to="/" replace />} />
+			<Route path="/case-studies" element={<Navigate to="/example-audit" replace />} />
+			<Route path="/contact" element={<Navigate to="/#start" replace />} />
+			<Route path="/concepts" element={<Navigate to="/methodology" replace />} />
+			<Route path="/concepts/reliability" element={<Navigate to="/methodology" replace />} />
+			<Route path="/concepts/speed" element={<Navigate to="/methodology" replace />} />
+			<Route path="/concepts/friendly" element={<Navigate to="/methodology" replace />} />
 		</Route>
 		<Route path="/app" element={<AuthProvider><ProtectedWorkspace><AppLayout /></ProtectedWorkspace></AuthProvider>}>
 			<Route index element={<Navigate to="/app/dashboard" replace />} />

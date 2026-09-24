@@ -113,7 +113,7 @@ Deliver:
 Phase 1 is deliberately broader than the landing page. It establishes the public product surface and its engineering quality contract before Phase 2 introduces the full authenticated SaaS lifecycle.
 
 Deliver:
-- Public information architecture and navigation.
+- Active public information architecture and navigation for the five launch pages: Home, Services, Sample Audit, Methodology and Plans. Legacy public routes remain recoverable by redirect but are not part of the active IA.
 - Clear value proposition and problem/solution narrative.
 - Methodology and evidence-first explanation.
 - Core audit domains: performance, search/SEO, accessibility, UX/usability, technical health and AI readiness.
@@ -310,8 +310,8 @@ A changed roadmap is not a failure. An undocumented change of direction is.
 
 Unless new evidence changes the plan:
 
-1. Complete the Phase 1 public-product gap assessment and implementation.
-2. Finish the public rendering, accessibility, performance, SEO and security release gate.
+1. Perfect the five active public pages: Home, Services, Sample Audit, Methodology and Plans.
+2. Finish the public rendering, accessibility, performance, SEO and security release gate for those five pages.
 3. Activate Phase 2: account creation, verification, sign-in, sessions and authorization.
 4. Complete secure onboarding and audit gating.
 5. Strengthen the audit engine across Ottimo's core domains.
