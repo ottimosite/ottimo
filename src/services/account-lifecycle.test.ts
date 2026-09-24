@@ -17,9 +17,9 @@ const at = (account: LifecycleState['account'], audit?: LifecycleState['audit'])
 describe('account and audit lifecycle', () => {
   it('moves an account deterministically from visitor to verified', () => {
     let state = initialLifecycle('2026-09-24T00:00:00.000Z')
-    state = transitionLifecycle(state, 'start_onboarding')
-    state = transitionLifecycle(state, 'request_verification')
-    state = transitionLifecycle(state, 'complete_verification')
+    state = transitionLifecycle(state, 'start_onboarding', '2026-09-24T00:00:00.000Z')
+    state = transitionLifecycle(state, 'request_verification', '2026-09-24T00:00:00.000Z')
+    state = transitionLifecycle(state, 'complete_verification', '2026-09-24T00:00:00.000Z')
 
     expect(state).toEqual({
       account: 'verified',
