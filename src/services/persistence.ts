@@ -61,6 +61,10 @@ export class TenantRepository implements PersistentRepository {
     const lifecycle = await this.getLifecycle(principal)
     if (!lifecycle) return []
     assertAuditReleased(lifecycle)
+    return this.readAudits(principal)
+  }
+
+  private async readAudits(principal: TenantPrincipal): Promise<Audit[]> {
     const envelope = await this.adapter.read<Audit[]>(tenantKey(principal, 'audits'))
     return envelope?.tenantId === principal.tenantId ? envelope.data : []
   }
@@ -100,7 +104,7 @@ export class TenantRepository implements PersistentRepository {
 
   async saveAudit(principal: TenantPrincipal, audit: Audit): Promise<void> {
     requirePrincipal(principal)
-    const existing = await this.listAudits(principal)
+    const existing = await this.readAudits(principal)
     await this.adapter.write(tenantKey(principal, 'audits'), {
       schemaVersion: STORAGE_SCHEMA_VERSION,
       tenantId: principal.tenantId,
