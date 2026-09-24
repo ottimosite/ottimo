@@ -7,7 +7,6 @@ import { AuditList, NewAudit } from './features/audits/Audits'
 import { AuditOverview } from './features/audits/AuditOverview'
 import { Recommendations } from './features/recommendations/Recommendations'
 import { CategoryPage, HistoryPage, InsightsPage, ReportsPage, SettingsPage, WebsiteDetail } from './features/platform/PlatformPages'
-import { ConceptPage, ConceptsIndex } from './pages/ConceptPages'
 import { AuditOnboarding } from './features/audits/AuditOnboarding'
 import { AuthProvider, ProtectedWorkspace } from './features/auth/AuthBoundary'
 export default function App() {
