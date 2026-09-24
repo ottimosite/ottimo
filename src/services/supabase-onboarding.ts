@@ -52,10 +52,13 @@ async function createUnconfirmedUser(config: OnboardingConfig, email: string): P
     body: JSON.stringify({ email, email_confirm: false }),
   })
 
-  if (!response.ok) return undefined
+  if (!response.ok) return { status: response.status }
 
   const payload = await response.json() as { id?: unknown }
-  return typeof payload.id === 'string' && payload.id ? { id: payload.id } : undefined
+  return {
+    status: response.status,
+    user: typeof payload.id === 'string' && payload.id ? { id: payload.id } : undefined,
+  }
 }
 
 export async function startOnboarding(
@@ -70,7 +73,12 @@ export async function startOnboarding(
   if (!validEmail(email)) throw new Error('ONBOARDING_EMAIL_INVALID')
   if (!validWebsiteUrl(websiteUrl)) throw new Error('ONBOARDING_WEBSITE_INVALID')
 
-  const limiter = rateLimiter ?? { allow: () => true }\n  if (!limiter.allow(input.rateLimitKey)) throw new Error('ONBOARDING_RATE_LIMITED')\n\n  const user = await createUnconfirmedUser(config, email)
+  const limiter = rateLimiter ?? { allow: () => true }
+  if (!limiter.allow(input.rateLimitKey)) throw new Error('ONBOARDING_RATE_LIMITED')
+
+  const createdUser = await createUnconfirmedUser(config, email)
+  if (createdUser.status >= 500) throw new Error('ONBOARDING_PROVIDER_UNAVAILABLE')
+  const user = createdUser.user
 
   // Existing accounts are deliberately opaque. They receive the same
   // passwordless email flow and can continue through their existing workspace.
@@ -78,7 +86,7 @@ export async function startOnboarding(
     const emailResult = await requestEmailVerification(
       { url: config.url, publishableKey: config.publishableKey },
       email,
-      rateLimiter,
+      limiter,
       input.rateLimitKey,
     )
     if (emailResult.providerStatus === 429) throw new Error('ONBOARDING_RATE_LIMITED')
@@ -99,18 +107,18 @@ export async function startOnboarding(
   )
 
   const principal: TenantPrincipal = { userId: user.id, tenantId: workspace.id }
-  const lifecycle: LifecycleState = {
+  const initial: LifecycleState = {
     account: 'visitor',
     updatedAt: new Date().toISOString(),
   }
-  const pending = transitionLifecycle(lifecycle, 'start_onboarding')
-  const verified = transitionLifecycle(pending, 'request_verification')
-  await new TenantRepository(storage).saveLifecycle(principal, verified)
+  const pending = transitionLifecycle(initial, 'start_onboarding')
+  const verifying = transitionLifecycle(pending, 'request_verification')
+  await new TenantRepository(storage).saveLifecycle(principal, verifying)
 
   const emailResult = await requestEmailVerification(
     { url: config.url, publishableKey: config.publishableKey },
     email,
-    rateLimiter,
+    limiter,
     input.rateLimitKey,
   )
 
@@ -124,5 +132,3 @@ export async function startOnboarding(
     websiteId: website.id,
   }
 }
-
-export { clientIp }
