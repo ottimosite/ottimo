@@ -37,28 +37,34 @@ New CSS should not be added to a legacy file merely because that file is current
 
 The ordering is currently functional but still acts as a significant part of the cascade contract. The target is for ownership and specificity to make this ordering much less fragile.
 
-## Current inventory
+## Current inventory (measured on 24 September 2026)
 
-| Stylesheet | Size | Approx. selector rules | Media queries | !important | Current role | Direction |
-|---|---:|---:|---:|---:|---|---|
-| `tokens.css` | 2.5 KB | 1 | 0 | 0 | Design tokens | **Keep / authoritative** |
-| `shell.css` | 8.9 KB | 97 | 5 | 1 | App shell + navigation | **Keep / consolidate** |
-| `shared-components.css` | 1.7 KB | 16 | 0 | 0 | Shared primitives | **Keep / authoritative** |
-| `public-site.css` | 2.6 KB | 24 | 3 | 0 | Public shared styles | **Keep / consolidate** |
-| `components.css` | 3.5 KB | 36 | 3 | 0 | Mixed component styles | **Consolidate into shared/feature owners** |
-| `platform.css` | 17.3 KB | 184 | 12 | 0 | Large mixed application layer | **Split/consolidate** |
-| `concepts.css` | 5.7 KB | 1 grouped block | 1 | 0 | Concept pages | **Keep as feature-owned CSS; normalise formatting later** |
-| `lead-home.css` | 17.8 KB | 191 | 12 | 0 | Landing page | **Keep as public feature owner** |
-| `public-refresh.css` | 7.4 KB | 78 | 7 | 0 | Landing/public additions | **Merge into public feature ownership** |
-| `public-services.css` | 2.2 KB | 17 | 2 | 0 | Public services pages | **Keep as feature owner** |
-| `audit.css` | ~22 KB | combined audit feature rules | feature-owned | 0 | Audit UI | **Single audit feature owner** |
-| `standards.css` | 0.7 KB | 1 grouped block | 1 | 0 | Standards feature | **Keep; consider merging if ownership remains tiny** |
-| `performance-metrics.css` | 1.6 KB | 1 grouped block | 1 | 0 | Performance feature | **Keep; consider merging if ownership remains tiny** |
-| `onboarding.css` | 5.6 KB | 38 | 2 | 1 | Onboarding feature | **Keep as feature owner; remove generic overlap** |
-| `quality.css` | 0.5 KB | 2 grouped blocks | 2 | 4 | Quality/utility styles | **Audit and reduce !important** |
+The following figures are generated from the current stylesheet surface rather than copied from historical migration notes.
 
-Rule counts are an inventory heuristic rather than a CSS parser result; grouped/minified selectors can make the count conservative.
+| Stylesheet | Bytes | Selector occurrences | Media queries | !important | Current role |
+|---|---:|---:|---:|---:|---|
+| `tokens.css` | 2,578 | 1 | 0 | 0 | Design tokens |
+| `base.css` | 1,534 | 22 | 1 | 0 | Browser/base foundation |
+| `shell.css` | 9,046 | 114 | 5 | 0 | Application/public shell |
+| `shared-components.css` | 6,428 | 81 | 4 | 0 | Shared primitives |
+| `public-site.css` | 5,846 | 67 | 5 | 0 | Public shared presentation |
+| `components.css` | 3,048 | 30 | 2 | 0 | Remaining compatibility/shared presentation |
+| `recommendations.css` | 7,042 | 80 | 8 | 0 | Recommendation feature |
+| `dashboard.css` | 194 | 4 | 2 | 0 | Dashboard feature |
+| `platform-pages.css` | 7,067 | 78 | 6 | 0 | Platform feature pages |
+| `concepts.css` | 5,699 | 65 | 1 | 0 | Concepts feature |
+| `lead-home.css` | 21,361 | 248 | 17 | 0 | Public landing feature |
+| `public-refresh.css` | 11,618 | 105 | 4 | 0 | Public information/shared presentation |
+| `public-services.css` | 2,235 | 32 | 2 | 0 | Public services feature |
+| `audit.css` | 26,541 | 321 | 22 | 0 | Audit feature |
+| `standards.css` | 695 | 8 | 1 | 0 | Standards feature |
+| `performance-metrics.css` | 1,550 | 20 | 1 | 0 | Performance feature |
+| `onboarding.css` | 5,639 | 74 | 2 | 0 | Onboarding feature |
+| `quality.css` | 545 | 6 | 2 | 4 | Quality/reduced-motion contracts |
 
+**Measured total:** 118,666 bytes, 1,356 selector occurrences, 85 media-query occurrences and 4 `!important` declarations.
+
+These are source-level architecture metrics, not compressed production bundle measurements. They make structural changes measurable and repeatable.
 ## What has already been achieved
 
 ### Tokens
@@ -192,8 +198,20 @@ This baseline does **not**:
 - change authentication/storage behaviour;
 - claim that the stylesheet migration is complete.
 
-## Next implementation slice
+## Current implementation slice
 
-The current implementation slice is #249: remove remaining feature-owned presentation from `components.css` and return it to explicit feature owners. After it lands, continue with remaining application feature ownership and then quality hardening.
+The next slice is **quality hardening and architecture verification**.
 
-`global.css` and `platform.css` are retired. The success criterion is not merely fewer lines of CSS; it is a predictable ownership graph with explicit shared/application/feature boundaries.
+It establishes a small automated contract around the architecture already present on `master`:
+
+- `src/main.tsx` must retain the deliberate stylesheet layer order;
+- retired stylesheet names must not return;
+- `.btn`, `.card`, `.eyebrow`, `.muted` and `.section-head` must remain authoritative in `shared-components.css`;
+- the repository-wide `!important` count must not increase above the current four declarations, which are confined to the reduced-motion contract in `quality.css`;
+- source-level CSS inventory metrics are printed on every quality run.
+
+This is deliberately a guardrail, not a CSS rewrite. The check does not treat every repeated selector as a defect because feature styles legitimately extend shared primitives. It catches ownership regressions at architectural boundaries that can be checked deterministically.
+
+The current refactor slice also removed three legacy compensation declarations from `shell.css`, `audit.css` and `onboarding.css` without changing their intended visual contracts.
+
+`global.css` and the historical `platform.css` layer are retired. The success criterion is not merely fewer lines of CSS; it is a predictable ownership graph with explicit shared/application/feature boundaries.
