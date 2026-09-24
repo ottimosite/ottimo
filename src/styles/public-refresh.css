@@ -461,3 +461,10 @@
   .plans-expectations { margin-bottom: 58px; padding: 34px 24px; }
   .public-page-cta { align-items: flex-start; flex-direction: column; padding: 34px 24px; }
 }
+
+
+/* Lime trust/expectation panels need a dark eyebrow for WCAG contrast. */
+.methodology-trust .eyebrow,
+.plans-expectations .eyebrow {
+  color: var(--forest);
+}

@@ -38,5 +38,8 @@ jobs:
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
+      - name: Public performance budget
+        run: npm run test:performance
+
       - name: Rendered page QA
         run: npm run test:e2e

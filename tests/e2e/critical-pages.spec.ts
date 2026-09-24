@@ -59,6 +59,8 @@ function accessibilitySummary(
   }))
 }
 
+const publicRoutes = ['/', '/services', '/example-audit', '/methodology', '/pricing']
+
 test.describe('public landing page', () => {
   test('keeps the hero responsive without overflow or cramped columns', async ({ browser }) => {
     const viewports = [
@@ -127,6 +129,19 @@ test.describe('public landing page', () => {
       expect(genericFamilies).not.toContain('fantasy')
 
     }
+  })
+
+  test('keeps all active public pages free of accessibility violations and browser errors', async ({ page }) => {
+    const errors = await assertNoPageErrors(page)
+
+    for (const route of publicRoutes) {
+      await page.goto(route)
+      await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+      const results = await runAccessibilityCheck(page)
+      expect(accessibilitySummary(results.violations), `accessibility violations on ${route}`).toEqual([])
+    }
+
+    errors.assertClean()
   })
 
   test('renders the core product narrative and has no accessibility violations', async ({ page }) => {
