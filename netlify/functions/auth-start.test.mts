@@ -45,6 +45,21 @@ describe('auth-start function', () => {
     expect(await response.json()).toEqual({ accepted: true })
   })
 
+  it('returns a generic provider-unavailable response for upstream failures', async () => {
+    vi.stubEnv('SUPABASE_URL', 'https://example.supabase.co')
+    vi.stubEnv('SUPABASE_PUBLISHABLE_KEY', 'public-key')
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('upstream failure', { status: 503 }))
+
+    const response = await handler(new Request('https://ottimo.test', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email: 'user@example.com' }),
+    }))
+
+    expect(response.status).toBe(503)
+    expect(await response.json()).toEqual({ error: 'Authentication provider is temporarily unavailable.' })
+  })
+
   it('returns a rate-limit response without contacting the provider after repeated requests', async () => {
     vi.stubEnv('SUPABASE_URL', 'https://example.supabase.co')
     vi.stubEnv('SUPABASE_PUBLISHABLE_KEY', 'public-key')
