@@ -41,6 +41,9 @@ export default async (request: Request) => {
     if (result.providerStatus === 429) {
       return json(429, { error: 'Too many requests. Please try again later.' })
     }
+    if (result.providerStatus >= 500) {
+      return json(503, { error: 'Authentication provider is temporarily unavailable.' })
+    }
 
     return json(202, { accepted: true })
   } catch {
