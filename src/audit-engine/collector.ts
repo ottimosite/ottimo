@@ -1,6 +1,6 @@
 import { chromium, type Browser } from 'playwright'
 import axe from 'axe-core'
-import { assertPublicTarget } from './security'
+import { assertPublicTarget, assertRedirectTarget } from './security'
 import type { AuditRequest, PageSnapshot, ResourceSnapshot } from './types'
 
 const MAX_HTML_BYTES = 5 * 1024 * 1024
@@ -37,7 +37,7 @@ export class PlaywrightPageCollector implements PageCollector {
     await page.route('**/*', async route => {
       const requestEvent = route.request()
       if (requestEvent.isNavigationRequest() && requestEvent.resourceType() === 'document') {
-        await assertPublicTarget(requestEvent.url())
+        await assertRedirectTarget(requestEvent.url())
       }
       await route.continue()
     })
