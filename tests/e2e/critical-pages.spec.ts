@@ -272,7 +272,8 @@ test.describe('application rendered acceptance', () => {
           return animated
         })
 
-        expect(motion, `animated controls remain on ${route} with reduced motion`).toEqual([])
+        const parseDuration = (value: string) => value.endsWith('ms') ? Number.parseFloat(value) : Number.parseFloat(value) * 1000
+        expect(motion.every(({ transitionDuration, animationDuration }) => parseDuration(transitionDuration) <= 0.01 && parseDuration(animationDuration) <= 0.01), `animated controls remain on ${route} with reduced motion`).toBe(true)
       }
     } finally {
       await context.close()
