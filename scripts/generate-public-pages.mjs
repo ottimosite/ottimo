@@ -17,7 +17,7 @@ const escapeHtml = value => String(value)
 
 const routes = {
   '/': {
-    title: 'Ottimo — Make your website work better. Know what to fix next.',
+    title: 'Make your website work better. Know what to fix next. — Ottimo',
     description: 'Ottimo audits performance, search, accessibility, experience, technical quality and AI-ready foundations, then turns supported evidence into a prioritised improvement plan.',
     h1: 'Make your website work better. Know what to fix next.',
     intro: 'Ottimo brings performance, search, accessibility, experience, technical quality and AI-ready foundations into one evidence-led view — so your team can understand the problem, decide what matters and act on it.',
