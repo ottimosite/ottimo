@@ -41,14 +41,41 @@ const blocked6 = (ip: string) => {
   )
 }
 
+const normaliseAddress = (ip: string): string => ip.replace(/^\\[/, '').replace(/\\]$/, '').toLowerCase()
+
+const mappedIpv4FromIpv6 = (ip: string): string | null => {
+  const value = normaliseAddress(ip)
+  if (isIP(value) !== 6) return null
+
+  const parts = value.split(':')
+  const expanded: string[] = []
+  const emptyIndex = parts.indexOf('')
+
+  if (emptyIndex >= 0) {
+    const left = parts.slice(0, emptyIndex).filter(Boolean)
+    const right = parts.slice(emptyIndex + 1).filter(Boolean)
+    expanded.push(...left, ...Array(8 - left.length - right.length).fill('0'), ...right)
+  } else {
+    expanded.push(...parts)
+  }
+
+  if (expanded.length !== 8) return null
+  if (expanded.slice(0, 6).map(part => part.padStart(4, '0')).join(':') !== '0000:0000:0000:0000:0000:ffff') return null
+
+  const high = Number.parseInt(expanded[6], 16)
+  const low = Number.parseInt(expanded[7], 16)
+  return \`${high >> 8}.${high & 255}.${low >> 8}.${low & 255}\`
+}
+
 export const isBlockedAddress = (ip: string): boolean => {
-  if (isIP(ip) === 4) return blocked4(ip)
-  if (isIP(ip) !== 6) return true
+  const value = normaliseAddress(ip)
+  if (isIP(value) === 4) return blocked4(value)
+  if (isIP(value) !== 6) return true
 
-  const mapped = ip.toLowerCase().match(/^::ffff:(\\d+\\.\\d+\\.\\d+\\.\\d+)$/)
-  if (mapped) return isBlockedAddress(mapped[1])
+  const mapped = mappedIpv4FromIpv6(value)
+  if (mapped) return blocked4(mapped)
 
-  return blocked6(ip)
+  return blocked6(value)
 }
 
 const BLOCKED_HOSTNAMES = new Set([
