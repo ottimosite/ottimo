@@ -93,7 +93,7 @@ function LeadCapture() {
     </div>
     <div className="lead-fields">
       <label>Website URL<input required value={url} onChange={event => { setUrl(event.target.value); setError('') }} placeholder="yourbusiness.co.uk" /></label>
-      <button className="btn btn-primary" type="submit">Start my Website Check <span aria-hidden="true">↗</span></button>
+      <button className="btn btn-primary" type="submit">Analyse your website <span aria-hidden="true">↗</span></button>
     </div>
     {error && <p className="error" role="alert">{error}</p>}
     <small>Start with the website. Review the scope before running anything. Evidence that cannot be supported stays unavailable.</small>
@@ -164,7 +164,7 @@ export function Home() {
 
     <section className="coverage-section" id="coverage">
       <div className="section-intro"><span className="eyebrow">What Ottimo covers</span><h2>Six lenses. One website.</h2><p>Look at one area when you need depth, or connect them when you need to understand the website as a whole.</p></div>
-      <div className="coverage-grid">{coverage.map(([title, body], index) => <article className="coverage-item" key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{body}</p><Link to={`/app/${title === 'Search visibility' ? 'seo' : title === 'Experience' ? 'usability' : title === 'Technical quality' ? 'technical' : title.toLowerCase()}`}>Explore in the platform →</Link></article>)}</div>
+      <div className="coverage-grid">{coverage.map(([title, body], index) => <article className="coverage-item" key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{body}</p><Link to="/example-audit">See the sample audit →</Link></article>)}</div>
     </section>
 
     <section className="case-study-lead" aria-labelledby="audit-example-title">
