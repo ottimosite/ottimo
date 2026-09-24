@@ -71,7 +71,7 @@ function splitTopLevelSelectors(selectorList) {
 }
 
 function normaliseSelector(selector) {
-  return selector.replace(/\\s+/g, ' ').replace(/\\s*,\\s*/g, ',').trim();
+  return selector.replace(/\s+/g, ' ').replace(/\s*,\s*/g, ',').trim();
 }
 
 function selectors(source) {
