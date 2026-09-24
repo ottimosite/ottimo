@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { STORAGE_SCHEMA_VERSION, TenantRepository, migrateEnvelope, tenantKey, type ServerStorageAdapter } from './persistence'
+import { initialLifecycle, transitionLifecycle } from './account-lifecycle'
 
 const principal = { userId: 'user-1', tenantId: 'tenant-1' }
 
@@ -40,15 +41,37 @@ describe('tenant-safe persistence boundary', () => {
     expect(() => migrateEnvelope({ schemaVersion: STORAGE_SCHEMA_VERSION + 1, tenantId: 'tenant-1', updatedAt: '2026-09-20T00:00:00Z', data: [] })).toThrow('UNSUPPORTED_STORAGE_SCHEMA')
   })
 
-  it('preserves audit data through repository writes', async () => {
+  it('blocks audit release until the persisted lifecycle reaches ready', async () => {
     const storage = adapter()
     const repository = new TenantRepository(storage)
+    let lifecycle = initialLifecycle()
+    lifecycle = transitionLifecycle(lifecycle, 'start_onboarding')
+    lifecycle = transitionLifecycle(lifecycle, 'request_verification')
+    lifecycle = transitionLifecycle(lifecycle, 'complete_verification')
+    await repository.saveLifecycle(principal, lifecycle)
     await repository.saveAudit(principal, {
+
       id: 'audit-1', websiteId: 'site-1', url: 'https://example.com', createdAt: '2026-09-20T00:00:00Z',
       durationMs: 100, scores: [], issues: [], actions: [],
     })
+    await expect(repository.listAudits(principal)).rejects.toThrow('AUDIT_NOT_RELEASED')
+    lifecycle = transitionLifecycle(lifecycle, 'queue_audit')
+    lifecycle = transitionLifecycle(lifecycle, 'start_audit')
+    lifecycle = transitionLifecycle(lifecycle, 'complete_audit')
+    await repository.saveLifecycle(principal, lifecycle)
     const audits = await repository.listAudits(principal)
     expect(audits[0].id).toBe('audit-1')
     expect(audits[0].websiteId).toBe('site-1')
+  })
+
+  it('denies pending accounts even when released audit data exists', async () => {
+    const storage = adapter()
+    const repository = new TenantRepository(storage)
+    let lifecycle = initialLifecycle()
+    lifecycle = transitionLifecycle(lifecycle, 'start_onboarding')
+    lifecycle = transitionLifecycle(lifecycle, 'request_verification')
+    await repository.saveLifecycle(principal, lifecycle)
+    expect(await repository.getLifecycle(principal)).toMatchObject({ account: 'account_pending_verification' })
+    await expect(repository.listAudits(principal)).rejects.toThrow('LIFECYCLE_ACCOUNT_NOT_VERIFIED')
   })
 })
