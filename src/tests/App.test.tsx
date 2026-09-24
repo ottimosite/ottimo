@@ -24,16 +24,39 @@ describe('app', () => {
   it('shows a useful error when the audit form has an invalid URL', () => {
     render(<MemoryRouter initialEntries={['/']}><App /></MemoryRouter>)
     fireEvent.change(screen.getByPlaceholderText('yourbusiness.co.uk'), { target: { value: '%%%' } })
-    fireEvent.click(screen.getAllByRole('button', { name: /start my website check/i })[0])
+    fireEvent.click(screen.getAllByRole('button', { name: /analyse your website/i })[0])
     expect(screen.getByRole('alert')).toHaveTextContent(/invalid url/i)
   })
 
-  it('gives public information pages distinct, useful content', () => {
-    render(<MemoryRouter initialEntries={['/performance']}><App /></MemoryRouter>)
-    expect(screen.getByRole('heading', { name: /make important pages faster for real people/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /start with the signal, not the story/i })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { name: /useful outcomes, not vanity metrics/i })).toBeInTheDocument()
-    expect(screen.getByText(/resource and asset analysis/i)).toBeInTheDocument()
+  it('gives the active public pages distinct, useful content', () => {
+    const pages = [
+      {
+        path: '/services',
+        heading: /one website\. one improvement system/i,
+        content: /six lenses\. one website/i,
+      },
+      {
+        path: '/example-audit',
+        heading: /see the evidence before you analyse your own website/i,
+        content: /finding → evidence → action/i,
+      },
+      {
+        path: '/methodology',
+        heading: /measure first\. explain clearly\. improve progressively/i,
+        content: /measured, inferred and unavailable/i,
+      },
+      {
+        path: '/pricing',
+        heading: /start with evidence\. scale when the work demands it/i,
+        content: /explore/i,
+      },
+    ]
+
+    for (const page of pages) {
+      render(<MemoryRouter initialEntries={[page.path]}><App /></MemoryRouter>)
+      expect(screen.getByRole('heading', { name: page.heading })).toBeInTheDocument()
+      expect(screen.getByText(page.content)).toBeInTheDocument()
+    }
   })
 
   it('uses grouped application navigation and a streamlined audit start surface', () => {
