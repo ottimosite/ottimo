@@ -162,9 +162,38 @@ function ChangePanel({ audit }: { audit: Audit }) {
 }
 
 export function AuditOverview() {
-  const { id } = useParams(); const navigate = useNavigate(); const [mode, setMode] = useState<'customer' | 'engineer'>('customer'); const audit = id ? localRepository.findAudit(id) : undefined
-  if (!audit) return <Card><h1>Audit not found</h1><p>This audit may have been cleared from local browser storage.</p><Link to="/app/audits">Back to audits</Link></Card>
-  const website = localRepository.websiteForAudit(audit)
+  const { id } = useParams()
+  const [audit, setAudit] = useState<Audit | undefined>()
+  const [websites, setWebsites] = useState<Array<{ id: string; name: string; url: string }>>([])
+  const [loadError, setLoadError] = useState('')
+  const e2eMode = import.meta.env.MODE === 'e2e'
+
+  useEffect(() => {
+    let cancelled = false
+    if (e2eMode) {
+      const localAudit = id ? localRepository.findAudit(id) : undefined
+      if (!cancelled) {
+        setAudit(localAudit)
+        setWebsites(localRepository.websites())
+      }
+      return () => { cancelled = true }
+    }
+
+    if (!id) return () => { cancelled = true }
+    void new ServerAuditProvider().getAudit(id)
+      .then(value => {
+        if (!cancelled) setAudit(value)
+      })
+      .catch(cause => {
+        if (!cancelled) setLoadError(cause instanceof Error ? cause.message : 'The audit could not be loaded.')
+      })
+    return () => { cancelled = true }
+  }, [e2eMode, id])
+
+  if (loadError) return <Card><h1>Audit unavailable</h1><p>{loadError}</p><Link to="/app/audits">Back to audits</Link></Card>
+  if (!audit) return <Card><h1>Loading audit…</h1><p className="muted">Retrieving the released audit for this workspace.</p></Card>
+  const website = websites.find(item => item.id === audit.websiteId) ?? localRepository.websiteForAudit(audit)
+
   const stats = audit.stats; const openIssues = audit.issues.filter(issue => issue.status !== 'resolved')
   const severityCounts = audit.issues.reduce<Record<string, number>>((counts, issue) => ({ ...counts, [issue.severity]: (counts[issue.severity] ?? 0) + 1 }), {})
   const topIssues = openIssues.slice().sort((a, b) => b.priority - a.priority).slice(0, 3)
