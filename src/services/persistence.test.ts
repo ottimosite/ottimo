@@ -41,6 +41,20 @@ describe('tenant-safe persistence boundary', () => {
     expect(() => migrateEnvelope({ schemaVersion: STORAGE_SCHEMA_VERSION + 1, tenantId: 'tenant-1', updatedAt: '2026-09-20T00:00:00Z', data: [] })).toThrow('UNSUPPORTED_STORAGE_SCHEMA')
   })
 
+  it('persists audit jobs under the authenticated tenant', async () => {
+    const repository = new TenantRepository(adapter())
+    const job = {
+      id: 'job-1',
+      websiteId: 'site-1',
+      state: 'audit_queued' as const,
+      createdAt: '2026-09-25T20:00:00Z',
+      updatedAt: '2026-09-25T20:00:00Z',
+    }
+    await repository.saveAuditJob(principal, job)
+    await expect(repository.getAuditJob(principal, 'job-1')).resolves.toEqual(job)
+    await expect(repository.getAuditJob({ ...principal, tenantId: 'tenant-2' }, 'job-1')).resolves.toBeUndefined()
+  })
+
   it('blocks audit release until the persisted lifecycle reaches ready', async () => {
     const storage = adapter()
     const repository = new TenantRepository(storage)
