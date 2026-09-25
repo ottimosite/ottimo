@@ -221,40 +221,56 @@ export const toResult = (site: ServerSiteAuditReport): AuditResult => {
   }
 }
 
+export interface AuditJobResponse {
+  id: string
+  websiteId: string
+  state: 'audit_queued' | 'audit_running' | 'audit_ready' | 'audit_failed_retryable'
+  createdAt: string
+  updatedAt: string
+  auditId?: string
+  error?: { code: string; message: string; retryable: boolean }
+}
+
 export class ServerAuditProvider {
-  async runAudit(url: string, selectedCategories: string[] = []): Promise<AuditResult> {
-    const requested = selectedCategories.filter((value): value is AuditCategory => categories.includes(value as Category))
-    const response = await fetch('/.netlify/functions/audit-site', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        url,
-        categories: requested.length ? requested : categories,
-        maxPages: 10,
-      }),
+  private async request<T>(path: string, init: RequestInit = {}): Promise<T> {
+    const response = await fetch(path, {
+      ...init,
+      headers: { 'content-type': 'application/json', ...init.headers },
     })
 
     let payload: unknown
-    const contentType = response.headers.get('content-type') ?? ''
     try {
-      payload = contentType.includes('json') ? await response.json() : await response.text()
+      payload = await response.json()
     } catch {
-      throw new Error(`The audit service returned an unreadable response (HTTP ${response.status}).`)
+      throw new Error(`Ottimo received an unreadable response (HTTP ${response.status}).`)
     }
 
     if (!response.ok) {
       const message = typeof payload === 'object' && payload !== null && 'error' in payload && typeof payload.error === 'object' && payload.error !== null && 'message' in payload.error
         ? String(payload.error.message)
-        : typeof payload === 'object' && payload !== null && 'error' in payload ? String(payload.error)
-        : typeof payload === 'string' && payload ? payload
         : `The audit service returned HTTP ${response.status}.`
       throw new Error(message)
     }
 
-    if (typeof payload !== 'object' || payload === null || !('pages' in payload)) {
-      throw new Error('Ottimo received an invalid audit report from the audit service.')
-    }
+    return payload as T
+  }
 
-    return toResult(payload as ServerSiteAuditReport)
+  async listAudits(): Promise<{ audits: import('../types/domain').Audit[]; websites: import('../types/domain').Website[] }> {
+    return this.request('/.netlify/functions/audits-list')
+  }
+
+  async startAudit(websiteId: string, selectedCategories: string[] = []): Promise<{ jobId: string; state: AuditJobResponse['state']; websiteId: string }> {
+    return this.request('/.netlify/functions/audit-start', {
+      method: 'POST',
+      body: JSON.stringify({ websiteId, categories: selectedCategories }),
+    })
+  }
+
+  async getAuditStatus(jobId: string): Promise<AuditJobResponse> {
+    return this.request('/.netlify/functions/audit-status?jobId=' + encodeURIComponent(jobId))
+  }
+
+  async getAudit(auditId: string): Promise<import('../types/domain').Audit> {
+    return this.request('/.netlify/functions/audit-get?id=' + encodeURIComponent(auditId))
   }
 }
