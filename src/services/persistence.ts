@@ -15,10 +15,22 @@ export interface PersistedEnvelope<T> {
   data: T
 }
 
+export interface AuditJob {
+  id: string
+  websiteId: string
+  state: 'audit_queued' | 'audit_running' | 'audit_ready' | 'audit_failed_retryable'
+  createdAt: string
+  updatedAt: string
+  auditId?: string
+  error?: { code: string; message: string; retryable: boolean }
+}
+
 export interface PersistentRepository {
   listWebsites(principal: TenantPrincipal): Promise<Website[]>
   listAudits(principal: TenantPrincipal): Promise<Audit[]>
   listAuditsForWebsite(principal: TenantPrincipal, websiteId: string): Promise<Audit[]>
+  getAuditJob(principal: TenantPrincipal, jobId: string): Promise<AuditJob | undefined>
+  saveAuditJob(principal: TenantPrincipal, job: AuditJob): Promise<void>
   getLifecycle(principal: TenantPrincipal): Promise<LifecycleState | undefined>
   saveLifecycle(principal: TenantPrincipal, state: LifecycleState): Promise<void>
   saveWebsite(principal: TenantPrincipal, website: Website): Promise<void>
@@ -30,7 +42,7 @@ export interface ServerStorageAdapter {
   write<T>(key: string, value: PersistedEnvelope<T>): Promise<void>
 }
 
-export function tenantKey(principal: TenantPrincipal, resource: 'websites' | 'audits' | 'lifecycle', id?: string): string {
+export function tenantKey(principal: TenantPrincipal, resource: 'websites' | 'audits' | 'audit-jobs' | 'lifecycle', id?: string): string {
   const suffix = id ? `/${id}` : ''
   return `tenant/${principal.tenantId}/${resource}${suffix}`
 }
@@ -75,6 +87,22 @@ export class TenantRepository implements PersistentRepository {
     if (!websites.some(website => website.id === websiteId)) return []
     const audits = await this.listAudits(principal)
     return audits.filter(audit => audit.websiteId === websiteId)
+  }
+
+  async getAuditJob(principal: TenantPrincipal, jobId: string): Promise<AuditJob | undefined> {
+    requirePrincipal(principal)
+    const envelope = await this.adapter.read<AuditJob>(tenantKey(principal, 'audit-jobs', jobId))
+    return envelope?.tenantId === principal.tenantId ? envelope.data : undefined
+  }
+
+  async saveAuditJob(principal: TenantPrincipal, job: AuditJob): Promise<void> {
+    requirePrincipal(principal)
+    await this.adapter.write(tenantKey(principal, 'audit-jobs', job.id), {
+      schemaVersion: STORAGE_SCHEMA_VERSION,
+      tenantId: principal.tenantId,
+      updatedAt: job.updatedAt,
+      data: job,
+    })
   }
 
   async getLifecycle(principal: TenantPrincipal): Promise<LifecycleState | undefined> {
