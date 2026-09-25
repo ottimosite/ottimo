@@ -23,13 +23,15 @@ const demoSession: ClientAuthSession = {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
-export function requiresAuthentication(environment: { production: boolean; configured: string | undefined }): boolean {
+export function requiresAuthentication(environment: { production: boolean; configured: string | undefined; mode: string }): boolean {
+  if (environment.mode === 'e2e') return false
   return environment.production || environment.configured === 'true'
 }
 
 const authRequired = requiresAuthentication({
   production: import.meta.env.PROD,
   configured: import.meta.env.VITE_AUTH_REQUIRED,
+  mode: import.meta.env.MODE,
 })
 const authLoginUrl = import.meta.env.VITE_AUTH_LOGIN_URL as string | undefined ?? '/start'
 
