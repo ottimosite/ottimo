@@ -1,24 +1,34 @@
-import { describe, expect, it, vi } from 'vitest'
-import { startOnboarding } from './supabase-onboarding'\nimport { SupabaseWorkspaceRepository } from './supabase-tenant-repository'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { startOnboarding } from './supabase-onboarding'
+import { SupabaseWorkspaceRepository } from './supabase-tenant-repository'
 import type { ServerStorageAdapter } from './persistence'
 
 function storage(): ServerStorageAdapter {
   const values = new Map<string, unknown>()
   return {
-    async read<T>(key: string) { return values.get(key) as never as { schemaVersion: 1; tenantId: string; updatedAt: string; data: T } | undefined },
-    async write<T>(key: string, value: { schemaVersion: 1; tenantId: string; updatedAt: string; data: T }) { values.set(key, value) },
+    async read<T>(key: string) {
+      return values.get(key) as never as { schemaVersion: 1; tenantId: string; updatedAt: string; data: T } | undefined
+    },
+    async write<T>(key: string, value: { schemaVersion: 1; tenantId: string; updatedAt: string; data: T }) {
+      values.set(key, value)
+    },
   }
 }
 
-describe('startOnboarding', () => {\n  afterEach(() => vi.restoreAllMocks())
+describe('startOnboarding', () => {
+  afterEach(() => vi.restoreAllMocks())
+
   it('creates the user, workspace, website and pending lifecycle before sending verification', async () => {
-    vi.spyOn(SupabaseWorkspaceRepository.prototype, 'createWorkspace').mockResolvedValue({ id: 'workspace-1', name: 'My Ottimo workspace', createdBy: 'user-1', createdAt: '2026-09-25T20:00:00Z' })\n    vi.spyOn(SupabaseWorkspaceRepository.prototype, 'createWebsite').mockResolvedValue({ id: 'website-1', workspaceId: 'workspace-1', name: 'example.com', url: 'https://example.com', createdBy: 'user-1', createdAt: '2026-09-25T20:00:00Z' })\n    const fetchMock = vi.spyOn(globalThis, 'fetch')
+    vi.spyOn(SupabaseWorkspaceRepository.prototype, 'createWorkspace').mockResolvedValue({
+      id: 'workspace-1', name: 'My Ottimo workspace', createdBy: 'user-1', createdAt: '2026-09-25T20:00:00Z',
+    })
+    vi.spyOn(SupabaseWorkspaceRepository.prototype, 'createWebsite').mockResolvedValue({
+      id: 'website-1', workspaceId: 'workspace-1', name: 'example.com', url: 'https://example.com',
+      createdBy: 'user-1', createdAt: '2026-09-25T20:00:00Z',
+    })
+
+    const fetchMock = vi.spyOn(globalThis, 'fetch')
       .mockResolvedValueOnce(new Response(JSON.stringify({ id: 'user-1' }), { status: 201 }))
-      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200 }))
-      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200 }))
-      .mockResolvedValueOnce(new Response(JSON.stringify([{ id: 'workspace-1', name: 'My Ottimo workspace', created_by: 'user-1', created_at: '2026-09-25T20:00:00Z' }]), { status: 201 }))
-      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200 }))
-      .mockResolvedValueOnce(new Response(JSON.stringify([{ id: 'website-1', workspace_id: 'workspace-1', name: 'example.com', url: 'https://example.com', created_by: 'user-1', created_at: '2026-09-25T20:00:00Z' }]), { status: 201 }))
       .mockResolvedValueOnce(new Response('{}', { status: 200 }))
 
     const result = await startOnboarding(
@@ -40,8 +50,6 @@ describe('startOnboarding', () => {\n  afterEach(() => vi.restoreAllMocks())
         body: JSON.stringify({ email: 'person@example.com', create_user: true }),
       }),
     )
-
-    fetchMock.mockRestore()
   })
 
   it('keeps existing-account responses opaque while using the passwordless email path', async () => {
@@ -61,8 +69,6 @@ describe('startOnboarding', () => {\n  afterEach(() => vi.restoreAllMocks())
       'https://example.supabase.co/auth/v1/otp',
       expect.any(Object),
     )
-
-    fetchMock.mockRestore()
   })
 
   it('fails closed when the authentication provider is unavailable', async () => {
@@ -74,7 +80,5 @@ describe('startOnboarding', () => {\n  afterEach(() => vi.restoreAllMocks())
       storage(),
       { allow: () => true },
     )).rejects.toThrow('ONBOARDING_PROVIDER_UNAVAILABLE')
-
-    vi.restoreAllMocks()
   })
 })
