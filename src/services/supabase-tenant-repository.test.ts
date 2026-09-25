@@ -32,6 +32,63 @@ describe('Supabase workspace repository', () => {
     fetchMock.mockRestore()
   })
 
+
+  it('creates the owner membership when provisioning a new workspace', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify([{
+        id: 'workspace-1',
+        name: 'Ottimo',
+        created_by: 'user-1',
+        created_at: '2026-09-25T20:00:00Z',
+      }]), { status: 201 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify([{
+        workspace_id: 'workspace-1', user_id: 'user-1', role: 'owner',
+      }]), { status: 201 }))
+
+    const repository = new SupabaseWorkspaceRepository({
+      url: 'https://example.supabase.co',
+      secretKey: 'server-secret',
+    })
+
+    await expect(repository.createWorkspace('user-1', 'Ottimo')).resolves.toMatchObject({ id: 'workspace-1' })
+    expect(fetchMock).toHaveBeenNthCalledWith(
+      4,
+      'https://example.supabase.co/rest/v1/workspace_members',
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({ workspace_id: 'workspace-1', user_id: 'user-1', role: 'owner' }),
+      }),
+    )
+
+    fetchMock.mockRestore()
+  })
+
+  it('rolls back a newly created workspace when owner membership cannot be created', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify([{
+        id: 'workspace-1', name: 'Ottimo', created_by: 'user-1', created_at: '2026-09-25T20:00:00Z',
+      }]), { status: 201 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200 }))
+      .mockResolvedValueOnce(new Response('failed', { status: 500 }))
+      .mockResolvedValueOnce(new Response('{}', { status: 204 }))
+
+    const repository = new SupabaseWorkspaceRepository({
+      url: 'https://example.supabase.co',
+      secretKey: 'server-secret',
+    })
+
+    await expect(repository.createWorkspace('user-1', 'Ottimo')).rejects.toThrow('WORKSPACE_MEMBERSHIP_CREATE_FAILED')
+    expect(fetchMock).toHaveBeenLastCalledWith(
+      'https://example.supabase.co/rest/v1/workspaces?id=eq.workspace-1',
+      expect.objectContaining({ method: 'DELETE' }),
+    )
+
+    fetchMock.mockRestore()
+  })
+
   it('denies a website lookup outside the resolved workspace', async () => {
     const fetchMock = vi.spyOn(globalThis, 'fetch')
       .mockResolvedValue(new Response(JSON.stringify([]), { status: 200 }))
