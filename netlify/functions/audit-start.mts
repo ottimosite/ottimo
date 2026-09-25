@@ -25,15 +25,13 @@ export default async (request: Request) => {
       return json(400, { error: { code: 'INVALID_WEBSITE', message: 'A websiteId is required.' } })
     }
 
-    const authenticator = new SupabaseRequestAuthenticator({
-      url: supabaseUrl,
-      publishableKey,
-      secretKey,
-    })
+    const workspaceRepository = new SupabaseWorkspaceRepository({ url: supabaseUrl, secretKey })
+    const authenticator = new SupabaseRequestAuthenticator(
+      { url: supabaseUrl, publishableKey },
+      userId => workspaceRepository.resolveTenant(userId),
+    )
     const session = await authenticator.verify(request)
     if (!session) return json(401, { error: { code: 'AUTHENTICATION_REQUIRED', message: 'Authentication is required.' } })
-
-    const workspaceRepository = new SupabaseWorkspaceRepository({ url: supabaseUrl, secretKey })
     const website = await workspaceRepository.findWebsite(session.tenantId, input.websiteId)
     if (!website) return json(404, { error: { code: 'WEBSITE_NOT_FOUND', message: 'The requested website is not available.' } })
 
