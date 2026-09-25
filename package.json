@@ -17,7 +17,8 @@
     "test:e2e": "playwright test",
     "test:performance": "node scripts/check-public-performance-budget.mjs",
     "test:css-architecture": "node scripts/check-css-architecture.mjs",
-    "test:security": "vitest run src/security src/services/persistence.test.ts src/services/authenticated-repository.test.ts src/services/supabase-auth.test.ts src/services/supabase-email-auth.test.ts netlify/functions/auth-*.test.mts"
+    "test:security": "vitest run src/security src/services/persistence.test.ts src/services/authenticated-repository.test.ts src/services/supabase-auth.test.ts src/services/supabase-email-auth.test.ts netlify/functions/auth-*.test.mts",
+    "build:e2e": "tsc -b && vite build --mode e2e && node scripts/generate-public-pages.mjs"
   },
   "dependencies": {
     "@netlify/blobs": "^11.1.0",
