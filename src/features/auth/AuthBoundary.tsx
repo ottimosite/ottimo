@@ -23,7 +23,14 @@ const demoSession: ClientAuthSession = {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
-const authRequired = import.meta.env.VITE_AUTH_REQUIRED === 'true'
+export function requiresAuthentication(environment: { production: boolean; configured: string | undefined }): boolean {
+  return environment.production || environment.configured === 'true'
+}
+
+const authRequired = requiresAuthentication({
+  production: import.meta.env.PROD,
+  configured: import.meta.env.VITE_AUTH_REQUIRED,
+})
 const authLoginUrl = import.meta.env.VITE_AUTH_LOGIN_URL as string | undefined ?? '/start'
 
 async function readSession(): Promise<ClientAuthSession> {
