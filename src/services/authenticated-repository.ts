@@ -1,7 +1,7 @@
 import type { Audit, Website } from '../types/domain'
 import { transitionLifecycle, type LifecycleState, type LifecycleTransition } from './account-lifecycle'
 import { requireSession, type AuthenticatedSession, type SessionVerifier } from './auth'
-import { TenantRepository, type PersistentRepository, type ServerStorageAdapter } from './persistence'
+import { TenantRepository, type AuditJob, type PersistentRepository, type ServerStorageAdapter } from './persistence'
 
 export class AuthenticatedTenantRepository {
   private readonly repository: PersistentRepository
@@ -25,6 +25,16 @@ export class AuthenticatedTenantRepository {
   async listAudits(request: Request): Promise<Audit[]> {
     const session = await this.session(request)
     return this.repository.listAudits(session)
+  }
+
+  async getAuditJob(request: Request, jobId: string): Promise<AuditJob | undefined> {
+    const session = await this.session(request)
+    return this.repository.getAuditJob(session, jobId)
+  }
+
+  async saveAuditJob(request: Request, job: AuditJob): Promise<void> {
+    const session = await this.session(request)
+    return this.repository.saveAuditJob(session, job)
   }
 
   async getLifecycle(request: Request): Promise<LifecycleState | undefined> {
