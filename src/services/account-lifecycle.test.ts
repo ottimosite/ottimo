@@ -15,6 +15,17 @@ const at = (account: LifecycleState['account'], audit?: LifecycleState['audit'])
 })
 
 describe('account and audit lifecycle', () => {
+  it('allows a queued audit to fail before the worker starts', () => {
+    let state = initialLifecycle('2026-09-25T20:00:00Z')
+    state = transitionLifecycle(state, 'start_onboarding')
+    state = transitionLifecycle(state, 'request_verification')
+    state = transitionLifecycle(state, 'complete_verification')
+    state = transitionLifecycle(state, 'queue_audit')
+    state = transitionLifecycle(state, 'fail_audit_retryable', '2026-09-25T20:01:00Z')
+    expect(state.audit).toBe('audit_failed_retryable')
+  })
+
+
   it('moves an account deterministically from visitor to verified', () => {
     let state = initialLifecycle('2026-09-24T00:00:00.000Z')
     state = transitionLifecycle(state, 'start_onboarding', '2026-09-24T00:00:00.000Z')
