@@ -35,7 +35,7 @@ const ACCOUNT_TRANSITIONS: Record<AccountLifecycleState, Partial<Record<Lifecycl
 
 const AUDIT_TRANSITIONS: Record<AuditLifecycleState | 'none', Partial<Record<LifecycleTransition, AuditLifecycleState>>> = {
   none: { queue_audit: 'audit_queued' },
-  audit_queued: { start_audit: 'audit_running' },
+  audit_queued: { start_audit: 'audit_running', fail_audit_retryable: 'audit_failed_retryable' },
   audit_running: {
     complete_audit: 'audit_ready',
     fail_audit_retryable: 'audit_failed_retryable',
