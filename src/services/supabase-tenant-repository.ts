@@ -57,7 +57,10 @@ export class SupabaseWorkspaceRepository implements WorkspaceRepository {
 
   async createWorkspace(userId: string, name: string): Promise<WorkspaceRecord> {
     const existing = await this.findWorkspaceForUser(userId)
-    if (existing) return existing
+    if (existing) {
+      await this.ensureOwnerMembership(existing.id, userId)
+      return existing
+    }
 
     const created = await this.request<WorkspaceRecord[]>('/rest/v1/workspaces', {
       method: 'POST',
@@ -66,7 +69,65 @@ export class SupabaseWorkspaceRepository implements WorkspaceRepository {
     })
     const workspace = created[0]
     if (!workspace) throw new Error('WORKSPACE_CREATE_FAILED')
+
+    try {
+      await this.ensureOwnerMembership(workspace.id, userId)
+    } catch (error) {
+      try {
+        await this.deleteWorkspace(workspace.id)
+      } catch {
+        // Preserve the original failure; an orphan cleanup failure is observable
+        // through the provider logs without masking the provisioning error.
+      }
+      throw error
+    }
+
     return workspace
+  }
+
+  private async ensureOwnerMembership(workspaceId: string, userId: string): Promise<void> {
+    const existing = await this.request<Array<{ role: string }>>(
+      '/rest/v1/workspace_members?select=role&workspace_id=eq.' +
+      encodeURIComponent(workspaceId) + '&user_id=eq.' + encodeURIComponent(userId) + '&limit=1',
+    )
+    if (existing[0]) return
+
+    const response = await fetch(this.config.url.replace(/\\/+$/, '') + '/rest/v1/workspace_members', {
+      method: 'POST',
+      headers: {
+        apikey: this.config.secretKey,
+        authorization: 'Bearer ' + this.config.secretKey,
+        accept: 'application/json',
+        'content-type': 'application/json',
+        Prefer: 'return=representation',
+      },
+      body: JSON.stringify({ workspace_id: workspaceId, user_id: userId, role: 'owner' }),
+    })
+    if (response.ok) return
+    if (response.status === 409) {
+      const membership = await this.request<Array<{ role: string }>>(
+        '/rest/v1/workspace_members?select=role&workspace_id=eq.' +
+        encodeURIComponent(workspaceId) + '&user_id=eq.' + encodeURIComponent(userId) + '&limit=1',
+      )
+      if (membership[0]) return
+    }
+    throw new Error('WORKSPACE_MEMBERSHIP_CREATE_FAILED')
+  }
+
+  private async deleteWorkspace(workspaceId: string): Promise<void> {
+    const response = await fetch(
+      this.config.url.replace(/\\/+$/, '') + '/rest/v1/workspaces?id=eq.' + encodeURIComponent(workspaceId),
+      {
+        method: 'DELETE',
+        headers: {
+          apikey: this.config.secretKey,
+          authorization: 'Bearer ' + this.config.secretKey,
+          accept: 'application/json',
+          Prefer: 'return=minimal',
+        },
+      },
+    )
+    if (!response.ok) throw new Error('WORKSPACE_ROLLBACK_FAILED')
   }
 
   async createWebsite(workspaceId: string, userId: string, name: string, url: string): Promise<WebsiteRecord> {
