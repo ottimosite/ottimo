@@ -57,6 +57,7 @@ describe('auth-verify function', () => {
   it('rejects invalid or replayed verification without establishing a session', async () => {
     vi.stubEnv('SUPABASE_URL', 'https://example.supabase.co')
     vi.stubEnv('SUPABASE_PUBLISHABLE_KEY', 'public-key')
+    vi.stubEnv('SUPABASE_SECRET_KEY', 'secret-key')
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('invalid', { status: 400 }))
 
     const response = await handler(new Request('https://ottimo.test/auth-verify?token_hash=secret-hash&type=email'))
