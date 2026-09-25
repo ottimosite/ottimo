@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { PublicLayout, AppLayout } from './components/Layout'
 import { Home, InfoPage, PublicAuditExample } from './pages/PublicPages'
+import { AuthErrorPage, OnboardingPage } from './pages/OnboardingPages'
 import { Dashboard } from './features/dashboard/Dashboard'
 import { Websites } from './features/websites/Websites'
 import { AuditList, NewAudit } from './features/audits/Audits'
@@ -19,6 +20,8 @@ export default function App() {
 			<Route path="/methodology" element={<InfoPage path="/methodology" />} />
 			<Route path="/pricing" element={<InfoPage path="/pricing" />} />
 			<Route path="/example-audit" element={<PublicAuditExample />} />
+			<Route path="/start" element={<OnboardingPage />} />
+			<Route path="/auth/error" element={<AuthErrorPage />} />
 
 			{/* Legacy public routes stay recoverable without remaining part of the active IA. */}
 			<Route path="/performance" element={<Navigate to="/services" replace />} />

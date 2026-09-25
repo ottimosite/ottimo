@@ -66,17 +66,12 @@ async function providerRequest(
   })
 }
 
-export async function requestEmailVerification(
+export async function sendEmailVerification(
   config: SupabaseEmailAuthConfig,
   email: string,
-  rateLimiter: AuthRateLimiter = defaultAuthRateLimiter,
-  rateLimitKey = 'anonymous',
 ): Promise<EmailAuthResult> {
   const normalisedEmail = email.trim().toLowerCase()
   if (!isEmail(normalisedEmail)) throw new Error('AUTH_EMAIL_INVALID')
-  if (!rateLimiter.allow(rateLimitKey)) {
-    return { accepted: false, providerStatus: 429 }
-  }
 
   const response = await providerRequest(config, '/auth/v1/otp', {
     email: normalisedEmail,
@@ -89,6 +84,19 @@ export async function requestEmailVerification(
     accepted: response.ok,
     providerStatus: response.status,
   }
+}
+
+export async function requestEmailVerification(
+  config: SupabaseEmailAuthConfig,
+  email: string,
+  rateLimiter: AuthRateLimiter = defaultAuthRateLimiter,
+  rateLimitKey = 'anonymous',
+): Promise<EmailAuthResult> {
+  if (!rateLimiter.allow(rateLimitKey)) {
+    return { accepted: false, providerStatus: 429 }
+  }
+
+  return sendEmailVerification(config, email)
 }
 
 export async function verifyEmailToken(
