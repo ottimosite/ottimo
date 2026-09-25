@@ -49,8 +49,10 @@ describe('tenant-safe persistence boundary', () => {
     lifecycle = transitionLifecycle(lifecycle, 'request_verification')
     lifecycle = transitionLifecycle(lifecycle, 'complete_verification')
     await repository.saveLifecycle(principal, lifecycle)
+    await repository.saveWebsite(principal, {
+      id: 'site-1', name: 'Example', url: 'https://example.com', createdAt: '2026-09-20T00:00:00Z',
+    })
     await repository.saveAudit(principal, {
-
       id: 'audit-1', websiteId: 'site-1', url: 'https://example.com', createdAt: '2026-09-20T00:00:00Z',
       durationMs: 100, scores: [], issues: [], actions: [],
     })
@@ -62,6 +64,24 @@ describe('tenant-safe persistence boundary', () => {
     const audits = await repository.listAudits(principal)
     expect(audits[0].id).toBe('audit-1')
     expect(audits[0].websiteId).toBe('site-1')
+  })
+
+  it('rejects audits linked to a website outside the authenticated tenant', async () => {
+    const storage = adapter()
+    const repository = new TenantRepository(storage)
+    await repository.saveWebsite({ userId: 'user-1', tenantId: 'tenant-1' }, {
+      id: 'site-1', name: 'Tenant 1', url: 'https://tenant1.test', createdAt: '2026-09-20T00:00:00Z',
+    })
+    await repository.saveWebsite({ userId: 'user-2', tenantId: 'tenant-2' }, {
+      id: 'site-2', name: 'Tenant 2', url: 'https://tenant2.test', createdAt: '2026-09-20T00:00:00Z',
+    })
+
+    await expect(repository.saveAudit({ userId: 'user-1', tenantId: 'tenant-1' }, {
+      id: 'cross-tenant-audit', websiteId: 'site-2', url: 'https://tenant2.test', createdAt: '2026-09-20T00:00:00Z',
+      durationMs: 100, scores: [], issues: [], actions: [],
+    })).rejects.toThrow('WEBSITE_ACCESS_DENIED')
+
+    await expect(repository.listAuditsForWebsite({ userId: 'user-1', tenantId: 'tenant-1' }, 'site-2')).resolves.toEqual([])
   })
 
   it('denies pending accounts even when released audit data exists', async () => {

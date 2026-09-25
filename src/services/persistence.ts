@@ -71,6 +71,8 @@ export class TenantRepository implements PersistentRepository {
 
   async listAuditsForWebsite(principal: TenantPrincipal, websiteId: string): Promise<Audit[]> {
     requirePrincipal(principal)
+    const websites = await this.listWebsites(principal)
+    if (!websites.some(website => website.id === websiteId)) return []
     const audits = await this.listAudits(principal)
     return audits.filter(audit => audit.websiteId === websiteId)
   }
@@ -104,6 +106,10 @@ export class TenantRepository implements PersistentRepository {
 
   async saveAudit(principal: TenantPrincipal, audit: Audit): Promise<void> {
     requirePrincipal(principal)
+    const websites = await this.listWebsites(principal)
+    if (!websites.some(website => website.id === audit.websiteId)) {
+      throw new Error('WEBSITE_ACCESS_DENIED')
+    }
     const existing = await this.readAudits(principal)
     await this.adapter.write(tenantKey(principal, 'audits'), {
       schemaVersion: STORAGE_SCHEMA_VERSION,
