@@ -4,7 +4,7 @@ import { aggregateFindings } from '../audit-engine/aggregation'
 import { buildOptimizationActions } from '../audit-engine/actions'
 import { buildWebsiteHealthModel } from '../audit-engine/health-model'
 import { buildSiteIntelligence, summariseSearchVisibility, summariseSocial, summariseTechnology } from '../audit-engine/site-intelligence'
-import type { AuditCategory, AuditReport } from '../audit-engine/types'
+import type { AuditReport } from '../audit-engine/types'
 
 interface ServerSiteAuditReport {
   run: AuditReport['run']
