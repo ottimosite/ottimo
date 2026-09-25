@@ -24,7 +24,7 @@ const demoSession: ClientAuthSession = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
 const authRequired = import.meta.env.VITE_AUTH_REQUIRED === 'true'
-const authLoginUrl = import.meta.env.VITE_AUTH_LOGIN_URL as string | undefined ?? '/.netlify/functions/auth-login'
+const authLoginUrl = import.meta.env.VITE_AUTH_LOGIN_URL as string | undefined ?? '/start'
 
 async function readSession(): Promise<ClientAuthSession> {
   if (!authRequired) return demoSession
