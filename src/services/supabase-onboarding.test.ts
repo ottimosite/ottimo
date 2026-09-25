@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { startOnboarding } from './supabase-onboarding'
+import { startOnboarding } from './supabase-onboarding'\nimport { SupabaseWorkspaceRepository } from './supabase-tenant-repository'
 import type { ServerStorageAdapter } from './persistence'
 
 function storage(): ServerStorageAdapter {
@@ -10,9 +10,9 @@ function storage(): ServerStorageAdapter {
   }
 }
 
-describe('startOnboarding', () => {
+describe('startOnboarding', () => {\n  afterEach(() => vi.restoreAllMocks())
   it('creates the user, workspace, website and pending lifecycle before sending verification', async () => {
-    const fetchMock = vi.spyOn(globalThis, 'fetch')
+    vi.spyOn(SupabaseWorkspaceRepository.prototype, 'createWorkspace').mockResolvedValue({ id: 'workspace-1', name: 'My Ottimo workspace', createdBy: 'user-1', createdAt: '2026-09-25T20:00:00Z' })\n    vi.spyOn(SupabaseWorkspaceRepository.prototype, 'createWebsite').mockResolvedValue({ id: 'website-1', workspaceId: 'workspace-1', name: 'example.com', url: 'https://example.com', createdBy: 'user-1', createdAt: '2026-09-25T20:00:00Z' })\n    const fetchMock = vi.spyOn(globalThis, 'fetch')
       .mockResolvedValueOnce(new Response(JSON.stringify({ id: 'user-1' }), { status: 201 }))
       .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200 }))
       .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200 }))
