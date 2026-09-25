@@ -167,6 +167,7 @@ export function AuditOverview() {
   const [audit, setAudit] = useState<Audit | undefined>()
   const [websites, setWebsites] = useState<Array<{ id: string; name: string; url: string }>>([])
   const [loadError, setLoadError] = useState('')
+  const [mode, setMode] = useState<'customer' | 'engineer'>('customer')
   const demoMode = import.meta.env.MODE === 'e2e' || import.meta.env.MODE === 'test'
 
   useEffect(() => {
@@ -194,7 +195,6 @@ export function AuditOverview() {
   if (loadError) return <Card><h1>Audit unavailable</h1><p>{loadError}</p><Link to="/app/audits">Back to audits</Link></Card>
   if (!audit) return <Card><h1>Loading audit…</h1><p className="muted">Retrieving the released audit for this workspace.</p></Card>
   const website = websites.find(item => item.id === audit.websiteId) ?? localRepository.websiteForAudit(audit)
-  const [mode, setMode] = useState<'customer' | 'engineer'>('customer')
 
   const stats = audit.stats; const openIssues = audit.issues.filter(issue => issue.status !== 'resolved')
   const severityCounts = audit.issues.reduce<Record<string, number>>((counts, issue) => ({ ...counts, [issue.severity]: (counts[issue.severity] ?? 0) + 1 }), {})
