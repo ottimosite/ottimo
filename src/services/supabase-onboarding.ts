@@ -1,4 +1,4 @@
-import { requestEmailVerification, type AuthRateLimiter } from './supabase-email-auth'
+import { sendEmailVerification, type AuthRateLimiter } from './supabase-email-auth'
 import { TenantRepository, type TenantPrincipal } from './persistence'
 import { SupabaseWorkspaceRepository } from './supabase-tenant-repository'
 import { transitionLifecycle, type LifecycleState } from './account-lifecycle'
@@ -24,7 +24,10 @@ export interface OnboardingResult {
 }
 
 function normaliseUrl(value: string): string {
-  return value.trim().replace(/\/+$/, '')
+  const trimmed = value.trim()
+  if (!trimmed) return ''
+  const withProtocol = /^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+  return withProtocol.replace(/\/+$/, '')
 }
 
 function validWebsiteUrl(value: string): boolean {
@@ -83,11 +86,9 @@ export async function startOnboarding(
   // Existing accounts are deliberately opaque. They receive the same
   // passwordless email flow and can continue through their existing workspace.
   if (!user) {
-    const emailResult = await requestEmailVerification(
+    const emailResult = await sendEmailVerification(
       { url: config.url, publishableKey: config.publishableKey },
       email,
-      limiter,
-      input.rateLimitKey,
     )
     if (emailResult.providerStatus === 429) throw new Error('ONBOARDING_RATE_LIMITED')
     if (emailResult.providerStatus >= 500) throw new Error('ONBOARDING_PROVIDER_UNAVAILABLE')
@@ -115,11 +116,9 @@ export async function startOnboarding(
   const verifying = transitionLifecycle(pending, 'request_verification')
   await new TenantRepository(storage).saveLifecycle(principal, verifying)
 
-  const emailResult = await requestEmailVerification(
+  const emailResult = await sendEmailVerification(
     { url: config.url, publishableKey: config.publishableKey },
     email,
-    limiter,
-    input.rateLimitKey,
   )
 
   if (emailResult.providerStatus === 429) throw new Error('ONBOARDING_RATE_LIMITED')
