@@ -92,7 +92,7 @@ export class SupabaseWorkspaceRepository implements WorkspaceRepository {
     )
     if (existing[0]) return
 
-    const response = await fetch(this.config.url.replace(/\\/+$/, '') + '/rest/v1/workspace_members', {
+    const response = await fetch(this.config.url.replace(/\/+$/, '') + '/rest/v1/workspace_members', {
       method: 'POST',
       headers: {
         apikey: this.config.secretKey,
@@ -116,7 +116,7 @@ export class SupabaseWorkspaceRepository implements WorkspaceRepository {
 
   private async deleteWorkspace(workspaceId: string): Promise<void> {
     const response = await fetch(
-      this.config.url.replace(/\\/+$/, '') + '/rest/v1/workspaces?id=eq.' + encodeURIComponent(workspaceId),
+      this.config.url.replace(/\/+$/, '') + '/rest/v1/workspaces?id=eq.' + encodeURIComponent(workspaceId),
       {
         method: 'DELETE',
         headers: {
