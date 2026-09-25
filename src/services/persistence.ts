@@ -28,6 +28,7 @@ export interface AuditJob {
 export interface PersistentRepository {
   listWebsites(principal: TenantPrincipal): Promise<Website[]>
   listAudits(principal: TenantPrincipal): Promise<Audit[]>
+  getAudit(principal: TenantPrincipal, auditId: string): Promise<Audit | undefined>
   listAuditsForWebsite(principal: TenantPrincipal, websiteId: string): Promise<Audit[]>
   getAuditJob(principal: TenantPrincipal, jobId: string): Promise<AuditJob | undefined>
   saveAuditJob(principal: TenantPrincipal, job: AuditJob): Promise<void>
@@ -79,6 +80,12 @@ export class TenantRepository implements PersistentRepository {
   private async readAudits(principal: TenantPrincipal): Promise<Audit[]> {
     const envelope = await this.adapter.read<Audit[]>(tenantKey(principal, 'audits'))
     return envelope?.tenantId === principal.tenantId ? envelope.data : []
+  }
+
+  async getAudit(principal: TenantPrincipal, auditId: string): Promise<Audit | undefined> {
+    requirePrincipal(principal)
+    const audits = await this.listAudits(principal)
+    return audits.find(audit => audit.id === auditId)
   }
 
   async listAuditsForWebsite(principal: TenantPrincipal, websiteId: string): Promise<Audit[]> {
