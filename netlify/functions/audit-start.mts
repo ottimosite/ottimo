@@ -2,6 +2,7 @@ import { createNetlifyStorageAdapter } from '../../src/services/netlify-storage'
 import { SupabaseRequestAuthenticator } from '../../src/services/supabase-auth'
 import { SupabaseWorkspaceRepository } from '../../src/services/supabase-tenant-repository'
 import { queueAuditJob, normaliseAuditCategories, createAuditRepository } from '../../src/services/audit-jobs'
+import { transitionLifecycle } from '../../src/services/account-lifecycle'
 
 const json = (status: number, body: unknown, headers: Record<string, string> = {}) => new Response(JSON.stringify(body), {
   status,
@@ -55,8 +56,13 @@ export default async (request: Request) => {
     })
 
     if (!invocation.ok) {
-      const failed = { ...job, state: 'audit_failed_retryable' as const, updatedAt: new Date().toISOString(), error: { code: 'AUDIT_WORKER_UNAVAILABLE', message: 'The audit worker could not be started.', retryable: true } }
+      const failedAt = new Date().toISOString()
+      const failed = { ...job, state: 'audit_failed_retryable' as const, updatedAt: failedAt, error: { code: 'AUDIT_WORKER_UNAVAILABLE', message: 'The audit worker could not be started.', retryable: true } }
       await repository.saveAuditJob(session, failed)
+      const lifecycle = await repository.getLifecycle(session)
+      if (lifecycle?.audit === 'audit_queued') {
+        await repository.saveLifecycle(session, transitionLifecycle(lifecycle, 'fail_audit_retryable', failedAt))
+      }
       return json(503, { error: { code: 'AUDIT_WORKER_UNAVAILABLE', message: 'The audit worker could not be started.' } })
     }
 
