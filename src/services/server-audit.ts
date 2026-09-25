@@ -111,7 +111,7 @@ const measuredCategoriesFor = (report: AuditReport): Category[] => {
   return [...measured]
 }
 
-const toResult = (site: ServerSiteAuditReport): AuditResult => {
+export const toResult = (site: ServerSiteAuditReport): AuditResult => {
   const successfulPages = site.pages.filter(page => page.report.run.status === 'completed' && page.report.page)
   const failedPages = site.pages.filter(page => page.report.run.status === 'failed')
 
