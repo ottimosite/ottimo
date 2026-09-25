@@ -1,5 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import handler from './auth-verify'
+import { completeVerifiedLifecycle } from '../../src/services/verification-lifecycle'
+
+vi.mock('../../src/services/verification-lifecycle', () => ({
+  completeVerifiedLifecycle: vi.fn().mockResolvedValue({ userId: 'user-1', tenantId: 'workspace-1' }),
+}))
+
+vi.mock('../../src/services/netlify-storage', () => ({
+  createNetlifyStorageAdapter: vi.fn().mockReturnValue({}),
+}))
 
 function token(payload: Record<string, unknown>): string {
   const header = Buffer.from(JSON.stringify({ alg: 'RS256', typ: 'JWT' })).toString('base64url')
@@ -18,12 +27,14 @@ describe('auth-verify function', () => {
 
     vi.stubEnv('SUPABASE_URL', '')
     vi.stubEnv('SUPABASE_PUBLISHABLE_KEY', '')
+    vi.stubEnv('SUPABASE_SECRET_KEY', '')
     expect((await handler(new Request('https://ottimo.test/auth-verify?token_hash=x&type=email'))).status).toBe(503)
   })
 
   it('exchanges a verified provider token and establishes an HttpOnly session cookie', async () => {
     vi.stubEnv('SUPABASE_URL', 'https://example.supabase.co')
     vi.stubEnv('SUPABASE_PUBLISHABLE_KEY', 'public-key')
+    vi.stubEnv('SUPABASE_SECRET_KEY', 'secret-key')
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response(JSON.stringify({
         access_token: token({ sub: 'user-1', exp: Math.floor(Date.now() / 1000) + 3600 }),
@@ -40,11 +51,17 @@ describe('auth-verify function', () => {
     expect(response.headers.get('set-cookie')).toContain('HttpOnly')
     expect(response.headers.get('set-cookie')).toContain('Secure')
     expect(response.headers.get('set-cookie')).not.toContain('secret-hash')
+    expect(completeVerifiedLifecycle).toHaveBeenCalledWith(
+      'user-1',
+      expect.anything(),
+      expect.anything(),
+    )
   })
 
   it('rejects invalid or replayed verification without establishing a session', async () => {
     vi.stubEnv('SUPABASE_URL', 'https://example.supabase.co')
     vi.stubEnv('SUPABASE_PUBLISHABLE_KEY', 'public-key')
+    vi.stubEnv('SUPABASE_SECRET_KEY', 'secret-key')
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(new Response('invalid', { status: 400 }))
 
     const response = await handler(new Request('https://ottimo.test/auth-verify?token_hash=secret-hash&type=email'))
