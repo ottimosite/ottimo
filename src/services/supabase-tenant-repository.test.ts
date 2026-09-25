@@ -73,7 +73,7 @@ describe('Supabase workspace repository', () => {
       }]), { status: 201 }))
       .mockResolvedValueOnce(new Response(JSON.stringify([]), { status: 200 }))
       .mockResolvedValueOnce(new Response('failed', { status: 500 }))
-      .mockResolvedValueOnce(new Response('{}', { status: 204 }))
+      .mockResolvedValueOnce(new Response(null, { status: 204 }))
 
     const repository = new SupabaseWorkspaceRepository({
       url: 'https://example.supabase.co',
