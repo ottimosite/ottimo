@@ -29,6 +29,9 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Security regression suite
+        run: npm run test:security
+
       - name: Lint
         run: npm run lint
 
