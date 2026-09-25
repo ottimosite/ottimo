@@ -12,7 +12,8 @@ export default async (request: Request) => {
 
   const supabaseUrl = process.env.SUPABASE_URL
   const supabasePublishableKey = process.env.SUPABASE_PUBLISHABLE_KEY
-  if (!supabaseUrl || !supabasePublishableKey) {
+  const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY
+  if (!supabaseUrl || !supabasePublishableKey || !supabaseSecretKey) {
     return new Response('Authentication is not configured.', { status: 503 })
   }
 
@@ -29,9 +30,8 @@ export default async (request: Request) => {
 
     const workspaceRepository = new SupabaseWorkspaceRepository({
       url: supabaseUrl,
-      secretKey: process.env.SUPABASE_SECRET_KEY ?? '',
+      secretKey: supabaseSecretKey,
     })
-    if (!process.env.SUPABASE_SECRET_KEY) throw new Error('AUTHENTICATION_NOT_CONFIGURED')
 
     await completeVerifiedLifecycle(
       session.userId,
