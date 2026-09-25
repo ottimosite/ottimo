@@ -10,16 +10,60 @@ import { isValidUrl, normaliseUrl } from '../../lib/validation'
 import { compareAudits } from '../../audit-engine/audit-comparison'
 import { verifyActions } from '../../audit-engine/verification'
 
-export function AuditList() { const location = useLocation(); const websiteId = new URLSearchParams(location.search).get('website'); const [audits] = useState(() => localRepository.audits()); const visibleAudits = websiteId ? audits.filter(audit => audit.websiteId === websiteId) : audits; return <div className="stack"><PageHeading eyebrow="Audits" title="Turn a URL into a clear action plan." description="Run the live audit engine against the rendered website and turn its evidence into an action plan." action={<Link className="btn btn-primary" to="/app/audits/new">New audit</Link>} /><Card><div className="audit-list">{visibleAudits.map(audit => <Link className="audit-item" key={audit.id} to={`/app/audits/${audit.id}`}><span className="audit-score">{audit.score ?? "—"}</span><span><strong>{localRepository.findWebsite(audit.websiteId)?.name ?? audit.url}</strong><small>{formatDate(audit.createdAt)} · {audit.issues.filter(issue => issue.status !== 'resolved').length} open issues</small></span><span>→</span></Link>)}</div></Card></div> }
+export function AuditList() {
+  const location = useLocation()
+  const websiteId = new URLSearchParams(location.search).get('website')
+  const [audits, setAudits] = useState<Audit[]>([])
+  const [websites, setWebsites] = useState<Array<{ id: string; name: string; url: string }>>([])
+  const [error, setError] = useState('')
+  const e2eMode = import.meta.env.MODE === 'e2e'
+
+  useEffect(() => {
+    let cancelled = false
+    if (e2eMode) {
+      setAudits(localRepository.audits())
+      setWebsites(localRepository.websites())
+      return () => { cancelled = true }
+    }
+
+    void new ServerAuditProvider().listAudits()
+      .then(result => {
+        if (cancelled) return
+        setAudits(result.audits)
+        setWebsites(result.websites)
+      })
+      .catch(cause => {
+        if (!cancelled) setError(cause instanceof Error ? cause.message : 'The audits could not be loaded.')
+      })
+    return () => { cancelled = true }
+  }, [e2eMode])
+
+  const visibleAudits = websiteId ? audits.filter(audit => audit.websiteId === websiteId) : audits
+
+  return <div className="stack">
+    <PageHeading eyebrow="Audits" title="Turn a URL into a clear action plan." description="Run the live audit engine against the rendered website and turn its evidence into an action plan." action={<Link className="btn btn-primary" to="/app/audits/new">New audit</Link>} />
+    <Card>
+      {error ? <p className="error" role="alert">{error}</p> : null}
+      <div className="audit-list">
+        {visibleAudits.map(audit => <Link className="audit-item" key={audit.id} to={`/app/audits/${audit.id}`}>
+          <span className="audit-score">{audit.score ?? "—"}</span>
+          <span><strong>{websites.find(item => item.id === audit.websiteId)?.name ?? audit.url}</strong><small>{formatDate(audit.createdAt)} · {audit.issues.filter(issue => issue.status !== 'resolved').length} open issues</small></span>
+          <span>→</span>
+        </Link>)}
+        {!error && !visibleAudits.length ? <p className="muted">No released audits are available yet. Start a new audit to create the first report.</p> : null}
+      </div>
+    </Card>
+  </div>
+}
 
 export function NewAudit() {
   const location = useLocation()
   const search = new URLSearchParams(location.search)
-  const requestedAuditId = search.get('audit')
-  const requestedAudit = requestedAuditId ? localRepository.findAudit(requestedAuditId) : undefined
-  const initialUrl = search.get('url') ?? requestedAudit?.url ?? 'https://example.com'
+  const requestedWebsiteId = search.get('website') ?? ''
+  const requestedUrl = normaliseUrl(search.get('url') ?? '')
   const categories = search.get('categories')?.split(',').filter(Boolean) ?? []
-  const [url] = useState(normaliseUrl(initialUrl))
+  const [url, setUrl] = useState(requestedUrl)
+  const [status, setStatus] = useState<'loading' | 'queued' | 'running' | 'complete' | 'error'>('loading')
   const [error, setError] = useState('')
   const navigate = useNavigate()
   const startedRef = useRef(false)
@@ -27,70 +71,73 @@ export function NewAudit() {
   useEffect(() => {
     if (startedRef.current) return
     startedRef.current = true
+    let cancelled = false
+    let timer: ReturnType<typeof setTimeout> | undefined
+
+    const wait = (milliseconds: number) => new Promise<void>(resolve => {
+      timer = setTimeout(resolve, milliseconds)
+    })
 
     const run = async () => {
-      if (!isValidUrl(url)) {
-        setError('The website address is not valid.')
-        return
-      }
-
-      const auditStarted = performance.now()
       try {
-        const result = await new ServerAuditProvider().runAudit(url, categories)
-        const allWebsites = localRepository.websites()
-        const website = allWebsites.find(item => normaliseUrl(item.url) === url) ?? {
-          id: 'site-' + Date.now(),
-          name: new URL(url).hostname,
-          url,
-          createdAt: new Date().toISOString(),
+        const provider = new ServerAuditProvider()
+        const { websites } = await provider.listAudits()
+        const website = requestedWebsiteId
+          ? websites.find(item => item.id === requestedWebsiteId)
+          : websites.find(item => normaliseUrl(item.url) === requestedUrl)
+
+        if (!website) throw new Error('The requested website is not part of your workspace.')
+        if (!cancelled) {
+          setUrl(website.url)
+          setStatus('queued')
         }
-        const previousAudits = localRepository.audits()
-          .filter(item => normaliseUrl(item.url) === url)
-          .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-        const audit: Audit = {
-          id: 'audit-' + Date.now(),
-          websiteId: website.id,
-          url,
-          createdAt: new Date().toISOString(),
-          ...result,
-          stats: { ...result.stats, pageScope: 'site-crawl', source: 'live' },
-          durationMs: Math.round(performance.now() - auditStarted),
+
+        const job = await provider.startAudit(website.id, categories)
+        let current = await provider.getAuditStatus(job.jobId)
+        while (!cancelled && current.state !== 'audit_ready' && current.state !== 'audit_failed_retryable') {
+          setStatus(current.state === 'audit_running' ? 'running' : 'queued')
+          await wait(2000)
+          current = await provider.getAuditStatus(job.jobId)
         }
-        if (previousAudits[0]) {
-          audit.comparison = compareAudits(previousAudits[0], audit)
-          audit.verifications = verifyActions(previousAudits[0], audit)
+
+        if (cancelled) return
+        if (current.state === 'audit_failed_retryable') {
+          throw new Error(current.error?.message ?? 'The audit could not be completed.')
         }
-        const updatedWebsites = (allWebsites.some(item => item.id === website.id) ? allWebsites : [...allWebsites, website]).map(item =>
-          item.id === website.id
-            ? { ...item, lastAuditId: audit.id, healthModel: audit.healthModel }
-            : item,
-        )
-        localRepository.saveWebsites(updatedWebsites)
-        localRepository.addAudit(audit)
+
+        const audit = await provider.getAudit(current.auditId ?? job.jobId)
+        setStatus('complete')
         navigate('/app/audits/' + audit.id, { replace: true })
       } catch (cause) {
-        setError(cause instanceof Error ? cause.message : 'Ottimo could not complete the audit.')
+        if (!cancelled) {
+          setStatus('error')
+          setError(cause instanceof Error ? cause.message : 'Ottimo could not complete the audit.')
+        }
       }
     }
 
     void run()
-  }, [categories, navigate, url])
+    return () => {
+      cancelled = true
+      if (timer) clearTimeout(timer)
+    }
+  }, [categories, navigate, requestedUrl, requestedWebsiteId])
 
   return <div className="audit-loading">
     <div className="audit-loading-copy">
       <span className="eyebrow">Ottimo audit</span>
-      <h1>{error ? 'We could not complete the audit.' : 'Your report is being built.'}</h1>
-      <p>{error ? 'The audit service returned an error. You can retry without starting the onboarding process again.' : 'We are rendering the site, collecting evidence and turning it into a useful report. You do not need to do anything else.'}</p>
+      <h1>{status === 'error' ? 'We could not complete the audit.' : status === 'complete' ? 'Your report is ready.' : 'Your report is being built.'}</h1>
+      <p>{status === 'error' ? 'The audit service returned an error. You can retry without starting the onboarding process again.' : 'We are rendering the site, collecting evidence and turning it into a useful report. You do not need to keep this page open.'}</p>
     </div>
     <Card className="audit-loading-card">
       <div className="audit-loading-site">
         <span className="onboarding-site-mark" aria-hidden="true">↗</span>
-        <div><small>Analysing</small><strong>{url}</strong></div>
+        <div><small>{status === 'queued' ? 'Queued' : status === 'running' ? 'Analysing' : 'Website'}</small><strong>{url || 'Your saved website'}</strong></div>
       </div>
       {error ? <div className="audit-loading-error" role="alert"><p>{error}</p><Button onClick={() => window.location.reload()}>Try again</Button></div> : <div className="audit-loading-steps" aria-live="polite">
-        <div className="audit-loading-step active"><span>01</span><div><strong>Discovering the rendered site</strong><small>Checking the page and its internal paths.</small></div><i aria-hidden="true">✓</i></div>
-        <div className="audit-loading-step active"><span>02</span><div><strong>Collecting evidence</strong><small>Performance, accessibility, SEO and technical signals.</small></div><i aria-hidden="true">✓</i></div>
-        <div className="audit-loading-step current"><span>03</span><div><strong>Building your report</strong><small>Turning observations into findings and recommendations.</small></div><i aria-hidden="true">◌</i></div>
+        <div className={status === 'queued' ? 'audit-loading-step current' : 'audit-loading-step active'}><span>01</span><div><strong>Queueing your audit</strong><small>Checking the saved website and workspace access.</small></div><i aria-hidden="true">{status === 'queued' ? '◌' : '✓'}</i></div>
+        <div className={status === 'running' ? 'audit-loading-step current' : status === 'complete' ? 'audit-loading-step active' : 'audit-loading-step'}><span>02</span><div><strong>Collecting evidence</strong><small>Rendering the site and analysing available pages.</small></div><i aria-hidden="true">{status === 'running' ? '◌' : status === 'complete' ? '✓' : '○'}</i></div>
+        <div className={status === 'complete' ? 'audit-loading-step active' : 'audit-loading-step'}><span>03</span><div><strong>Building your report</strong><small>Turning observations into findings and recommendations.</small></div><i aria-hidden="true">{status === 'complete' ? '✓' : '○'}</i></div>
       </div>}
     </Card>
   </div>
