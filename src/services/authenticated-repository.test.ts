@@ -47,6 +47,19 @@ describe('authenticated persistence boundary', () => {
       updatedAt: new Date().toISOString(),
       data: readyLifecycle(),
     })
+    storage.values.set(tenantKey(session, 'websites'), {
+      schemaVersion: STORAGE_SCHEMA_VERSION,
+      tenantId: session.tenantId,
+      updatedAt: new Date().toISOString(),
+      data: [{
+        id: 'site-1',
+        workspaceId: session.tenantId,
+        name: 'example.com',
+        url: 'https://example.com',
+        createdBy: session.userId,
+        createdAt: '2026-09-20T00:00:00Z',
+      }],
+    })
     const repository = new AuthenticatedTenantRepository(verifier, storage)
     await repository.saveAudit(new Request('https://ottimo.test'), {
       id: 'audit-1', websiteId: 'site-1', url: 'https://example.com', createdAt: '2026-09-20T00:00:00Z',
