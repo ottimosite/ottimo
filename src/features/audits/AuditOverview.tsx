@@ -167,11 +167,11 @@ export function AuditOverview() {
   const [audit, setAudit] = useState<Audit | undefined>()
   const [websites, setWebsites] = useState<Array<{ id: string; name: string; url: string }>>([])
   const [loadError, setLoadError] = useState('')
-  const e2eMode = import.meta.env.MODE === 'e2e'
+  const demoMode = import.meta.env.MODE === 'e2e' || import.meta.env.MODE === 'test'
 
   useEffect(() => {
     let cancelled = false
-    if (e2eMode) {
+    if (demoMode) {
       const localAudit = id ? localRepository.findAudit(id) : undefined
       if (!cancelled) {
         setAudit(localAudit)
@@ -189,7 +189,7 @@ export function AuditOverview() {
         if (!cancelled) setLoadError(cause instanceof Error ? cause.message : 'The audit could not be loaded.')
       })
     return () => { cancelled = true }
-  }, [e2eMode, id])
+  }, [demoMode, id])
 
   if (loadError) return <Card><h1>Audit unavailable</h1><p>{loadError}</p><Link to="/app/audits">Back to audits</Link></Card>
   if (!audit) return <Card><h1>Loading audit…</h1><p className="muted">Retrieving the released audit for this workspace.</p></Card>
