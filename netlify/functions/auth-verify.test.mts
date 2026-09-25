@@ -5,7 +5,8 @@ import { completeVerifiedLifecycle } from '../../src/services/verification-lifec
 vi.mock('../../src/services/verification-lifecycle', () => ({
   completeVerifiedLifecycle: vi.fn().mockResolvedValue({ userId: 'user-1', tenantId: 'workspace-1' }),
 }))
-\nvi.mock('../../src/services/netlify-storage', () => ({
+
+vi.mock('../../src/services/netlify-storage', () => ({
   createNetlifyStorageAdapter: vi.fn().mockReturnValue({}),
 }))
 
