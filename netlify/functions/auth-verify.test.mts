@@ -5,6 +5,9 @@ import { completeVerifiedLifecycle } from '../../src/services/verification-lifec
 vi.mock('../../src/services/verification-lifecycle', () => ({
   completeVerifiedLifecycle: vi.fn().mockResolvedValue({ userId: 'user-1', tenantId: 'workspace-1' }),
 }))
+\nvi.mock('../../src/services/netlify-storage', () => ({
+  createNetlifyStorageAdapter: vi.fn().mockReturnValue({}),
+}))
 
 function token(payload: Record<string, unknown>): string {
   const header = Buffer.from(JSON.stringify({ alg: 'RS256', typ: 'JWT' })).toString('base64url')
