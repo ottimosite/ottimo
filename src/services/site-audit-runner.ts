@@ -38,7 +38,7 @@ export async function runSiteAudit(
       return playwrightChromium.launch({
         executablePath: await chromium.executablePath(),
         args: chromium.args,
-        headless: chromium.headless,
+        headless: true,
       })
     }),
   )
