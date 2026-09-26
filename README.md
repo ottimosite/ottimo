@@ -149,11 +149,16 @@ Production authentication is provider-managed through Supabase Auth:
 - `SUPABASE_URL`: server-only Supabase project URL.
 - `SUPABASE_PUBLISHABLE_KEY`: server-held publishable Auth key used for Auth API calls.
 - `SUPABASE_SECRET_KEY`: server-only privileged key used for workspace/tenant persistence.
+- `OTTIMO_AUDIT_WORKER_SECRET`: server-only shared secret used to authenticate the internal background audit worker invocation.
 - `/.netlify/functions/auth-start`: accepts an email and requests a provider-managed passwordless email.
 - `/.netlify/functions/auth-resend`: repeats the provider-managed email request through the same enumeration-resistant boundary.
 - `/.netlify/functions/auth-verify?token_hash=...&type=email`: verifies the provider token server-side and establishes the `ottimo_auth` HttpOnly session cookie.
 - `/.netlify/functions/auth-session`: verifies the provider session and requires a confirmed email plus an Ottimo workspace.
 - `/.netlify/functions/auth-signout`: revokes the provider session and clears the local HttpOnly cookie.
+- `/.netlify/functions/audit-start`: requires a verified session and an owned website, then queues a durable audit job.
+- `/.netlify/functions/audit-status?jobId=...`: returns tenant-scoped queued/running/ready/failed job state.
+- `/.netlify/functions/audits-list` and `/.netlify/functions/audit-get?id=...`: expose only released tenant-owned audit data.
+- The audit worker runs as a Netlify Background Function; its initial HTTP invocation returns immediately while the crawl can continue within the background execution limit.
 
 The Supabase Confirm signup / Magic Link email template must send its `TokenHash` to the Ottimo verification endpoint rather than exposing a provider session in a URL fragment. Supabase's provider-managed token lifecycle remains authoritative; Ottimo does not create, persist or log verification tokens.
 
@@ -182,4 +187,4 @@ GitHub is the single source of truth for Ottimo planning and delivery. See [docs
 
 The deployed browser surface applies baseline security headers through `netlify.toml`.
 
-Session tokens remain signed with HMAC-SHA-256 and are verified server-side. An application-level error boundary contains unexpected render failures without treating them as audit results or modifying persisted evidence.
+Session tokens are provider-managed Supabase sessions and are verified server-side. An application-level error boundary contains unexpected render failures without treating them as audit results or modifying persisted evidence.
