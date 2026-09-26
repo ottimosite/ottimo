@@ -194,7 +194,7 @@ export function AuditOverview() {
 
   if (loadError) return <Card><h1>Audit unavailable</h1><p>{loadError}</p><Link to="/app/audits">Back to audits</Link></Card>
   if (!audit) return <Card><h1>Loading audit…</h1><p className="muted">Retrieving the released audit for this workspace.</p></Card>
-  const website = websites.find(item => item.id === audit.websiteId) ?? localRepository.websiteForAudit(audit)
+  const website = websites.find(item => item.id === audit.websiteId) ?? { id: audit.websiteId, name: audit.url, url: audit.url }
 
   const stats = audit.stats; const openIssues = audit.issues.filter(issue => issue.status !== 'resolved')
   const severityCounts = audit.issues.reduce<Record<string, number>>((counts, issue) => ({ ...counts, [issue.severity]: (counts[issue.severity] ?? 0) + 1 }), {})
@@ -213,7 +213,7 @@ export function AuditOverview() {
         </div>
         <div className="audit-actions">
           <AuditModeSwitch mode={mode} setMode={setMode} />
-          <Button onClick={() => navigate(`/app/audits/new?url=${encodeURIComponent(audit.url)}`)}>Run again</Button>
+          <Button onClick={() => navigate(`/app/audits/new?website=${encodeURIComponent(audit.websiteId)}`)}>Run again</Button>
           <Button variant="secondary" onClick={() => downloadAuditReport(audit, website?.name)}>Export report</Button>
           <Button variant="ghost" onClick={() => window.print()}>Print</Button>
         </div>
