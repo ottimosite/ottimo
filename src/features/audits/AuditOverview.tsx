@@ -164,6 +164,7 @@ function ChangePanel({ audit }: { audit: Audit }) {
 
 export function AuditOverview() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const [audit, setAudit] = useState<Audit | undefined>()
   const [websites, setWebsites] = useState<Array<{ id: string; name: string; url: string }>>([])
   const [loadError, setLoadError] = useState('')
